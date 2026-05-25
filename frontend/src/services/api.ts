@@ -76,3 +76,12 @@ export async function regenerateAssignment(id: string) {
     headers: { "Content-Type": "application/json" },
   });
 }
+
+/**
+ * Delete an assignment by ID.
+ */
+export async function deleteAssignment(id: string) {
+  return apiClient(`/assignments/${id}`, {
+    method: "DELETE",
+  });
+}

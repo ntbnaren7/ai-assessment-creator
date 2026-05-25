@@ -3,10 +3,17 @@ import { devtools } from "zustand/middleware";
 import type {
   Assignment,
   AssignmentStatus,
-  CreateAssignmentInput,
   QuestionType,
 } from "@/types";
 import * as api from "@/services/api";
+
+/* ── Question Type Row Config ── */
+export interface QuestionTypeConfig {
+  id: string;
+  type: string;
+  numberOfQuestions: number;
+  marks: number;
+}
 
 /* ── Form State Slice ── */
 interface FormState {
@@ -14,9 +21,7 @@ interface FormState {
   subject: string;
   grade: string;
   dueDate: string;
-  questionTypes: QuestionType[];
-  numberOfQuestions: number;
-  totalMarks: number;
+  questionTypeRows: QuestionTypeConfig[];
   duration: string;
   additionalInstructions: string;
   file: File | null;
@@ -28,15 +33,24 @@ interface AssignmentState {
   // Form
   form: FormState;
   setFormField: <K extends keyof FormState>(key: K, value: FormState[K]) => void;
-  toggleQuestionType: (type: QuestionType) => void;
   setFile: (file: File | null) => void;
   setErrors: (errors: Record<string, string>) => void;
   resetForm: () => void;
+
+  // Question type rows
+  addQuestionTypeRow: () => void;
+  updateQuestionTypeRow: (id: string, updated: QuestionTypeConfig) => void;
+  removeQuestionTypeRow: (id: string) => void;
 
   // Submission
   isSubmitting: boolean;
   submitError: string | null;
   submitAssignment: () => Promise<string | null>;
+
+  // Assignments list (Dashboard)
+  assignments: Assignment[];
+  isLoadingList: boolean;
+  fetchAssignments: () => Promise<void>;
 
   // Current assignment (viewing output)
   currentAssignment: Assignment | null;
@@ -52,15 +66,21 @@ interface AssignmentState {
   regenerate: (id: string) => Promise<void>;
 }
 
+let rowIdCounter = 0;
+function nextRowId(): string {
+  return `row-${++rowIdCounter}`;
+}
+
 const initialFormState: FormState = {
   title: "",
   subject: "",
   grade: "",
   dueDate: "",
-  questionTypes: [],
-  numberOfQuestions: 10,
-  totalMarks: 50,
-  duration: "1 Hour",
+  questionTypeRows: [
+    { id: nextRowId(), type: "Multiple Choice Questions", numberOfQuestions: 4, marks: 1 },
+    { id: nextRowId(), type: "Short Questions", numberOfQuestions: 3, marks: 2 },
+  ],
+  duration: "",
   additionalInstructions: "",
   file: null,
   errors: {},
@@ -81,24 +101,6 @@ export const useAssignmentStore = create<AssignmentState>()(
           "setFormField"
         ),
 
-      toggleQuestionType: (type) =>
-        set(
-          (state) => {
-            const types = state.form.questionTypes.includes(type)
-              ? state.form.questionTypes.filter((t) => t !== type)
-              : [...state.form.questionTypes, type];
-            return {
-              form: {
-                ...state.form,
-                questionTypes: types,
-                errors: { ...state.form.errors, questionTypes: "" },
-              },
-            };
-          },
-          false,
-          "toggleQuestionType"
-        ),
-
       setFile: (file) =>
         set(
           (state) => ({ form: { ...state.form, file } }),
@@ -114,7 +116,49 @@ export const useAssignmentStore = create<AssignmentState>()(
         ),
 
       resetForm: () =>
-        set({ form: { ...initialFormState } }, false, "resetForm"),
+        set({ form: { ...initialFormState, questionTypeRows: [...initialFormState.questionTypeRows] } }, false, "resetForm"),
+
+      // ── Question Type Rows ──
+      addQuestionTypeRow: () =>
+        set(
+          (state) => ({
+            form: {
+              ...state.form,
+              questionTypeRows: [
+                ...state.form.questionTypeRows,
+                { id: nextRowId(), type: "Multiple Choice Questions", numberOfQuestions: 5, marks: 1 },
+              ],
+            },
+          }),
+          false,
+          "addQuestionTypeRow"
+        ),
+
+      updateQuestionTypeRow: (id, updated) =>
+        set(
+          (state) => ({
+            form: {
+              ...state.form,
+              questionTypeRows: state.form.questionTypeRows.map((r) =>
+                r.id === id ? updated : r
+              ),
+            },
+          }),
+          false,
+          "updateQuestionTypeRow"
+        ),
+
+      removeQuestionTypeRow: (id) =>
+        set(
+          (state) => ({
+            form: {
+              ...state.form,
+              questionTypeRows: state.form.questionTypeRows.filter((r) => r.id !== id),
+            },
+          }),
+          false,
+          "removeQuestionTypeRow"
+        ),
 
       // ── Submission ──
       isSubmitting: false,
@@ -125,17 +169,9 @@ export const useAssignmentStore = create<AssignmentState>()(
 
         // Client-side validation
         const errors: Record<string, string> = {};
-        if (!form.title.trim()) errors.title = "Title is required";
-        if (!form.subject.trim()) errors.subject = "Subject is required";
-        if (!form.grade.trim()) errors.grade = "Grade is required";
         if (!form.dueDate) errors.dueDate = "Due date is required";
-        if (form.questionTypes.length === 0)
-          errors.questionTypes = "Select at least one question type";
-        if (form.numberOfQuestions < 1 || form.numberOfQuestions > 100)
-          errors.numberOfQuestions = "Must be between 1 and 100";
-        if (form.totalMarks < 1 || form.totalMarks > 500)
-          errors.totalMarks = "Must be between 1 and 500";
-        if (!form.duration.trim()) errors.duration = "Duration is required";
+        if (form.questionTypeRows.length === 0)
+          errors.questionTypes = "Add at least one question type";
 
         if (Object.keys(errors).length > 0) {
           set({ form: { ...form, errors } }, false, "validationFailed");
@@ -146,15 +182,26 @@ export const useAssignmentStore = create<AssignmentState>()(
 
         try {
           const formData = new FormData();
-          formData.append("title", form.title);
-          formData.append("subject", form.subject);
-          formData.append("grade", form.grade);
+          formData.append("title", form.title || "Untitled Assignment");
+          formData.append("subject", form.subject || "General");
+          formData.append("grade", form.grade || "");
           formData.append("dueDate", form.dueDate);
-          formData.append("questionTypes", JSON.stringify(form.questionTypes));
-          formData.append("numberOfQuestions", String(form.numberOfQuestions));
-          formData.append("totalMarks", String(form.totalMarks));
-          formData.append("duration", form.duration);
+
+          // Build question types from rows
+          const questionTypes = form.questionTypeRows.map((r) => r.type);
+          formData.append("questionTypes", JSON.stringify(questionTypes));
+
+          // Sum up questions and marks
+          const totalQuestions = form.questionTypeRows.reduce((s, r) => s + r.numberOfQuestions, 0);
+          const totalMarks = form.questionTypeRows.reduce((s, r) => s + r.numberOfQuestions * r.marks, 0);
+          formData.append("numberOfQuestions", String(totalQuestions));
+          formData.append("totalMarks", String(totalMarks));
+          formData.append("duration", form.duration || "1 Hour");
           formData.append("additionalInstructions", form.additionalInstructions);
+
+          // Include row details as structured JSON for the backend prompt
+          formData.append("questionTypeDetails", JSON.stringify(form.questionTypeRows));
+
           if (form.file) {
             formData.append("file", form.file);
           }
@@ -171,6 +218,23 @@ export const useAssignmentStore = create<AssignmentState>()(
             error instanceof Error ? error.message : "Failed to create assignment";
           set({ isSubmitting: false, submitError: message }, false, "submitError");
           return null;
+        }
+      },
+
+      // ── Assignments List ──
+      assignments: [],
+      isLoadingList: false,
+
+      fetchAssignments: async () => {
+        set({ isLoadingList: true }, false, "fetchListStart");
+        try {
+          const result = (await api.listAssignments()) as {
+            success: boolean;
+            data: Assignment[];
+          };
+          set({ assignments: result.data, isLoadingList: false }, false, "fetchListSuccess");
+        } catch {
+          set({ isLoadingList: false }, false, "fetchListError");
         }
       },
 
