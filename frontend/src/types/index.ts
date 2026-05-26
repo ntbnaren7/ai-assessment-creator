@@ -7,7 +7,7 @@ export type QuestionType =
   | "True/False"
   | "Fill in the Blanks";
 
-export type Difficulty = "Easy" | "Moderate" | "Hard";
+export type Difficulty = "Easy" | "Moderate" | "Hard" | "Challenging";
 
 export type AssignmentStatus = "pending" | "processing" | "completed" | "failed";
 

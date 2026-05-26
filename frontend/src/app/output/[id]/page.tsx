@@ -147,7 +147,7 @@ export default function OutputPage() {
       breadcrumbIcon="/assets/icons/icon-sparkles.svg"
       onBack={() => router.push("/")}
     >
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <div className="output-page-wrapper">
         {/* Dark Banner */}
         <BannerCallout
           message={calloutMessage}

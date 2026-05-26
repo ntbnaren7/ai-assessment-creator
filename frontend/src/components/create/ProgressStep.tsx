@@ -9,12 +9,19 @@ interface ProgressStepProps {
  * Sleek horizontal progress bar shown at the top of the create assignment form.
  */
 export function ProgressStep({ progress }: ProgressStepProps) {
+  const safeProgress = Math.min(100, Math.max(0, progress));
+
   return (
     <div className="progress-bar">
-      <div
-        className="progress-bar-fill"
-        style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-      />
+      {safeProgress > 0 && (
+        <div
+          className="progress-bar-fill"
+          style={{ width: `${safeProgress}%` }}
+        />
+      )}
+      {safeProgress < 100 && (
+        <div className="progress-bar-track" />
+      )}
     </div>
   );
 }

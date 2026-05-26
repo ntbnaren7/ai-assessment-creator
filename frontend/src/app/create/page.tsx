@@ -41,19 +41,20 @@ export default function CreateAssignmentPage() {
       breadcrumb="Assignment"
       breadcrumbIcon=""
       onBack={() => router.push("/")}
+      className="create-page-shell"
     >
-      <div className="create-page-container">
-        {/* Page Header */}
-        <div className="create-page-header animate-fadeIn">
-          <h2>
-            <span className="status-dot active" />
-            Create Assignment
-          </h2>
-          <p>
-            Set up a new assignment for your students
-          </p>
-        </div>
+      {/* Page Header */}
+      <div className="create-page-header animate-fadeIn">
+        <h2>
+          <span className="status-dot active" />
+          Create Assignment
+        </h2>
+        <p>
+          Set up a new assignment for your students
+        </p>
+      </div>
 
+      <div className="create-page-container">
         {/* Progress Bar */}
         <ProgressStep progress={50} />
 
@@ -79,7 +80,7 @@ export default function CreateAssignmentPage() {
               <div className="date-input-container">
                 <input
                   id="dueDate"
-                  className={`form-input-date ${form.errors.dueDate ? "error" : ""}`}
+                  className={`form-input-date ${form.errors.dueDate ? "error" : ""} ${!form.dueDate ? "empty" : ""}`}
                   type="date"
                   value={form.dueDate}
                   onChange={(e) => setFormField("dueDate", e.target.value)}
@@ -115,33 +116,44 @@ export default function CreateAssignmentPage() {
                 ))}
               </div>
 
-              <button
-                type="button"
-                className="btn-add-type"
-                onClick={addQuestionTypeRow}
-              >
-                <span>+</span> Add Question Type
-              </button>
+              <div className="question-types-footer-row">
+                <button
+                  type="button"
+                  className="btn-add-type"
+                  onClick={addQuestionTypeRow}
+                >
+                  <Image src="/assets/icons/icon-add-circle.svg" alt="" width={24} height={24} />
+                  Add Question Type
+                </button>
+                <div className="totals-summary">
+                  <div>Total Questions : {form.questionTypeRows.reduce((sum, row) => sum + row.numberOfQuestions, 0)}</div>
+                  <div>Total Marks : {form.questionTypeRows.reduce((sum, row) => sum + (row.numberOfQuestions * row.marks), 0)}</div>
+                </div>
+              </div>
 
               {form.errors.questionTypes && (
                 <span className="form-error">{form.errors.questionTypes}</span>
               )}
             </div>
 
-            {/* Additional Instructions */}
+            {/* Additional Information */}
             <div className="form-group">
               <label className="form-label" htmlFor="additionalInstructions">
-                Additional Instructions{" "}
-                <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>(optional)</span>
+                Additional Information (For better output)
               </label>
-              <textarea
-                id="additionalInstructions"
-                className="form-textarea"
-                placeholder="e.g., Focus on chapters 5-8, include application-based questions..."
-                value={form.additionalInstructions}
-                onChange={(e) => setFormField("additionalInstructions", e.target.value)}
-                rows={3}
-              />
+              <div className="textarea-container">
+                <textarea
+                  id="additionalInstructions"
+                  className="form-textarea"
+                  placeholder="e.g Generate a question paper for 3 hour exam duration.."
+                  value={form.additionalInstructions}
+                  onChange={(e) => setFormField("additionalInstructions", e.target.value)}
+                  rows={3}
+                />
+                <button type="button" className="btn-voice-input" aria-label="Voice input">
+                  <Image src="/assets/icons/icon-mic.svg" alt="Microphone" width={9} height={12} />
+                </button>
+              </div>
             </div>
 
             {/* Submit Error */}
@@ -160,22 +172,34 @@ export default function CreateAssignmentPage() {
               </div>
             )}
 
-            {/* Submit Button */}
+          </div>
+          
+          {/* Footer Action Buttons */}
+          <div className="create-page-footer-actions">
+            <button
+              type="button"
+              className="btn-previous"
+              onClick={() => router.back()}
+            >
+              <Image src="/assets/icons/icon-arrow-prev.svg" alt="" width={16} height={16} />
+              Previous
+            </button>
+
             <button
               type="submit"
-              className="btn btn-generate"
+              className="btn-next"
               disabled={isSubmitting}
               id="submit-assignment"
             >
               {isSubmitting ? (
                 <>
-                  <div className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} />
+                  <div className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} />
                   Generating...
                 </>
               ) : (
                 <>
-                  <Image src="/assets/icons/icon-sparkles.svg" alt="Sparkles" width={20} height={20} />
-                  Generate Question Paper
+                  Next
+                  <Image src="/assets/icons/icon-arrow-next.svg" alt="" width={16} height={16} />
                 </>
               )}
             </button>

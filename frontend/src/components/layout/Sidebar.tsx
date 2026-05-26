@@ -31,7 +31,6 @@ const NAV_ITEMS: NavItem[] = [
     icon: "/assets/icons/icon-assignments.svg",
     fallbackIcon: "📋",
     href: "/",
-    badge: 10,
   },
   {
     label: "AI Teacher's Toolkit",
@@ -44,6 +43,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: "/assets/icons/icon-library.svg",
     fallbackIcon: "⏱",
     href: "#",
+    badge: 32,
   },
 ];
 
@@ -97,9 +97,7 @@ export function Sidebar() {
                 style={{ objectFit: "contain" }}
               />
             )}
-            {pathname === "/create"
-              ? "AI Teacher\u2019s Toolkit"
-              : "Create Assignment"}
+            + Create Assignment
           </button>
         </Link>
 

@@ -2,31 +2,47 @@
    OUTPUT PAGE
    ══════════════════════════════════════════ */
 
+.output-page-wrapper {
+  background: #4E5154;
+  border-radius: 24px;
+  padding: 24px;
+  margin: 0;
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 /* Dark banner callout */
 .banner-callout {
-  background: var(--bg-banner-dark);
-  color: var(--text-inverse);
-  padding: var(--space-6) var(--space-8);
-  border-radius: var(--radius-xl);
-  margin-bottom: var(--space-6);
+  background: #1E1F21;
+  color: #FFFFFF;
+  padding: 24px 32px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
 }
 
 .banner-callout-text {
-  font-size: 1rem;
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: 15px;
   font-weight: 500;
-  line-height: 1.6;
-  margin-bottom: var(--space-4);
+  line-height: 1.5;
+  color: #E2E8F0;
 }
 
 .banner-callout .btn-download {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-5);
-  background: var(--bg-card);
-  color: var(--text-primary);
-  border-radius: var(--radius-full);
-  font-size: 0.875rem;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #FFFFFF;
+  color: #1E1F21;
+  border-radius: 100px;
+  font-size: 14px;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -34,98 +50,103 @@
   font-family: inherit;
 }
 
+.banner-callout .btn-download svg {
+  width: 16px;
+  height: 16px;
+}
+
 .banner-callout .btn-download:hover {
-  background: var(--gray-100);
+  background: #F3F4F6;
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
 }
 
 /* Question Paper – A4 style sheet */
 .paper-sheet {
   background: #FFFFFF;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sheet);
-  padding: var(--space-10) var(--space-8);
-  color: var(--text-primary);
-  font-size: 0.9375rem;
-  line-height: 1.7;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 48px 56px;
+  color: #000000;
+  font-family: var(--font-bricolage), sans-serif;
 }
 
 .paper-school-name {
   text-align: center;
-  font-size: 1.375rem;
+  font-size: 26px;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: var(--space-2);
+  color: #000000;
+  margin-bottom: 8px;
 }
 
 .paper-sub-header {
   text-align: center;
-  font-size: 1rem;
-  color: var(--text-primary);
-  margin-bottom: var(--space-1);
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 4px;
 }
 
 .paper-meta-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: var(--space-4);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--border-default);
-  font-size: 0.9375rem;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  font-size: 15px;
+  color: #000000;
 }
 
 .paper-instructions {
-  text-align: center;
+  text-align: left;
   font-weight: 600;
-  margin: var(--space-6) 0;
-  font-size: 0.9375rem;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #000000;
 }
 
 .paper-student-info {
-  margin: var(--space-4) 0 var(--space-6);
+  margin-bottom: 32px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 12px;
+  max-width: 300px;
 }
 
 .paper-student-field {
   display: flex;
   align-items: baseline;
-  gap: var(--space-2);
-  font-size: 0.9375rem;
-}
-
-.paper-student-field strong {
-  white-space: nowrap;
+  gap: 8px;
+  font-size: 14px;
+  color: #000000;
 }
 
 .paper-student-line {
   flex: 1;
-  border-bottom: 1px solid var(--text-muted);
-  min-width: 120px;
+  border-bottom: 1px solid #000000;
+  min-width: 150px;
 }
 
 .paper-section-title {
   text-align: center;
-  font-size: 1.125rem;
+  font-size: 18px;
   font-weight: 700;
-  margin: var(--space-8) 0 var(--space-2);
+  margin-top: 32px;
+  margin-bottom: 16px;
+  color: #000000;
 }
 
 .paper-section-type {
-  font-size: 1rem;
+  font-size: 15px;
   font-weight: 700;
-  margin-bottom: var(--space-1);
+  color: #000000;
+  margin-bottom: 4px;
 }
 
 .paper-section-instruction {
-  font-size: 0.875rem;
+  font-size: 13px;
   font-style: italic;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-4);
+  color: #707070;
+  margin-bottom: 16px;
 }
 
 .paper-question-list {
@@ -135,10 +156,12 @@
 }
 
 .paper-question-item {
-  margin-bottom: var(--space-4);
-  padding-left: var(--space-6);
+  margin-bottom: 16px;
+  padding-left: 24px;
   position: relative;
-  line-height: 1.7;
+  line-height: 1.6;
+  font-size: 14px;
+  color: #000000;
 }
 
 .paper-question-item::before {
@@ -151,35 +174,87 @@
 
 .paper-question-difficulty {
   font-weight: 600;
-  font-size: 0.8125rem;
+  font-size: 13px;
 }
 
 .paper-question-marks {
   font-weight: 600;
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
+  font-size: 13px;
+  color: #333333;
 }
 
 .paper-question-options {
-  margin-top: var(--space-2);
-  padding-left: var(--space-4);
+  margin-top: 8px;
+  padding-left: 16px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 4px;
 }
 
-/* Divider */
-.paper-divider {
-  border: none;
-  border-top: 1px solid var(--border-default);
-  margin: var(--space-4) 0;
+/* End of Question Paper styling */
+.paper-end-text {
+  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  color: #000000;
+  margin-top: 48px;
+  margin-bottom: 48px;
+  border-top: 1px dashed #E2E8F0;
+  padding-top: 24px;
+}
+
+/* Answer Key Section */
+.paper-answer-key-section {
+  margin-top: 24px;
+}
+
+.paper-answer-key-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 16px;
+}
+
+.paper-answer-key-list {
+  list-style: none;
+  counter-reset: answer;
+  padding: 0;
+}
+
+.paper-answer-key-item {
+  margin-bottom: 16px;
+  padding-left: 24px;
+  position: relative;
+  line-height: 1.6;
+  font-size: 14px;
+  color: #333333;
+  white-space: pre-wrap;
+}
+
+.paper-answer-key-item::before {
+  counter-increment: answer;
+  content: counter(answer) '. ';
+  position: absolute;
+  left: 0;
+  font-weight: 600;
+  color: #000000;
 }
 
 /* ══════════════════════════════════════════
    MOBILE RESPONSIVE
    ══════════════════════════════════════════ */
 @media (max-width: 768px) {
+  .output-page-wrapper {
+    padding: 12px;
+    border-radius: 12px;
+  }
   .paper-sheet {
-    padding: var(--space-6) var(--space-4);
+    padding: 32px 24px;
+    border-radius: 16px;
+  }
+  .paper-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }

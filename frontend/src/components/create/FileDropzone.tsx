@@ -63,7 +63,7 @@ export function FileDropzone({ file, onFileChange }: FileDropzoneProps) {
   }
 
   return (
-    <>
+    <div className="file-dropzone-wrapper">
       <div
         className={`file-upload-zone ${isDragging ? "dragging" : ""}`}
         onClick={() => fileInputRef.current?.click()}
@@ -99,6 +99,6 @@ export function FileDropzone({ file, onFileChange }: FileDropzoneProps) {
       <div className="file-upload-subtext">
         Upload images of your preferred document/image
       </div>
-    </>
+    </div>
   );
 }

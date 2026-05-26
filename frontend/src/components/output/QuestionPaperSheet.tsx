@@ -30,15 +30,9 @@ export function QuestionPaperSheet({ paper, grade }: QuestionPaperSheetProps) {
 
       {/* Time Allowed & Maximum Marks */}
       <div className="paper-meta-row">
-        <span>
-          <strong>Time Allowed:</strong> {paper.duration}
-        </span>
-        <span>
-          <strong>Maximum Marks:</strong> {paper.totalMarks}
-        </span>
+        <span>Time Allowed: {paper.duration}</span>
+        <span>Maximum Marks: {paper.totalMarks}</span>
       </div>
-
-      <hr className="paper-divider" />
 
       {/* General Instructions */}
       {paper.generalInstructions && paper.generalInstructions.length > 0 ? (
@@ -54,15 +48,15 @@ export function QuestionPaperSheet({ paper, grade }: QuestionPaperSheetProps) {
       {/* Student Info */}
       <div className="paper-student-info">
         <div className="paper-student-field">
-          <strong>Name:</strong>
+          Name:
           <div className="paper-student-line" />
         </div>
         <div className="paper-student-field">
-          <strong>Roll Number:</strong>
+          Roll Number:
           <div className="paper-student-line" />
         </div>
         <div className="paper-student-field">
-          <strong>Class: {grade || ""} Section:</strong>
+          Class: {grade || ""} Section:
           <div className="paper-student-line" />
         </div>
       </div>
@@ -99,6 +93,23 @@ export function QuestionPaperSheet({ paper, grade }: QuestionPaperSheetProps) {
           </ol>
         </div>
       ))}
+
+      {/* End of Question Paper */}
+      <div className="paper-end-text">End of Question Paper</div>
+
+      {/* Answer Key */}
+      {paper.sections.some(s => s.questions.some(q => q.correctAnswer)) && (
+        <div className="paper-answer-key-section">
+          <h3 className="paper-answer-key-title">Answer Key:</h3>
+          <ol className="paper-answer-key-list">
+            {paper.sections.flatMap(section => section.questions).map((q, qIdx) => (
+              <li key={qIdx} className="paper-answer-key-item">
+                {q.correctAnswer || "No answer key available."}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   );
 }

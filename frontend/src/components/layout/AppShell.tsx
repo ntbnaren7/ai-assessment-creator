@@ -13,6 +13,7 @@ interface AppShellProps {
   breadcrumb?: string;
   breadcrumbIcon?: string;
   onBack?: () => void;
+  className?: string;
 }
 
 /**
@@ -24,11 +25,12 @@ export function AppShell({
   breadcrumb = "Assignment",
   breadcrumbIcon = "📋",
   onBack,
+  className = "",
 }: AppShellProps) {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${className}`.trim()}>
       {/* Desktop Components */}
       <Sidebar />
       <div className="main-content">
