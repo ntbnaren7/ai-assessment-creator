@@ -55,3 +55,47 @@ export const CreateAssignmentSchema = z.object({
 });
 
 export type CreateAssignmentInput = z.infer<typeof CreateAssignmentSchema>;
+
+/* ── Layer 4: Post-Generation Output Validation ── */
+
+const DifficultyEnum = z.enum(["Easy", "Moderate", "Hard"]);
+
+export const GeneratedQuestionSchema = z
+  .object({
+    questionNumber: z.number().int().min(1),
+    questionText: z.string().min(1, "Question text cannot be empty"),
+    difficulty: DifficultyEnum,
+    marks: z.number().int().min(1),
+    questionType: z.string().min(1),
+    options: z.array(z.string()).optional(),
+    correctAnswer: z.string().optional(),
+  })
+  .passthrough();
+
+export const GeneratedSectionSchema = z
+  .object({
+    sectionLabel: z.string().min(1),
+    sectionTitle: z.string().min(1),
+    instruction: z.string().min(1),
+    questions: z
+      .array(GeneratedQuestionSchema)
+      .min(1, "Each section must contain at least one question"),
+  })
+  .passthrough();
+
+export const GeneratedPaperSchema = z
+  .object({
+    title: z.string().min(1),
+    subject: z.string().min(1),
+    totalMarks: z.number().int().min(1),
+    duration: z.string().min(1),
+    generalInstructions: z
+      .array(z.string())
+      .min(1, "At least one general instruction is required"),
+    sections: z
+      .array(GeneratedSectionSchema)
+      .min(1, "At least one section is required"),
+  })
+  .passthrough();
+
+export type GeneratedPaperOutput = z.infer<typeof GeneratedPaperSchema>;

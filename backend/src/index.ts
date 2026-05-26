@@ -8,6 +8,7 @@ import { errorHandler } from "./middlewares/index.js";
 import { initializeSocket } from "./websockets/index.js";
 import { startWorker } from "./jobs/index.js";
 import apiRoutes from "./routes/index.js";
+import { logger } from "./utils/logger.js";
 
 async function bootstrap(): Promise<void> {
   // 1. Validate environment config
@@ -54,17 +55,47 @@ async function bootstrap(): Promise<void> {
   initializeSocket(httpServer);
 
   // 9. Start BullMQ worker
-  startWorker();
+  const worker = startWorker();
 
   // 10. Start listening
   httpServer.listen(config.port, () => {
-    console.log(`🚀 Server running on http://localhost:${config.port}`);
-    console.log(`📡 WebSocket server ready`);
-    console.log(`🌍 Environment: ${config.nodeEnv}`);
+    logger.info("Server started", {
+      port: config.port,
+      env: config.nodeEnv,
+      url: `http://localhost:${config.port}`,
+    });
   });
+
+  // 11. Graceful Shutdown handlers
+  const shutdown = async (signal: string) => {
+    logger.info(`Received ${signal}, initiating graceful shutdown...`);
+    try {
+      // Stop accepting new jobs and wait for active ones (up to 5s)
+      if (worker) {
+        logger.info("Closing BullMQ worker...");
+        await worker.close();
+      }
+      
+      logger.info("Closing HTTP server...");
+      httpServer.close();
+
+      logger.info("Closing MongoDB connection...");
+      const mongoose = await import("mongoose");
+      await mongoose.disconnect();
+
+      logger.info("Shutdown complete.");
+      process.exit(0);
+    } catch (err) {
+      logger.error("Error during shutdown", { error: err });
+      process.exit(1);
+    }
+  };
+
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
 bootstrap().catch((err) => {
-  console.error("Fatal error during startup:", err);
+  logger.error("Fatal error during startup", { error: err.message, stack: err.stack });
   process.exit(1);
 });

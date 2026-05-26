@@ -1,5 +1,6 @@
 import { Queue } from "bullmq";
 import { getRedisConnection } from "../config/index.js";
+import { logger } from "../utils/logger.js";
 
 const QUEUE_NAME = "assessment-generation";
 
@@ -25,15 +26,29 @@ export function getAssessmentQueue(): Queue {
 
 /**
  * Adds an assessment generation job to the queue.
+ * Removes any existing job for the same assignment to prevent
+ * BullMQ's jobId deduplication from silently rejecting regenerations.
  */
 export async function addGenerationJob(assignmentId: string): Promise<void> {
   const queue = getAssessmentQueue();
+
+  // Remove any stale completed/failed job with the same base ID
+  const existingJob = await queue.getJob(`gen-${assignmentId}`);
+  if (existingJob) {
+    try {
+      await existingJob.remove();
+    } catch {
+      // Job may be active or locked — safe to ignore, we'll use a versioned ID
+    }
+  }
+
+  const jobId = `gen-${assignmentId}-${Date.now()}`;
   await queue.add(
     "generate",
     { assignmentId },
     {
-      jobId: `gen-${assignmentId}`,
+      jobId,
     }
   );
-  console.log(`📋 Job queued for assignment: ${assignmentId}`);
+  logger.info("Job queued for assignment", { assignmentId, jobId });
 }

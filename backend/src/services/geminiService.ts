@@ -1,6 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
 import { config } from "../config/index.js";
 import type { IAssignment } from "../models/index.js";
+import {
+  GeneratedPaperSchema,
+  type GeneratedPaperOutput,
+} from "../utils/validation.js";
 
 const genai = new GoogleGenAI({ apiKey: config.geminiApiKey });
 
@@ -75,11 +79,29 @@ RESPOND WITH ONLY VALID JSON in the following exact structure (no markdown, no c
 }
 
 /**
- * Calls the Gemini API with a structured prompt and returns parsed JSON.
+ * Parses raw Gemini response text into a JSON object.
+ * Handles both clean JSON mode responses and markdown-fenced fallbacks.
+ */
+function parseGeminiResponse(text: string): Record<string, unknown> {
+  try {
+    return JSON.parse(text);
+  } catch {
+    // Fallback: attempt to extract JSON from potential markdown fences
+    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch?.[1]) {
+      return JSON.parse(jsonMatch[1].trim());
+    }
+    throw new Error("Failed to parse Gemini response as JSON");
+  }
+}
+
+/**
+ * Calls the Gemini API with a structured prompt, parses and validates
+ * the JSON response against the GeneratedPaperSchema (Layer 4 validation).
  */
 export async function generateQuestionPaper(
   assignment: IAssignment
-): Promise<Record<string, unknown>> {
+): Promise<GeneratedPaperOutput> {
   const prompt = buildPrompt(assignment);
 
   const response = await genai.models.generateContent({
@@ -98,16 +120,19 @@ export async function generateQuestionPaper(
     throw new Error("Gemini returned an empty response");
   }
 
-  // Parse JSON response (Gemini JSON mode should return clean JSON)
-  try {
-    const parsed = JSON.parse(text);
-    return parsed as Record<string, unknown>;
-  } catch {
-    // Fallback: attempt to extract JSON from potential markdown fences
-    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (jsonMatch?.[1]) {
-      return JSON.parse(jsonMatch[1].trim()) as Record<string, unknown>;
-    }
-    throw new Error("Failed to parse Gemini response as JSON");
+  // Stage 3: Parse raw JSON
+  const parsed = parseGeminiResponse(text);
+
+  // Stage 4: Validate against GeneratedPaperSchema (Layer 4)
+  const result = GeneratedPaperSchema.safeParse(parsed);
+
+  if (!result.success) {
+    const issues = result.error.issues
+      .map((i) => `${i.path.join(".")}: ${i.message}`)
+      .join("; ");
+    throw new Error(`AI output validation failed: ${issues}`);
   }
+
+  return result.data;
 }
+

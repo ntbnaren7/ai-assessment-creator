@@ -3,6 +3,7 @@ import { getRedisConnection } from "../config/index.js";
 import { Assignment } from "../models/index.js";
 import { generateQuestionPaper } from "../services/index.js";
 import { getIO } from "../websockets/socketServer.js";
+import { logger } from "../utils/logger.js";
 
 const QUEUE_NAME = "assessment-generation";
 
@@ -18,7 +19,9 @@ export function startWorker(): Worker {
     QUEUE_NAME,
     async (job: Job<GenerationJobData>) => {
       const { assignmentId } = job.data;
-      console.log(`🔄 Processing job for assignment: ${assignmentId}`);
+      const log = logger.child({ assignmentId, jobId: job.id });
+
+      log.info("Processing generation job");
 
       // 1. Update status to processing
       const assignment = await Assignment.findByIdAndUpdate(
@@ -40,10 +43,17 @@ export function startWorker(): Worker {
       });
 
       // 2. Call Gemini to generate the paper
+      const startTime = Date.now();
       const generatedPaper = await generateQuestionPaper(assignment);
+      const durationMs = Date.now() - startTime;
+
+      log.info("Gemini generation completed", {
+        durationMs,
+        sections: (generatedPaper as { sections?: unknown[] }).sections?.length,
+      });
 
       // 3. Save the result
-      assignment.generatedPaper = generatedPaper as typeof assignment.generatedPaper;
+      assignment.generatedPaper = generatedPaper as unknown as typeof assignment.generatedPaper;
       assignment.status = "completed";
       assignment.errorMessage = null;
       await assignment.save();
@@ -55,7 +65,7 @@ export function startWorker(): Worker {
         message: "Question paper generated successfully!",
       });
 
-      console.log(`✅ Job completed for assignment: ${assignmentId}`);
+      log.info("Job completed successfully", { durationMs });
       return { success: true };
     },
     {
@@ -67,7 +77,12 @@ export function startWorker(): Worker {
   worker.on("failed", async (job, err) => {
     if (!job) return;
     const { assignmentId } = job.data;
-    console.error(`❌ Job failed for assignment ${assignmentId}:`, err.message);
+    logger.error("Job failed", {
+      assignmentId,
+      jobId: job.id,
+      attemptsMade: job.attemptsMade,
+      error: err.message,
+    });
 
     // Update DB status to failed
     await Assignment.findByIdAndUpdate(assignmentId, {
@@ -85,9 +100,9 @@ export function startWorker(): Worker {
   });
 
   worker.on("completed", (job) => {
-    console.log(`📦 Job ${job.id} completed`);
+    logger.info("Job finalized", { jobId: job.id });
   });
 
-  console.log("🏭 Assessment generation worker started");
+  logger.info("Assessment generation worker started");
   return worker;
 }

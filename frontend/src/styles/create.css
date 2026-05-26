@@ -20,7 +20,7 @@
 }
 
 .create-page-header {
-  margin-bottom: var(--space-8);
+  margin-bottom: 48px;
 }
 
 .create-page-header h2 {
@@ -40,10 +40,10 @@
   border-radius: 24px;
   padding: 32px;
   background: #F5F5F5;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   box-shadow: 
-    0 12px 32px rgba(0, 0, 0, 0.05),
-    0 2px 4px rgba(0, 0, 0, 0.02);
+    0 24px 64px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -92,11 +92,11 @@
 
 .form-input-date::-webkit-datetime-edit {
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: rgba(48, 48, 48, 0.6);
 }
 
 .form-input-date.empty::-webkit-datetime-edit {
-  color: rgba(48, 48, 48, 0.4);
+  color: rgba(48, 48, 48, 0.3);
 }
 
 .form-input-date::-webkit-calendar-picker-indicator {
@@ -394,7 +394,7 @@
   gap: 6px;
   width: 100%;
   height: 6px;
-  margin-bottom: var(--space-6);
+  margin-bottom: 35px;
 }
 
 .progress-bar-fill {

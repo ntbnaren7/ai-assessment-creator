@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { logger } from "../utils/logger.js";
 
 /**
  * Global error handler middleware.
@@ -9,7 +10,12 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ): void {
-  console.error("Unhandled error:", err.message, err.stack);
+  logger.error("Unhandled express error", {
+    error: err.message,
+    stack: err.stack,
+    path: _req.path,
+    method: _req.method,
+  });
 
   res.status(500).json({
     success: false,
@@ -19,3 +25,4 @@ export function errorHandler(
         : err.message,
   });
 }
+
