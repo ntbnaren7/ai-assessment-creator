@@ -1,5 +1,6 @@
 import { Server as HttpServer } from "http";
 import { Server, Socket } from "socket.io";
+import { isValidObjectId } from "mongoose";
 import { config } from "../config/index.js";
 import { logger } from "../utils/logger.js";
 import { Assignment } from "../models/index.js";
@@ -24,6 +25,13 @@ export function initializeSocket(httpServer: HttpServer): Server {
     // Client joins a room scoped to their assignment ID for targeted updates
     socket.on("join-assignment", async (assignmentId: string) => {
       if (typeof assignmentId === "string" && assignmentId.length > 0) {
+        // Guard: Prevent Mongoose CastError by validating ObjectId format first
+        if (!isValidObjectId(assignmentId)) {
+          logger.warn("Client attempted to join room with invalid ID format", { socketId: socket.id, assignmentId });
+          socket.emit("error", { message: "Invalid assignment ID format" });
+          return;
+        }
+
         try {
           // Task 5: WebSocket auth — validate assignment exists before allowing room join
           const assignment = await Assignment.findById(assignmentId).select("_id").lean();

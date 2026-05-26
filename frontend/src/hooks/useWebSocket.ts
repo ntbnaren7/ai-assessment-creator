@@ -7,7 +7,7 @@ import type { StatusUpdate } from "@/types";
 import * as api from "@/services/api";
 import type { Assignment } from "@/types";
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "http://localhost:5000";
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "http://localhost:5001";
 
 /**
  * Custom hook that manages WebSocket connection for real-time status updates.

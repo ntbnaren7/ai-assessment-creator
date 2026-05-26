@@ -69,31 +69,87 @@ export default function CreateAssignmentPage() {
               </p>
             </div>
 
+            {/* Title */}
+            <div className="form-group">
+              <label className="form-label" htmlFor="title">
+                Title (Institution Name)
+              </label>
+              <input
+                id="title"
+                className={`form-input-text ${form.errors.title ? "error" : ""}`}
+                type="text"
+                value={form.title}
+                onChange={(e) => setFormField("title", e.target.value)}
+                placeholder="e.g. Acme High School Exam"
+              />
+              {form.errors.title && (
+                <span className="form-error">{form.errors.title}</span>
+              )}
+            </div>
+
             {/* File Upload */}
             <FileDropzone file={form.file} onFileChange={setFile} />
 
-            {/* Due Date */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="dueDate">
-                Due Date
-              </label>
-              <div className="date-input-container">
+            <div className="form-grid-three-col">
+              {/* Subject */}
+              <div className="form-group">
+                <label className="form-label" htmlFor="subject">
+                  Subject
+                </label>
                 <input
-                  id="dueDate"
-                  className={`form-input-date ${form.errors.dueDate ? "error" : ""} ${!form.dueDate ? "empty" : ""}`}
-                  type="date"
-                  value={form.dueDate}
-                  onChange={(e) => setFormField("dueDate", e.target.value)}
-                  min={new Date().toISOString().split("T")[0]}
-                  placeholder="DD-MM-YYYY"
+                  id="subject"
+                  className={`form-input-text ${form.errors.subject ? "error" : ""}`}
+                  type="text"
+                  value={form.subject}
+                  onChange={(e) => setFormField("subject", e.target.value)}
+                  placeholder="e.g. Mathematics"
                 />
-                <span className="date-calendar-icon">
-                  <Image src="/assets/icons/icon-calendar.svg" alt="Calendar" width={20} height={20} />
-                </span>
+                {form.errors.subject && (
+                  <span className="form-error">{form.errors.subject}</span>
+                )}
               </div>
-              {form.errors.dueDate && (
-                <span className="form-error">{form.errors.dueDate}</span>
-              )}
+
+              {/* Grade */}
+              <div className="form-group">
+                <label className="form-label" htmlFor="grade">
+                  Grade
+                </label>
+                <input
+                  id="grade"
+                  className={`form-input-text ${form.errors.grade ? "error" : ""}`}
+                  type="text"
+                  value={form.grade}
+                  onChange={(e) => setFormField("grade", e.target.value)}
+                  placeholder="e.g. 10th"
+                />
+                {form.errors.grade && (
+                  <span className="form-error">{form.errors.grade}</span>
+                )}
+              </div>
+
+              {/* Due Date */}
+              <div className="form-group">
+                <label className="form-label" htmlFor="dueDate">
+                  Due Date
+                </label>
+                <div className="date-input-container">
+                  <input
+                    id="dueDate"
+                    className={`form-input-date ${form.errors.dueDate ? "error" : ""} ${!form.dueDate ? "empty" : ""}`}
+                    type="date"
+                    value={form.dueDate}
+                    onChange={(e) => setFormField("dueDate", e.target.value)}
+                    min={new Date().toISOString().split("T")[0]}
+                    placeholder="DD-MM-YYYY"
+                  />
+                  <span className="date-calendar-icon">
+                    <Image src="/assets/icons/icon-calendar.svg" alt="Calendar" width={20} height={20} />
+                  </span>
+                </div>
+                {form.errors.dueDate && (
+                  <span className="form-error">{form.errors.dueDate}</span>
+                )}
+              </div>
             </div>
 
             {/* Question Types Builder */}

@@ -10,13 +10,11 @@ export interface QuestionTypeConfig {
 }
 
 const AVAILABLE_TYPES = [
-  "Multiple Choice Questions",
-  "Short Questions",
-  "Long Questions",
-  "Diagram/Graph-Based Questions",
-  "Numerical Problems",
-  "True/False",
-  "Fill in the Blanks",
+  { value: "MCQ", label: "Multiple Choice Questions (MCQ)" },
+  { value: "Short Answer", label: "Short Answer" },
+  { value: "Long Answer", label: "Long Answer" },
+  { value: "True/False", label: "True / False" },
+  { value: "Fill in the Blanks", label: "Fill in the Blanks" },
 ];
 
 interface QuestionTypeRowProps {
@@ -43,8 +41,8 @@ export function QuestionTypeRow({
         onChange={(e) => onChange({ ...config, type: e.target.value })}
       >
         {AVAILABLE_TYPES.map((t) => (
-          <option key={t} value={t}>
-            {t}
+          <option key={t.value} value={t.value}>
+            {t.label}
           </option>
         ))}
       </select>

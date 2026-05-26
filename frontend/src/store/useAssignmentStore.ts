@@ -193,10 +193,8 @@ const initialFormState: FormState = {
   grade: "",
   dueDate: "",
   questionTypeRows: [
-    { id: nextRowId(), type: "Multiple Choice Questions", numberOfQuestions: 4, marks: 1 },
-    { id: nextRowId(), type: "Short Questions", numberOfQuestions: 3, marks: 2 },
-    { id: nextRowId(), type: "Diagram/Graph-Based Questions", numberOfQuestions: 5, marks: 5 },
-    { id: nextRowId(), type: "Numerical Problems", numberOfQuestions: 5, marks: 5 },
+    { id: nextRowId(), type: "MCQ", numberOfQuestions: 4, marks: 1 },
+    { id: nextRowId(), type: "Short Answer", numberOfQuestions: 3, marks: 2 },
   ],
   duration: "",
   additionalInstructions: "",
@@ -244,7 +242,7 @@ export const useAssignmentStore = create<AssignmentState>()(
               ...state.form,
               questionTypeRows: [
                 ...state.form.questionTypeRows,
-                { id: nextRowId(), type: "Multiple Choice Questions", numberOfQuestions: 5, marks: 1 },
+                { id: nextRowId(), type: "MCQ", numberOfQuestions: 5, marks: 1 },
               ],
             },
           }),
@@ -293,6 +291,9 @@ export const useAssignmentStore = create<AssignmentState>()(
 
         // Client-side validation
         const errors: Record<string, string> = {};
+        if (!form.title.trim()) errors.title = "Assignment title is required";
+        if (!form.subject.trim()) errors.subject = "Subject is required";
+        if (!form.grade.trim()) errors.grade = "Grade is required";
         if (!form.dueDate) errors.dueDate = "Due date is required";
         
         if (form.questionTypeRows.length === 0) {
@@ -312,9 +313,9 @@ export const useAssignmentStore = create<AssignmentState>()(
 
         try {
           const formData = new FormData();
-          formData.append("title", form.title || "Untitled Assignment");
-          formData.append("subject", form.subject || "General");
-          formData.append("grade", form.grade || "");
+          formData.append("title", form.title.trim());
+          formData.append("subject", form.subject.trim());
+          formData.append("grade", form.grade.trim());
           formData.append("dueDate", form.dueDate);
 
           // Build question types from rows
@@ -343,10 +344,16 @@ export const useAssignmentStore = create<AssignmentState>()(
 
           set({ isSubmitting: false }, false, "submitSuccess");
           return result.data.assignmentId;
-        } catch (error) {
-          console.warn("Backend offline or request failed, falling back to mock assignment ID", error);
-          set({ isSubmitting: false }, false, "submitSuccessMock");
-          return "mock-assignment";
+        } catch (error: any) {
+          console.error("Failed to submit assignment:", error);
+          let errorMessage = "Failed to submit assignment.";
+          if (error.errors && Array.isArray(error.errors)) {
+            errorMessage = error.errors.map((e: any) => `${e.field}: ${e.message}`).join(", ");
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          set({ isSubmitting: false, submitError: errorMessage }, false, "submitError");
+          return null;
         }
       },
 

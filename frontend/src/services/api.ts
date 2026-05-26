@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
 
 interface FetchOptions extends RequestInit {
   timeout?: number;
@@ -25,10 +25,18 @@ async function apiClient<T>(
       },
     });
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      data = {};
+    }
 
     if (!response.ok) {
-      throw new Error(data.message || `Request failed with status ${response.status}`);
+      const error = new Error(data.message || `Request failed with status ${response.status}`);
+      (error as any).status = response.status;
+      (error as any).errors = data.errors;
+      throw error;
     }
 
     return data as T;
