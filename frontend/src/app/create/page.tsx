@@ -1,6 +1,8 @@
 "use client";
+import "@/styles/create.css";
 
 import { useCallback } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { ProgressStep } from "@/components/create/ProgressStep";
@@ -37,17 +39,17 @@ export default function CreateAssignmentPage() {
   return (
     <AppShell
       breadcrumb="Assignment"
-      breadcrumbIcon="/assets/icons/icon-grid.svg"
+      breadcrumbIcon=""
       onBack={() => router.push("/")}
     >
-      <div style={{ maxWidth: 780, margin: "0 auto" }}>
+      <div className="create-page-container">
         {/* Page Header */}
-        <div className="animate-fadeIn" style={{ marginBottom: "var(--space-4)" }}>
-          <h2 style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+        <div className="create-page-header animate-fadeIn">
+          <h2>
             <span className="status-dot active" />
             Create Assignment
           </h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginTop: "var(--space-1)" }}>
+          <p>
             Set up a new assignment for your students
           </p>
         </div>
@@ -57,11 +59,11 @@ export default function CreateAssignmentPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
-          <div className="card animate-fadeIn" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+          <div className="card create-card animate-fadeIn">
             {/* Section Title */}
-            <div>
-              <h4 style={{ marginBottom: "var(--space-1)" }}>Assignment Details</h4>
-              <p style={{ fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
+            <div className="create-card-header">
+              <h4>Assignment Details</h4>
+              <p>
                 Basic information about your assignment
               </p>
             </div>
@@ -74,16 +76,19 @@ export default function CreateAssignmentPage() {
               <label className="form-label" htmlFor="dueDate">
                 Due Date
               </label>
-              <div style={{ position: "relative" }}>
+              <div className="date-input-container">
                 <input
                   id="dueDate"
-                  className={`form-input ${form.errors.dueDate ? "error" : ""}`}
+                  className={`form-input-date ${form.errors.dueDate ? "error" : ""}`}
                   type="date"
                   value={form.dueDate}
                   onChange={(e) => setFormField("dueDate", e.target.value)}
                   min={new Date().toISOString().split("T")[0]}
                   placeholder="DD-MM-YYYY"
                 />
+                <span className="date-calendar-icon">
+                  <Image src="/assets/icons/icon-calendar.svg" alt="Calendar" width={20} height={20} />
+                </span>
               </div>
               {form.errors.dueDate && (
                 <span className="form-error">{form.errors.dueDate}</span>
@@ -91,12 +96,12 @@ export default function CreateAssignmentPage() {
             </div>
 
             {/* Question Types Builder */}
-            <div>
+            <div className="question-types-section">
               <div className="question-type-header">
                 <span>Question Type</span>
+                <span />
                 <span style={{ textAlign: "center" }}>No. of Questions</span>
                 <span style={{ textAlign: "center" }}>Marks</span>
-                <span />
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
@@ -112,11 +117,10 @@ export default function CreateAssignmentPage() {
 
               <button
                 type="button"
-                className="btn btn-ghost btn-sm"
+                className="btn-add-type"
                 onClick={addQuestionTypeRow}
-                style={{ marginTop: "var(--space-3)" }}
               >
-                + Add Question Type
+                <span>+</span> Add Question Type
               </button>
 
               {form.errors.questionTypes && (
@@ -159,10 +163,9 @@ export default function CreateAssignmentPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="btn btn-primary btn-lg"
+              className="btn btn-generate"
               disabled={isSubmitting}
               id="submit-assignment"
-              style={{ width: "100%" }}
             >
               {isSubmitting ? (
                 <>
@@ -171,7 +174,7 @@ export default function CreateAssignmentPage() {
                 </>
               ) : (
                 <>
-                  <span>✨</span>
+                  <Image src="/assets/icons/icon-sparkles.svg" alt="Sparkles" width={20} height={20} />
                   Generate Question Paper
                 </>
               )}

@@ -1,0 +1,334 @@
+/* ══════════════════════════════════════════
+   DASHBOARD – EMPTY STATE
+   ══════════════════════════════════════════ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-16) var(--space-6);
+  min-height: 60vh;
+  flex: 1;
+}
+
+.empty-state-illustration {
+  width: 300px;
+  height: 300px;
+  margin-bottom: var(--space-8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state-title {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: -0.04em;
+  color: #303030;
+  margin-bottom: 12px;
+}
+
+.empty-state-description {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: -0.04em;
+  color: #5E5E5E;
+  opacity: 0.8;
+  width: 486px;
+  max-width: 100%;
+  height: 66px;
+  margin: 0 auto 24px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.empty-state-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 277px;
+  height: 46px;
+  padding: 12px 24px;
+  border-radius: 48px;
+  color: #FFFFFF;
+  font-family: var(--font-bricolage), sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  background: linear-gradient(#181818, #181818) padding-box,
+              linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(102, 102, 102, 0.1) 100%) border-box;
+  border: 1.5px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.empty-state-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════
+   DASHBOARD – ASSIGNMENT CARDS GRID
+   ══════════════════════════════════════════ */
+
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.dashboard-title-group {
+  flex: 1;
+}
+
+.dashboard-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.dashboard-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* Filter & Search */
+.dashboard-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+  color: var(--text-primary);
+}
+
+.search-input-wrap {
+  position: relative;
+  width: 260px;
+}
+
+.search-input-wrap .search-icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-8);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-input:focus {
+  border-color: var(--gray-900);
+  box-shadow: 0 0 0 3px rgba(26, 29, 31, 0.06);
+}
+
+/* Cards Grid */
+.assignments-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+/* Individual Assignment Card */
+.assignment-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  box-shadow: var(--shadow-xs);
+}
+
+.assignment-card:hover {
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-sm);
+}
+
+.assignment-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.assignment-card-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.assignment-card-menu-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.assignment-card-menu-btn:hover {
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+
+/* Popover dropdown */
+.assignment-card-dropdown {
+  position: absolute;
+  top: 48px;
+  right: var(--space-4);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+  min-width: 160px;
+  padding: var(--space-2);
+  animation: fadeIn 0.15s ease-out;
+}
+
+.assignment-card-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.assignment-card-dropdown-item:hover {
+  background: var(--gray-100);
+}
+
+.assignment-card-dropdown-item.danger {
+  color: var(--error);
+}
+
+.assignment-card-dropdown-item.danger:hover {
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.assignment-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.assignment-card-date strong {
+  color: var(--text-secondary);
+}
+
+/* Floating Create button */
+.floating-create-btn {
+  position: fixed;
+  bottom: var(--space-8);
+  left: 50%;
+  transform: translateX(calc(-50% + var(--sidebar-width) / 2));
+  z-index: 40;
+}
+
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .assignments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .floating-create-btn {
+    transform: translateX(-50%);
+    display: none; /* Hide on mobile in favor of FAB */
+  }
+
+  .empty-state {
+    min-height: auto;
+    padding: var(--space-6) var(--space-4);
+    width: 100%; /* Ensure full width on mobile */
+  }
+
+  .empty-state-illustration {
+    width: 200px; /* Scaled down */
+    height: 200px;
+    margin-bottom: var(--space-4);
+  }
+
+  .empty-state-title {
+    font-size: 1.25rem;
+  }
+
+  .empty-state-description {
+    font-size: 0.95rem;
+    padding: 0 var(--space-2);
+    width: 100%; /* Adjust width */
+  }
+
+  .empty-state-button {
+    display: none !important; /* Hide button on mobile, use FAB */
+  }
+}

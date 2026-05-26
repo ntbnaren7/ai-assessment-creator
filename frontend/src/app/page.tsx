@@ -1,4 +1,5 @@
 "use client";
+import "@/styles/dashboard.css";
 
 import { useEffect } from "react";
 import { AppShell } from "@/components/layout/AppShell";

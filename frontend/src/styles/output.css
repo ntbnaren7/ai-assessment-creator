@@ -1,0 +1,185 @@
+/* ══════════════════════════════════════════
+   OUTPUT PAGE
+   ══════════════════════════════════════════ */
+
+/* Dark banner callout */
+.banner-callout {
+  background: var(--bg-banner-dark);
+  color: var(--text-inverse);
+  padding: var(--space-6) var(--space-8);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-6);
+}
+
+.banner-callout-text {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
+  margin-bottom: var(--space-4);
+}
+
+.banner-callout .btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.banner-callout .btn-download:hover {
+  background: var(--gray-100);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Question Paper – A4 style sheet */
+.paper-sheet {
+  background: #FFFFFF;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sheet);
+  padding: var(--space-10) var(--space-8);
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.paper-school-name {
+  text-align: center;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.paper-sub-header {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.paper-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+  font-size: 0.9375rem;
+}
+
+.paper-instructions {
+  text-align: center;
+  font-weight: 600;
+  margin: var(--space-6) 0;
+  font-size: 0.9375rem;
+}
+
+.paper-student-info {
+  margin: var(--space-4) 0 var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.paper-student-field {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: 0.9375rem;
+}
+
+.paper-student-field strong {
+  white-space: nowrap;
+}
+
+.paper-student-line {
+  flex: 1;
+  border-bottom: 1px solid var(--text-muted);
+  min-width: 120px;
+}
+
+.paper-section-title {
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: var(--space-8) 0 var(--space-2);
+}
+
+.paper-section-type {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+}
+
+.paper-section-instruction {
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.paper-question-list {
+  list-style: none;
+  counter-reset: question;
+  padding: 0;
+}
+
+.paper-question-item {
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-6);
+  position: relative;
+  line-height: 1.7;
+}
+
+.paper-question-item::before {
+  counter-increment: question;
+  content: counter(question) '. ';
+  position: absolute;
+  left: 0;
+  font-weight: 600;
+}
+
+.paper-question-difficulty {
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.paper-question-marks {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.paper-question-options {
+  margin-top: var(--space-2);
+  padding-left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* Divider */
+.paper-divider {
+  border: none;
+  border-top: 1px solid var(--border-default);
+  margin: var(--space-4) 0;
+}
+
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .paper-sheet {
+    padding: var(--space-6) var(--space-4);
+  }
+}

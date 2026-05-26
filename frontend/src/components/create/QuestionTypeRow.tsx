@@ -36,28 +36,28 @@ export function QuestionTypeRow({
 }: QuestionTypeRowProps) {
   return (
     <div className="question-type-row">
-      {/* Type Select + Remove */}
-      <div className="question-type-select-wrap">
-        <select
-          className="form-select"
-          value={config.type}
-          onChange={(e) => onChange({ ...config, type: e.target.value })}
-        >
-          {AVAILABLE_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-        <button
-          className="question-type-remove"
-          type="button"
-          onClick={onRemove}
-          aria-label="Remove question type"
-        >
-          ✕
-        </button>
-      </div>
+      {/* Type Select */}
+      <select
+        className="form-select"
+        value={config.type}
+        onChange={(e) => onChange({ ...config, type: e.target.value })}
+      >
+        {AVAILABLE_TYPES.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
+      
+      {/* Remove Button */}
+      <button
+        className="question-type-remove"
+        type="button"
+        onClick={onRemove}
+        aria-label="Remove question type"
+      >
+        ✕
+      </button>
 
       {/* No. of Questions Counter */}
       <Counter

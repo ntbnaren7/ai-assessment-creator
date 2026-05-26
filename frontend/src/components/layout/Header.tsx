@@ -62,22 +62,24 @@ export function Header({
           )}
         </button>
         <div className="header-breadcrumb">
-          <span className="header-breadcrumb-icon">
-            {!isImagePath ? (
-              breadcrumbIcon
-            ) : failedImages[breadcrumbIcon] ? (
-              "📋"
-            ) : (
-              <Image
-                src={breadcrumbIcon}
-                alt="Breadcrumb Icon"
-                width={20}
-                height={20}
-                onError={() => handleImageError(breadcrumbIcon)}
-                style={{ objectFit: "contain" }}
-              />
-            )}
-          </span>
+          {breadcrumbIcon && (
+            <span className="header-breadcrumb-icon">
+              {!isImagePath ? (
+                breadcrumbIcon
+              ) : failedImages[breadcrumbIcon] ? (
+                "📋"
+              ) : (
+                <Image
+                  src={breadcrumbIcon}
+                  alt="Breadcrumb Icon"
+                  width={20}
+                  height={20}
+                  onError={() => handleImageError(breadcrumbIcon)}
+                  style={{ objectFit: "contain" }}
+                />
+              )}
+            </span>
+          )}
           {breadcrumb}
         </div>
       </div>

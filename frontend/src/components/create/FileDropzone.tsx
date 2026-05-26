@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 
 interface FileDropzoneProps {
   file: File | null;
@@ -77,7 +78,9 @@ export function FileDropzone({ file, onFileChange }: FileDropzoneProps) {
           onChange={handleFileSelect}
           style={{ display: "none" }}
         />
-        <div className="file-upload-icon">☁</div>
+        <div className="file-upload-icon">
+          <Image src="/assets/icons/icon-upload-cloud.svg" alt="Upload Cloud" width={32} height={32} style={{ objectFit: "contain" }} />
+        </div>
         <div className="file-upload-text">
           Choose a file or drag &amp; drop it here
         </div>
