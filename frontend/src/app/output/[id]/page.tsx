@@ -77,7 +77,7 @@ export default function OutputPage() {
   // ── Loading ──
   if (isLoading) {
     return (
-      <AppShell breadcrumb="Assignment" breadcrumbIcon="📋">
+      <AppShell breadcrumb="Assignment" breadcrumbIcon="/assets/icons/icon-grid.svg">
         <div className="loading-overlay">
           <div className="spinner spinner-lg" />
           <p className="loading-text">Loading assignment...</p>
@@ -89,7 +89,7 @@ export default function OutputPage() {
   // ── Processing / Pending ──
   if (currentStatus === "pending" || currentStatus === "processing") {
     return (
-      <AppShell breadcrumb="Assignment" breadcrumbIcon="📋">
+      <AppShell breadcrumb="Assignment" breadcrumbIcon="/assets/icons/icon-grid.svg">
         <LoadingState
           status={currentStatus}
           message={statusMessage || undefined}
@@ -101,7 +101,7 @@ export default function OutputPage() {
   // ── Failed ──
   if (currentStatus === "failed") {
     return (
-      <AppShell breadcrumb="Assignment" breadcrumbIcon="📋">
+      <AppShell breadcrumb="Assignment" breadcrumbIcon="/assets/icons/icon-grid.svg">
         <FailedState
           message={
             statusMessage || currentAssignment?.errorMessage || undefined
@@ -118,7 +118,7 @@ export default function OutputPage() {
   const paper = currentAssignment?.generatedPaper;
   if (!paper) {
     return (
-      <AppShell breadcrumb="Assignment" breadcrumbIcon="📋">
+      <AppShell breadcrumb="Assignment" breadcrumbIcon="/assets/icons/icon-grid.svg">
         <div className="loading-overlay">
           <p className="loading-text">No generated paper data available.</p>
           <button
@@ -143,7 +143,7 @@ export default function OutputPage() {
   return (
     <AppShell
       breadcrumb="Create New"
-      breadcrumbIcon="✦"
+      breadcrumbIcon="/assets/icons/icon-sparkles.svg"
       onBack={() => router.push("/")}
     >
       <div style={{ maxWidth: 900, margin: "0 auto" }}>

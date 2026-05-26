@@ -37,7 +37,7 @@ export default function CreateAssignmentPage() {
   return (
     <AppShell
       breadcrumb="Assignment"
-      breadcrumbIcon="📋"
+      breadcrumbIcon="/assets/icons/icon-grid.svg"
       onBack={() => router.push("/")}
     >
       <div style={{ maxWidth: 780, margin: "0 auto" }}>

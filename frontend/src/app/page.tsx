@@ -18,7 +18,7 @@ export default function DashboardPage() {
   }, [fetchAssignments]);
 
   return (
-    <AppShell breadcrumb="Assignment" breadcrumbIcon="📋">
+    <AppShell breadcrumb="Assignment" breadcrumbIcon="/assets/icons/icon-grid.svg">
       {isLoadingList ? (
         <div className="loading-overlay">
           <div className="spinner spinner-lg" />

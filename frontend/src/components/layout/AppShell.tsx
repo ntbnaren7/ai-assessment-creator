@@ -1,7 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { MobileHeader } from "./MobileHeader";
+import { MobileDrawer } from "./MobileDrawer";
+import { MobileNavBar } from "./MobileNavBar";
+import { MobileFAB } from "./MobileFAB";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -20,8 +25,11 @@ export function AppShell({
   breadcrumbIcon = "📋",
   onBack,
 }: AppShellProps) {
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
   return (
     <div className="app-shell">
+      {/* Desktop Components */}
       <Sidebar />
       <div className="main-content">
         <Header
@@ -29,7 +37,18 @@ export function AppShell({
           breadcrumbIcon={breadcrumbIcon}
           onBack={onBack}
         />
+        
+        {/* Mobile Components */}
+        <MobileHeader onMenuClick={() => setIsMobileDrawerOpen(true)} />
+        <MobileDrawer 
+          isOpen={isMobileDrawerOpen} 
+          onClose={() => setIsMobileDrawerOpen(false)} 
+        />
+        
         <div className="page-content">{children}</div>
+        
+        <MobileFAB />
+        <MobileNavBar />
       </div>
     </div>
   );
