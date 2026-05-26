@@ -258,7 +258,13 @@ export const useAssignmentStore = create<AssignmentState>()(
             form: {
               ...state.form,
               questionTypeRows: state.form.questionTypeRows.map((r) =>
-                r.id === id ? updated : r
+                r.id === id
+                  ? {
+                      ...updated,
+                      numberOfQuestions: Math.max(1, updated.numberOfQuestions),
+                      marks: Math.max(1, updated.marks),
+                    }
+                  : r
               ),
             },
           }),
@@ -288,8 +294,14 @@ export const useAssignmentStore = create<AssignmentState>()(
         // Client-side validation
         const errors: Record<string, string> = {};
         if (!form.dueDate) errors.dueDate = "Due date is required";
-        if (form.questionTypeRows.length === 0)
+        
+        if (form.questionTypeRows.length === 0) {
           errors.questionTypes = "Add at least one question type";
+        } else if (
+          form.questionTypeRows.some((r) => r.numberOfQuestions < 1 || r.marks < 1)
+        ) {
+          errors.questionTypes = "Number of questions and marks must be at least 1.";
+        }
 
         if (Object.keys(errors).length > 0) {
           set({ form: { ...form, errors } }, false, "validationFailed");
