@@ -158,17 +158,24 @@ export function SchoolAssessmentForm({ onCancel }: SchoolAssessmentFormProps) {
           </div>
 
           <div className="question-types-footer-row">
-            <button
-              type="button"
-              className="btn-add-type"
-              onClick={addQuestionTypeRow}
-            >
-              <Image src="/assets/icons/icon-add-circle.svg" alt="" width={24} height={24} />
-              Add Question Type
-            </button>
-            <div className="totals-summary">
-              <div>Total Questions : {form.questionTypeRows.reduce((sum, row) => sum + row.numberOfQuestions, 0)}</div>
-              <div>Total Marks : {form.questionTypeRows.reduce((sum, row) => sum + (row.numberOfQuestions * row.marks), 0)}</div>
+            <div className="footer-row-inner">
+              <button
+                type="button"
+                className="btn-add-type"
+                onClick={addQuestionTypeRow}
+              >
+                <span className="btn-add-type-circle hide-on-mobile">
+                  <Image src="/assets/icons/icon-add-circle.svg" alt="" width={24} height={24} />
+                </span>
+                <span className="btn-add-type-circle show-on-mobile-flex">
+                  <Image src="/assets/icons/icon-plus.svg" alt="" width={14} height={14} />
+                </span>
+                Add Question Type
+              </button>
+              <div className="totals-summary">
+                <div>Total Questions : {form.questionTypeRows.reduce((sum, row) => sum + row.numberOfQuestions, 0)}</div>
+                <div>Total Marks : {form.questionTypeRows.reduce((sum, row) => sum + (row.numberOfQuestions * row.marks), 0)}</div>
+              </div>
             </div>
           </div>
 

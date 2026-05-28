@@ -582,6 +582,11 @@
   background: var(--success);
 }
 
+/* Circle wrapper for the Add Question Type button — hidden by default, shown via show-on-mobile-flex */
+.btn-add-type-circle {
+  display: none;
+}
+
 /* ══════════════════════════════════════════
    MOBILE RESPONSIVE
    ══════════════════════════════════════════ */
@@ -660,7 +665,35 @@
     display: none !important;
   }
 
-  /* 4. Styled Upload Zone cloud outline square card */
+  /* 4. Prevent horizontal overflow on the entire mobile shell */
+  .create-page-shell {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* 4a. Card Layout — tighter padding and breathing room on mobile */
+  .create-card {
+    padding: 24px 16px;
+    gap: 20px;
+    border-radius: 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* 4b. Bottom padding so fixed pill never covers form fields */
+  .create-page-container {
+    padding-bottom: 50px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  /* 5. File Dropzone Zone */
+  .file-upload-zone {
+    padding: 24px 16px;
+    gap: 8px;
+  }
+
   .file-upload-icon {
     background: #FFFFFF;
     border-radius: 12px;
@@ -671,27 +704,50 @@
     justify-content: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     border: 1px solid #EAEAEA;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     align-self: center;
+    flex-shrink: 0;
+  }
+
+  .file-upload-text {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .file-upload-hint {
+    font-size: 12px;
   }
 
   .file-upload-browse-btn {
     background: #FFFFFF !important;
     border: 1px solid #DADADA !important;
     color: #303030 !important;
+    font-weight: 600 !important;
+    margin-top: 4px;
   }
 
   .file-upload-browse-btn:active {
     background: #F5F5F5 !important;
   }
 
-  /* 5. Question Type Card Builder (Mobile-specific card styling) */
+  .file-upload-subtext {
+    font-size: 13px;
+    margin-top: 10px;
+    color: #888888;
+  }
+
+  /* 6. Hide desktop Question Type table header on mobile */
+  .question-type-header {
+    display: none !important;
+  }
+
+  /* 7. Question Type Card Builder (Mobile-specific card styling) */
   .question-type-mobile-card {
     background: #FFFFFF;
     border-radius: 20px;
     padding: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -705,21 +761,34 @@
     width: 100%;
   }
 
-  .form-select-mobile {
-    flex: 1;
+  .form-select-mobile-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
     height: 36px;
-    border: none;
-    background: transparent;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 600;
     color: #1A1D1F;
-    padding-right: 24px;
-    appearance: none;
+    font-family: var(--font-bricolage), sans-serif;
+    padding-right: 20px;
     background-image: url('/assets/icons/icon-chevron-down.svg');
     background-repeat: no-repeat;
-    background-position: right 4px center;
+    background-position: right 2px center;
     background-size: 12px 12px;
-    font-family: var(--font-bricolage), sans-serif;
+    cursor: pointer;
+  }
+
+  .form-select-mobile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    appearance: none;
+    border: none;
+    background: transparent;
   }
 
   .form-select-mobile:focus {
@@ -729,23 +798,25 @@
   .question-type-remove-mobile {
     background: none;
     border: none;
-    color: #303030;
-    font-size: 16px;
+    color: #707070;
+    font-size: 18px;
     cursor: pointer;
-    padding: 4px;
+    padding: 4px 8px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   }
 
   .card-counters-box {
     background: #F5F5F5;
     border-radius: 16px;
-    padding: 12px 16px;
+    padding: 12px 12px;
     display: flex;
-    justify-content: space-between;
-    gap: 16px;
+    justify-content: space-around;
+    gap: 12px;
     width: 100%;
+    box-sizing: border-box;
   }
 
   .counter-column {
@@ -754,6 +825,7 @@
     align-items: center;
     gap: 6px;
     flex: 1;
+    min-width: 0;
   }
 
   .counter-label {
@@ -762,46 +834,82 @@
     color: #707070;
     font-family: var(--font-bricolage), sans-serif;
     text-align: center;
+    white-space: nowrap;
   }
 
-  /* Stepper width adaptation */
+  /* Stepper — fixed width so +/- buttons never collapse */
   .card-counters-box .counter {
     width: 100%;
     max-width: 120px;
-    height: 38px;
-    padding: 6px 8px;
-  }
-
-  .card-counters-box .counter-btn {
-    width: 24px;
-    height: 24px;
-  }
-
-  /* Add Question Type button solid circle style */
-  .create-page-shell .btn-add-type {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: none;
-    border: none;
-    color: #303030;
-    font-family: var(--font-bricolage), sans-serif;
-    font-weight: 600;
-    font-size: 15px;
-    padding: 8px 0;
-  }
-
-  .create-page-shell .btn-add-type img {
-    background: #303030;
-    border-radius: 50%;
-    padding: 6px;
-    width: 28px !important;
-    height: 28px !important;
-    filter: invert(1);
+    height: 40px;
+    padding: 6px 4px;
     box-sizing: border-box;
   }
 
-  /* 6. Centered Floating Actions Pill above Bottom Bar */
+  .card-counters-box .counter-btn {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    font-size: 1.1rem;
+  }
+
+  .card-counters-box .counter-value {
+    font-weight: 700;
+    color: #181818;
+    font-size: 0.9375rem;
+  }
+
+  /* 8. Question Types Footer — stacked layout matching reference */
+  .question-types-footer-row {
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 0;
+  }
+
+  .footer-row-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .totals-summary {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    gap: 4px;
+    align-self: flex-end;
+  }
+
+  /* 9. Add Question Type button — mobile style */
+  .create-page-shell .btn-add-type {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    color: #181818;
+    font-family: var(--font-bricolage), sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  /* Black circle wrapping the white plus icon on mobile */
+  .btn-add-type-circle.show-on-mobile-flex {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    background: #181818;
+    border-radius: 50%;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+  /* 10. Centered Floating Actions Pill above Bottom Bar */
   .create-page-footer-actions {
     position: fixed;
     bottom: calc(96px + env(safe-area-inset-bottom));

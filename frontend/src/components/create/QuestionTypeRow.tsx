@@ -10,7 +10,7 @@ export interface QuestionTypeConfig {
 }
 
 const AVAILABLE_TYPES = [
-  { value: "MCQ", label: "Multiple Choice Questions (MCQ)" },
+  { value: "MCQ", label: "Multiple Choice Questions" },
   { value: "Short Answer", label: "Short Answer" },
   { value: "Long Answer", label: "Long Answer" },
   { value: "True/False", label: "True / False" },
@@ -37,17 +37,22 @@ export function QuestionTypeRow({
       {/* 1. Mobile Premium Card Layout (visible only on mobile) */}
       <div className="question-type-mobile-card show-on-mobile-flex">
         <div className="card-top-row">
-          <select
-            className="form-select-mobile"
-            value={config.type}
-            onChange={(e) => onChange({ ...config, type: e.target.value })}
-          >
-            {AVAILABLE_TYPES.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
-            ))}
-          </select>
+          <div className="form-select-mobile-wrapper">
+            <span className="selected-value-text">
+              {AVAILABLE_TYPES.find((t) => t.value === config.type)?.label || config.type}
+            </span>
+            <select
+              className="form-select-mobile"
+              value={config.type}
+              onChange={(e) => onChange({ ...config, type: e.target.value })}
+            >
+              {AVAILABLE_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             className="question-type-remove-mobile"
             type="button"
