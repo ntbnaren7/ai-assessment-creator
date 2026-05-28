@@ -12,9 +12,6 @@ interface AssignmentListProps {
   onRefresh: () => void;
 }
 
-/**
- * Full assignment list view with header, filter/search toolbar, 2-column grid, and floating create button.
- */
 export function AssignmentList({
   assignments,
   onRefresh,
@@ -22,9 +19,16 @@ export function AssignmentList({
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filtered = assignments.filter((a) =>
-    a.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filtered = assignments.filter((a) => {
+    // Hide legacy competitive exams (database wipe script is sandboxed)
+    if (a.grade && a.grade.toLowerCase().includes("competitive")) return false;
+    
+    const search = searchQuery.toLowerCase();
+    const titleMatch = a.title && a.title.toLowerCase().includes(search);
+    const subjectMatch = a.subject && a.subject.toLowerCase().includes(search);
+    
+    return titleMatch || subjectMatch;
+  });
 
   const handleView = (id: string) => {
     router.push(`/output/${id}`);
@@ -41,30 +45,49 @@ export function AssignmentList({
   };
 
   return (
-    <div className="animate-fadeIn">
+    <div className="animate-fadeIn dashboard-content">
       {/* Dashboard Header */}
-      <div className="dashboard-header">
+      <div className="dashboard-header-modern">
         <div className="dashboard-title-group">
-          <h2 className="dashboard-title">
-            <span className="status-dot active" />
-            Assignments
-          </h2>
-          <p className="dashboard-subtitle">
-            Manage and create assignments for your classes.
-          </p>
+          <div className="dashboard-title-wrapper">
+            <div className="status-green-dot">
+              <div className="status-green-dot-inner" />
+            </div>
+            <div className="dashboard-title-text-group">
+              <h2 className="dashboard-title-modern">
+                Assignments
+              </h2>
+              <p className="dashboard-subtitle-modern">
+                Manage and create assignments for your classes.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Toolbar: Filter + Search */}
-      <div className="dashboard-toolbar">
-        <button className="filter-btn" type="button">
-          <span>🔽</span>
-          Filter By
-        </button>
-        <div className="search-input-wrap">
-          <span className="search-icon">🔍</span>
+      {/* Modern Filter & Search Bar */}
+      <div className="modern-toolbar">
+        <div className="modern-toolbar-left">
+          <button className="modern-filter-btn" type="button">
+            <img 
+              src="/assets/icons/icon-filter.svg" 
+              alt="Filter" 
+              className="svg-icon" 
+              onError={(e) => { e.currentTarget.src = 'data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>'; }} 
+            />
+            <span className="hide-on-mobile">Filter By</span>
+            <span className="show-on-mobile">Filter</span>
+          </button>
+        </div>
+        <div className="modern-search-wrap">
+          <img 
+            src="/assets/icons/icon-search.svg" 
+            alt="Search" 
+            className="search-icon svg-icon" 
+            onError={(e) => { e.currentTarget.src = 'data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>'; }} 
+          />
           <input
-            className="search-input"
+            className="modern-search-input"
             type="text"
             placeholder="Search Assignment"
             value={searchQuery}
@@ -74,7 +97,7 @@ export function AssignmentList({
       </div>
 
       {/* Cards Grid */}
-      <div className="assignments-grid">
+      <div className="modern-assignments-grid">
         {filtered.map((assignment) => (
           <AssignmentCard
             key={assignment._id}
@@ -86,23 +109,15 @@ export function AssignmentList({
       </div>
 
       {filtered.length === 0 && searchQuery && (
-        <p
-          style={{
-            textAlign: "center",
-            padding: "var(--space-10)",
-            color: "var(--text-muted)",
-          }}
-        >
-          No assignments match &ldquo;{searchQuery}&rdquo;
-        </p>
+        <div className="modern-empty-search">
+          <p>No assignments match &ldquo;{searchQuery}&rdquo;</p>
+        </div>
       )}
 
-      {/* Floating Create Button */}
-      <div className="floating-create-btn">
-        <Link href="/?create=true">
-          <button className="btn btn-primary btn-lg" type="button">
-            + Create Assignment
-          </button>
+      {/* Floating Create Button & Fade */}
+      <div className="modern-floating-action">
+        <Link href="/?create=true" className="modern-create-btn">
+          <img src="/assets/icons/icon-plus.svg" alt="Create" className="create-plus-icon" /> Create Assignment
         </Link>
       </div>
     </div>

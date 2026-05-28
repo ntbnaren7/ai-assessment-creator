@@ -27,8 +27,7 @@ export function SchoolAssessmentForm({ onCancel }: SchoolAssessmentFormProps) {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      // Make sure we clear any leftover college/competitive fields
-      setFormField("examType", "");
+      // Make sure we clear any leftover college fields
       setFormField("year", "");
       setFormField("semester", "");
       setFormField("department", "");
@@ -45,8 +44,14 @@ export function SchoolAssessmentForm({ onCancel }: SchoolAssessmentFormProps) {
     <form onSubmit={handleSubmit}>
       <div className="card create-card animate-fadeIn">
         <div className="create-card-header">
-          <h4>School Assignment Details</h4>
-          <p>Basic information about your school assignment</p>
+          <h4>
+            <span className="hide-on-mobile">School Assignment Details</span>
+            <span className="show-on-mobile">Assignment Details</span>
+          </h4>
+          <p>
+            <span className="hide-on-mobile">Basic information about your school assignment</span>
+            <span className="show-on-mobile">Basic information about your assignment</span>
+          </p>
         </div>
 
         {/* Title */}
@@ -216,7 +221,8 @@ export function SchoolAssessmentForm({ onCancel }: SchoolAssessmentFormProps) {
           onClick={onCancel}
         >
           <Image src="/assets/icons/icon-arrow-prev.svg" alt="" width={16} height={16} />
-          Change Type
+          <span className="hide-on-mobile">Change Type</span>
+          <span className="show-on-mobile">Previous</span>
         </button>
 
         <button

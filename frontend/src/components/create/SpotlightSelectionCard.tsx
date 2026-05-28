@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-export type AssessmentType = "school" | "college" | "competitive";
+export type AssessmentType = "school" | "college";
 
 interface SpotlightSelectionCardProps {
   onSelect: (type: AssessmentType) => void;
@@ -49,15 +49,6 @@ export function SpotlightSelectionCard({ onSelect, onCancel }: SpotlightSelectio
             </div>
           </div>
 
-          <div
-            className="option-card"
-            onClick={() => onSelect("competitive")}
-          >
-            <div className="option-content">
-              <h3>Competitive Exams</h3>
-              <p>NEET, JEE Mains and Advanced</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

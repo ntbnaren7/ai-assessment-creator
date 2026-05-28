@@ -164,7 +164,14 @@ export class LLMOrchestrator {
       }
       // Then by tier (lower = better)
       if (a.tier !== b.tier) return a.tier - b.tier;
-      // Within same tier, prefer healthier models
+
+      // Then by Provider Class (stable > opportunistic > experimental)
+      const classWeight = { "stable": 1, "opportunistic": 2, "experimental": 3 };
+      const aWeight = classWeight[a.providerClass] || 4;
+      const bWeight = classWeight[b.providerClass] || 4;
+      if (aWeight !== bWeight) return aWeight - bWeight;
+
+      // Within same tier and class, prefer healthier models
       const aMetrics = this.healthTracker.getMetrics(a.id);
       const bMetrics = this.healthTracker.getMetrics(b.id);
       return aMetrics.failureRate - bMetrics.failureRate;

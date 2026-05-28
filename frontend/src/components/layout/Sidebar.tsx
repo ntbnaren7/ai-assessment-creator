@@ -97,7 +97,7 @@ export function Sidebar() {
                 style={{ objectFit: "contain" }}
               />
             )}
-            + Create Assignment
+            Create Assignment
           </button>
         </Link>
 

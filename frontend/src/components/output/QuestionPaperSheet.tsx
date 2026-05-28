@@ -27,7 +27,6 @@ const isGradeAfterFifth = (gradeStr?: string): boolean => {
     lower.includes("year") || 
     lower.includes("semester") || 
     lower.includes("college") || 
-    lower.includes("competitive") ||
     lower.includes("n/a")
   ) {
     return true;
@@ -134,8 +133,6 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
     grade.toLowerCase().includes("college")
   );
 
-  const isCompetitive = grade && grade.toLowerCase().includes("competitive");
-
   let displayTitle = title || paper.title;
   let department = "";
   if (isCollege && displayTitle && displayTitle.includes(" - ")) {
@@ -181,7 +178,7 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
             <p>Part B carries 80 marks.</p>
           )}
         </div>
-      ) : isCompetitive ? null : paper.generalInstructions && paper.generalInstructions.length > 0 ? (
+      ) : paper.generalInstructions && paper.generalInstructions.length > 0 ? (
         <div className="paper-instructions">
           {paper.generalInstructions.map((inst, idx) => (
             <p key={idx}>{inst}</p>
@@ -203,12 +200,10 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
           {isCollege ? "Register Number:" : "Roll Number:"}
           <div className="paper-student-line" />
         </div>
-        {!isCompetitive && (
-          <div className="paper-student-field">
-            {isCollege ? "Section:" : `Class: ${grade || ""} Section:`}
-            <div className="paper-student-line" />
-          </div>
-        )}
+        <div className="paper-student-field">
+          {isCollege ? "Section:" : `Class: ${grade || ""} Section:`}
+          <div className="paper-student-line" />
+        </div>
       </div>
 
       {/* Sections */}

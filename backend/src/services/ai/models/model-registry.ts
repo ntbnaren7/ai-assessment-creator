@@ -22,9 +22,19 @@ export interface ModelCapabilityScore {
   mathematicalReasoning: number;
 }
 
+/**
+ * Provider Operational Classification
+ */
+export enum ProviderClass {
+  STABLE = "stable",
+  OPPORTUNISTIC = "opportunistic",
+  EXPERIMENTAL = "experimental",
+}
+
 export interface ModelEntry {
   id: string;
   provider: "groq" | "openrouter" | "cohere";
+  providerClass: ProviderClass;
   tier: ModelTier;
   maxOutputTokens: number;
   capabilities: ModelCapabilityScore;
@@ -35,99 +45,76 @@ export interface ModelEntry {
 /**
  * The model registry. All models are free-tier.
  * Order within tiers matters — preferred models listed first.
+ * 
+ * TIER 1: Reliable Heavy Lifting (Cohere primarily)
+ * TIER 2: Opportunistic Scaling (OpenRouter primarily)
+ * TIER 3: Fast Lightweight Tasks (Groq primarily)
  */
 const MODEL_REGISTRY: ModelEntry[] = [
-  // ── Groq Tier 1 ──
+  // ── Tier 1: Reliable / Heavy Lifting ──
   {
-    id: "deepseek-r1-distill-llama-70b",
-    provider: "groq",
+    id: "command-r-08-2024",
+    provider: "cohere",
+    providerClass: ProviderClass.STABLE,
     tier: ModelTier.TIER_1,
-    maxOutputTokens: 16384,
-    capabilities: { reasoning: 9, structuredJson: 6, mathematicalReasoning: 9 },
+    maxOutputTokens: 4096,
+    capabilities: { reasoning: 8, structuredJson: 9, mathematicalReasoning: 7 },
     isFree: true,
     disabled: false,
   },
   {
-    id: "llama-3.3-70b-versatile",
-    provider: "groq",
-    tier: ModelTier.TIER_1,
-    maxOutputTokens: 16384,
-    capabilities: { reasoning: 7, structuredJson: 8, mathematicalReasoning: 7 },
-    isFree: true,
-    disabled: false,
-  },
-
-  // ── Groq Tier 2 ──
-  {
-    id: "qwen3-32b",
-    provider: "groq",
-    tier: ModelTier.TIER_2,
-    maxOutputTokens: 16384,
-    capabilities: { reasoning: 7, structuredJson: 9, mathematicalReasoning: 7 },
-    isFree: true,
-    disabled: false,
-  },
-  {
-    id: "llama-4-scout-17b-16e-instruct",
-    provider: "groq",
-    tier: ModelTier.TIER_2,
-    maxOutputTokens: 16384,
-    capabilities: { reasoning: 5, structuredJson: 7, mathematicalReasoning: 5 },
-    isFree: true,
-    disabled: false,
-  },
-
-  // ── OpenRouter Tier 1 ──
-  {
-    id: "deepseek/deepseek-v4-flash:free",
+    id: "google/gemini-2.0-flash-lite-preview-02-05:free",
     provider: "openrouter",
+    providerClass: ProviderClass.OPPORTUNISTIC,
     tier: ModelTier.TIER_1,
-    maxOutputTokens: 384000,
+    maxOutputTokens: 8192,
     capabilities: { reasoning: 8, structuredJson: 8, mathematicalReasoning: 8 },
     isFree: true,
     disabled: false,
   },
   {
-    id: "nvidia/nemotron-3-super:free",
+    id: "meta-llama/llama-3.3-70b-instruct:free",
     provider: "openrouter",
+    providerClass: ProviderClass.OPPORTUNISTIC,
     tier: ModelTier.TIER_1,
-    maxOutputTokens: 32768,
-    capabilities: { reasoning: 7, structuredJson: 7, mathematicalReasoning: 7 },
+    maxOutputTokens: 8192,
+    capabilities: { reasoning: 7, structuredJson: 8, mathematicalReasoning: 7 },
     isFree: true,
     disabled: false,
   },
 
-  // ── OpenRouter Tier 2 ──
-  {
-    id: "google/gemma-4-31b:free",
-    provider: "openrouter",
-    tier: ModelTier.TIER_2,
-    maxOutputTokens: 16384,
-    capabilities: { reasoning: 6, structuredJson: 8, mathematicalReasoning: 6 },
-    isFree: true,
-    disabled: false,
-  },
-
-  // ── OpenRouter Tier 3 ──
+  // ── Tier 2: Opportunistic Free Scaling ──
   {
     id: "meta-llama/llama-3.1-8b-instruct:free",
     provider: "openrouter",
-    tier: ModelTier.TIER_3,
+    providerClass: ProviderClass.OPPORTUNISTIC,
+    tier: ModelTier.TIER_2,
     maxOutputTokens: 8192,
-    capabilities: { reasoning: 3, structuredJson: 5, mathematicalReasoning: 3 },
+    capabilities: { reasoning: 5, structuredJson: 7, mathematicalReasoning: 5 },
     isFree: true,
     disabled: false,
   },
 
-  // ── Cohere Tier 2 (last resort) ──
+  // ── Tier 3: Fast Lightweight Tasks ──
   {
-    id: "command-r-08-2024",
-    provider: "cohere",
-    tier: ModelTier.TIER_2,
-    maxOutputTokens: 4096,
-    capabilities: { reasoning: 5, structuredJson: 6, mathematicalReasoning: 4 },
+    id: "llama-3.3-70b-versatile",
+    provider: "groq",
+    providerClass: ProviderClass.OPPORTUNISTIC,
+    tier: ModelTier.TIER_3,
+    maxOutputTokens: 8192,
+    capabilities: { reasoning: 7, structuredJson: 8, mathematicalReasoning: 7 },
     isFree: true,
-    disabled: false,
+    disabled: false, // Subject to 12k TPM limit
+  },
+  {
+    id: "llama-3.1-8b-instant",
+    provider: "groq",
+    providerClass: ProviderClass.OPPORTUNISTIC,
+    tier: ModelTier.TIER_3,
+    maxOutputTokens: 8192,
+    capabilities: { reasoning: 5, structuredJson: 6, mathematicalReasoning: 5 },
+    isFree: true,
+    disabled: false, // Subject to 6k TPM limit
   },
 ];
 
@@ -215,7 +202,7 @@ export function validateRegistry(availableProviders: Set<string>): void {
 
   if (enabledTier1.length === 0) {
     logger.error(
-      "CRITICAL: No Tier 1 models available. JEE Advanced / NEET generation will fail."
+      "CRITICAL: No Tier 1 models available. Complex college-level generation may fail."
     );
   }
   if (enabledTier2.length === 0) {

@@ -21,6 +21,7 @@
 
 .create-page-header {
   margin-bottom: 48px;
+  padding-left: 24px;
 }
 
 .create-page-header h2 {
@@ -41,7 +42,7 @@
   padding: 32px;
   background: #F5F5F5;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 
+  box-shadow:
     0 24px 64px rgba(0, 0, 0, 0.08),
     0 8px 16px rgba(0, 0, 0, 0.04);
   display: flex;
@@ -70,6 +71,7 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
 }
+
 @media (max-width: 768px) {
   .form-grid-three-col {
     grid-template-columns: 1fr;
@@ -583,14 +585,258 @@
 /* ══════════════════════════════════════════
    MOBILE RESPONSIVE
    ══════════════════════════════════════════ */
+/* Responsive Helper Utilities */
+.show-on-mobile {
+  display: none;
+}
+.show-on-mobile-flex {
+  display: none;
+}
+
 @media (max-width: 768px) {
-  .question-type-row {
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .show-on-mobile {
+    display: inline !important;
+  }
+  .show-on-mobile-flex {
+    display: flex !important;
+  }
+  .hide-on-desktop-dot {
+    display: none !important;
   }
 
-  .question-type-header {
-    display: none;
+  /* 1. Header Centering & Back Button */
+  .create-page-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    padding: 0 48px;
+    min-height: 44px;
+  }
+
+  .btn-mobile-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #E8E8E8;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-mobile-back:active {
+    background: #D5D5D5;
+  }
+
+  .create-page-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    margin: 0;
+    font-family: var(--font-bricolage), sans-serif;
+  }
+
+  /* 2. Thin Segmented Progress Bar */
+  .progress-bar {
+    height: 3px;
+    margin-bottom: 24px;
+    gap: 8px;
+  }
+
+  /* 3. Hide Mobile FAB on Create Page */
+  .create-page-shell .mobile-fab {
+    display: none !important;
+  }
+
+  /* 4. Styled Upload Zone cloud outline square card */
+  .file-upload-icon {
+    background: #FFFFFF;
+    border-radius: 12px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #EAEAEA;
+    margin-bottom: 8px;
+    align-self: center;
+  }
+
+  .file-upload-browse-btn {
+    background: #FFFFFF !important;
+    border: 1px solid #DADADA !important;
+    color: #303030 !important;
+  }
+
+  .file-upload-browse-btn:active {
+    background: #F5F5F5 !important;
+  }
+
+  /* 5. Question Type Card Builder (Mobile-specific card styling) */
+  .question-type-mobile-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .card-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .form-select-mobile {
+    flex: 1;
+    height: 36px;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1A1D1F;
+    padding-right: 24px;
+    appearance: none;
+    background-image: url('/assets/icons/icon-chevron-down.svg');
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    background-size: 12px 12px;
+    font-family: var(--font-bricolage), sans-serif;
+  }
+
+  .form-select-mobile:focus {
+    outline: none;
+  }
+
+  .question-type-remove-mobile {
+    background: none;
+    border: none;
+    color: #303030;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-counters-box {
+    background: #F5F5F5;
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .counter-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .counter-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #707070;
+    font-family: var(--font-bricolage), sans-serif;
+    text-align: center;
+  }
+
+  /* Stepper width adaptation */
+  .card-counters-box .counter {
+    width: 100%;
+    max-width: 120px;
+    height: 38px;
+    padding: 6px 8px;
+  }
+
+  .card-counters-box .counter-btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Add Question Type button solid circle style */
+  .create-page-shell .btn-add-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: #303030;
+    font-family: var(--font-bricolage), sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 8px 0;
+  }
+
+  .create-page-shell .btn-add-type img {
+    background: #303030;
+    border-radius: 50%;
+    padding: 6px;
+    width: 28px !important;
+    height: 28px !important;
+    filter: invert(1);
+    box-sizing: border-box;
+  }
+
+  /* 6. Centered Floating Actions Pill above Bottom Bar */
+  .create-page-footer-actions {
+    position: fixed;
+    bottom: calc(96px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    z-index: 45;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    width: max-content;
+  }
+
+  .btn-previous,
+  .btn-next {
+    height: 48px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 12px 28px;
+  }
+
+  .btn-previous {
+    background: #FFFFFF !important;
+    border: 1px solid #DADADA !important;
+    color: #181818 !important;
+  }
+
+  .btn-next {
+    background: #181818 !important;
+    color: #FFFFFF !important;
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.2), 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
   }
 }
 
@@ -617,7 +863,7 @@
   padding: 32px;
   max-width: 760px;
   width: 100%;
-  box-shadow: 
+  box-shadow:
     0 20px 48px rgba(0, 0, 0, 0.08),
     0 8px 16px rgba(0, 0, 0, 0.04);
   display: flex;
@@ -678,30 +924,37 @@
     grid-template-columns: 1fr;
     gap: 12px;
   }
+
   .spotlight-card {
     padding: 24px 20px;
     gap: 20px;
     max-width: 480px;
     border-radius: 16px;
   }
+
   .spotlight-header h2 {
     font-size: 22px;
   }
+
   .spotlight-header p {
     font-size: 13px;
   }
+
   .option-card {
     padding: 18px 20px;
     gap: 4px;
     border-radius: 10px;
   }
+
   .option-content h3 {
     font-size: 16px;
     margin-bottom: 4px;
   }
+
   .option-content p {
     font-size: 12.5px;
   }
+
   .spotlight-close-btn {
     top: 16px;
     right: 16px;
@@ -787,7 +1040,7 @@
 
 .structure-part {
   background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: var(--radius-md);
   padding: var(--space-3);
   display: flex;

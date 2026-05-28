@@ -215,86 +215,6 @@ const MOCK_COLLEGE_ASSIGNMENT: Assignment = {
   }
 };
 
-const MOCK_COMPETITIVE_ASSIGNMENT: Assignment = {
-  _id: "mock-competitive",
-  title: "Allen Career Institute Mock Test",
-  subject: "JEE Advanced - Mock Paper",
-  grade: "Competitive / N/A",
-  dueDate: new Date().toISOString().split("T")[0],
-  questionTypes: ["MCQ"],
-  numberOfQuestions: 25,
-  totalMarks: 100,
-  duration: "3 Hours",
-  additionalInstructions: "Generate a question paper for 3 hour exam duration..",
-  fileContent: null,
-  status: "completed",
-  errorMessage: null,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  generatedPaper: {
-    title: "Allen Career Institute Mock Test",
-    subject: "JEE Advanced - Mock Paper",
-    totalMarks: 100,
-    duration: "3 Hours",
-    generalInstructions: [
-      "All questions are compulsory.",
-      "Each question carries 4 marks.",
-      "Negative marking applies: -1 for every incorrect answer."
-    ],
-    sections: [
-      {
-        sectionLabel: "A",
-        sectionTitle: "Multiple Choice Questions",
-        instruction: "Choose the correct option. (25 x 4 = 100 Marks)",
-        questions: [
-          {
-            questionNumber: 1,
-            questionText: "A solid cylinder of mass M and radius R rolls without slipping down an inclined plane of length L and height h. What is the speed of its center of mass when it reaches the bottom?",
-            difficulty: "Hard",
-            marks: 4,
-            questionType: "MCQ",
-            options: [
-              "(a) √(gh)",
-              "(b) √(4gh/3)",
-              "(c) √(2gh)",
-              "(d) √(gh/2)"
-            ],
-            correctAnswer: "(b) √(4gh/3)"
-          },
-          {
-            questionNumber: 2,
-            questionText: "Which of the following molecules has the highest dipole moment, assuming typical idealized geometries?",
-            difficulty: "Moderate",
-            marks: 4,
-            questionType: "MCQ",
-            options: [
-              "(a) CH4",
-              "(b) NH3",
-              "(c) H2O",
-              "(d) CO2"
-            ],
-            correctAnswer: "(c) H2O"
-          },
-          {
-            questionNumber: 3,
-            questionText: "Let f(x) = ∫(from 0 to x) (t^2 - t + 1) e^t dt. What is the value of f''(0)?",
-            difficulty: "Hard",
-            marks: 4,
-            questionType: "MCQ",
-            options: [
-              "(a) -1",
-              "(b) 0",
-              "(c) 1",
-              "(d) 2"
-            ],
-            correctAnswer: "(b) 0"
-          }
-        ]
-      }
-    ]
-  }
-};
-
 /* ── Question Type Row Config ── */
 export interface QuestionTypeConfig {
   id: string;
@@ -309,7 +229,6 @@ interface FormState {
   subject: string;
   grade: string;
   department?: string; // For College
-  examType?: string; // For Competitive
   year?: string;     // For College
   semester?: string; // For College
   includePartC?: boolean; // For College
@@ -369,7 +288,6 @@ const initialFormState: FormState = {
   subject: "",
   grade: "",
   department: "",
-  examType: "",
   year: "",
   semester: "",
   includePartC: false,
@@ -476,11 +394,7 @@ export const useAssignmentStore = create<AssignmentState>()(
         if (!form.title.trim()) errors.title = "Assignment title is required";
         if (!form.dueDate) errors.dueDate = "Due date is required";
 
-        if (form.examType) {
-          // Competitive
-          if (!form.examType.trim()) errors.examType = "Exam type is required";
-          if (!form.subject.trim()) errors.subject = "Subject is required";
-        } else if (form.year !== undefined && form.semester !== undefined && form.year !== "" && form.semester !== "") {
+        if (form.year !== undefined && form.semester !== undefined && form.year !== "" && form.semester !== "") {
           // College
           if (!form.subject.trim()) errors.subject = "Course / Subject is required";
           if (!form.year.trim()) errors.year = "Year is required";
@@ -493,7 +407,7 @@ export const useAssignmentStore = create<AssignmentState>()(
         }
         
         let actualRows = form.questionTypeRows;
-        const isCollege = form.year !== undefined && form.semester !== undefined && form.year !== "" && form.semester !== "" && !form.examType;
+        const isCollege = form.year !== undefined && form.semester !== undefined && form.year !== "" && form.semester !== "";
 
         if (isCollege) {
           if (form.includePartC) {
@@ -533,11 +447,7 @@ export const useAssignmentStore = create<AssignmentState>()(
           let finalSubject = form.subject.trim();
           let finalGrade = form.grade.trim();
 
-          if (form.examType) {
-            // Competitive
-            finalSubject = `${form.examType} - ${form.subject.trim()}`;
-            finalGrade = "Competitive / N/A"; // Backend requires a grade string
-          } else if (form.year && form.semester) {
+          if (form.year && form.semester) {
             // College
             finalGrade = `Year ${form.year.trim()}, Semester ${form.semester.trim()}`;
             if (form.department?.trim()) {
@@ -618,7 +528,7 @@ export const useAssignmentStore = create<AssignmentState>()(
       fetchAssignment: async (id) => {
         set({ isLoading: true }, false, "fetchStart");
         try {
-          if (id === "mock-assignment" || id === "mock-college" || id === "mock-competitive" || id === "1") {
+          if (id === "mock-assignment" || id === "mock-college" || id === "1") {
             throw new Error("Simulate API failure for mock fallback");
           }
 
@@ -652,19 +562,6 @@ export const useAssignmentStore = create<AssignmentState>()(
             return;
           }
 
-          if (id === "mock-competitive") {
-            set(
-              {
-                currentAssignment: MOCK_COMPETITIVE_ASSIGNMENT,
-                currentStatus: "completed",
-                isLoading: false,
-                statusMessage: null,
-              },
-              false,
-              "fetchSuccessMockCompetitive"
-            );
-            return;
-          }
 
           const form = get().form;
           

@@ -9,9 +9,6 @@ interface AssignmentCardProps {
   onDelete: (id: string) => void;
 }
 
-/**
- * Individual assignment card with title, dates, and a three-dot popover menu.
- */
 export function AssignmentCard({
   assignment,
   onView,
@@ -20,16 +17,13 @@ export function AssignmentCard({
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close menu on outside click
   useEffect(() => {
     if (!menuOpen) return;
-
     function handleClickOutside(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
@@ -37,19 +31,44 @@ export function AssignmentCard({
   const formatDate = (dateStr: string) => {
     try {
       const d = new Date(dateStr);
-      const dd = String(d.getDate()).padStart(2, "0");
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const yyyy = d.getFullYear();
-      return `${dd}-${mm}-${yyyy}`;
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}-${month}-${year}`;
     } catch {
       return dateStr;
     }
   };
 
+  const formatGrade = (gradeStr: string | undefined) => {
+    if (!gradeStr) return "";
+    let g = gradeStr;
+    
+    // Fix duplicate "Year 3rd Year" -> "3rd Year"
+    g = g.replace(/Year\s+(.*?)Year/gi, "$1 Year"); 
+    // Fix duplicate "Semester Semester 6" -> "Semester 6"
+    g = g.replace(/Semester\s+Semester/gi, "Semester");
+    // Fix duplicate "Year Year" -> "Year"
+    g = g.replace(/Year\s+Year\s+/gi, "Year ");
+    
+    // For school, if it's just "12th" or "10" etc
+    const isJustGrade = /^\d+(st|nd|rd|th)?$/i.test(g.trim()) || /^Class\s+\d+/i.test(g.trim());
+    if (isJustGrade) {
+      return `Grade: ${g.trim()}`;
+    }
+    
+    return g.trim();
+  };
+
   return (
-    <div className="assignment-card" ref={menuRef}>
-      <div className="assignment-card-top">
-        <h4 className="assignment-card-title">{assignment.title}</h4>
+    <div className="assignment-card premium-card" ref={menuRef}>
+      
+      <div className="assignment-card-header">
+        <div>
+          <h4 className="assignment-card-title">{assignment.subject || assignment.title}</h4>
+          <span className="assignment-card-grade">{formatGrade(assignment.grade)}</span>
+        </div>
+        
         <button
           className="assignment-card-menu-btn"
           type="button"
@@ -61,41 +80,30 @@ export function AssignmentCard({
         >
           ⋮
         </button>
+
+        {menuOpen && (
+          <div className="assignment-card-dropdown">
+            <button className="assignment-card-dropdown-item" onClick={() => { setMenuOpen(false); onView(assignment._id); }}>
+              View Assignment
+            </button>
+            <button className="assignment-card-dropdown-item danger" onClick={() => { setMenuOpen(false); onDelete(assignment._id); }}>
+              Delete
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Popover menu */}
-      {menuOpen && (
-        <div className="assignment-card-dropdown">
-          <button
-            className="assignment-card-dropdown-item"
-            type="button"
-            onClick={() => {
-              setMenuOpen(false);
-              onView(assignment._id);
-            }}
-          >
-            View Assignment
-          </button>
-          <button
-            className="assignment-card-dropdown-item danger"
-            type="button"
-            onClick={() => {
-              setMenuOpen(false);
-              onDelete(assignment._id);
-            }}
-          >
-            Delete
-          </button>
-        </div>
-      )}
-
       <div className="assignment-card-footer">
-        <span className="assignment-card-date">
-          Assigned on : <strong>{formatDate(assignment.createdAt)}</strong>
-        </span>
-        <span className="assignment-card-date">
-          Due : <strong>{formatDate(assignment.dueDate)}</strong>
-        </span>
+        <div className="date-info">
+          <span className="date-label">Assigned on</span>
+          <span className="date-value"> : {formatDate(assignment.createdAt)}</span>
+        </div>
+        {assignment.dueDate && (
+          <div className="date-info">
+            <span className="date-label">Due</span>
+            <span className="date-value"> : {formatDate(assignment.dueDate)}</span>
+          </div>
+        )}
       </div>
     </div>
   );

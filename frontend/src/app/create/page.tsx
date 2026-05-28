@@ -2,13 +2,13 @@
 import "@/styles/create.css";
 
 import { useEffect, Suspense } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { ProgressStep } from "@/components/create/ProgressStep";
 
 import { SchoolAssessmentForm } from "@/components/create/SchoolAssessmentForm";
 import { CollegeAssessmentForm } from "@/components/create/CollegeAssessmentForm";
-import { CompetitiveAssessmentForm } from "@/components/create/CompetitiveAssessmentForm";
 
 function CreatePageContent() {
   const router = useRouter();
@@ -36,11 +36,15 @@ function CreatePageContent() {
     >
       {/* Page Header */}
       <div className="create-page-header animate-fadeIn">
+        <button className="btn-mobile-back show-on-mobile-flex" onClick={handleCancel} aria-label="Go back">
+          <Image src="/assets/icons/icon-arrow-prev.svg" alt="Back" width={16} height={16} />
+        </button>
         <h2>
-          <span className="status-dot active" />
-          Create {assessmentType.charAt(0).toUpperCase() + assessmentType.slice(1)} Assignment
+          <span className="status-dot active hide-on-desktop-dot" />
+          <span className="hide-on-mobile">Create {assessmentType.charAt(0).toUpperCase() + assessmentType.slice(1)} Assignment</span>
+          <span className="show-on-mobile">Create Assignment</span>
         </h2>
-        <p>
+        <p className="hide-on-mobile">
           Set up a new assignment for your students
         </p>
       </div>
@@ -52,7 +56,6 @@ function CreatePageContent() {
         {/* Form */}
         {assessmentType === "school" && <SchoolAssessmentForm onCancel={handleCancel} />}
         {assessmentType === "college" && <CollegeAssessmentForm onCancel={handleCancel} />}
-        {assessmentType === "competitive" && <CompetitiveAssessmentForm onCancel={handleCancel} />}
       </div>
     </AppShell>
   );

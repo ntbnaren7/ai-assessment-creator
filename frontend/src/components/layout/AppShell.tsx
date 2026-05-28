@@ -50,6 +50,7 @@ export function AppShell({
         <div className="page-content">{children}</div>
         
         <MobileFAB />
+        <div className="mobile-blur-overlay" />
         <MobileNavBar />
       </div>
     </div>

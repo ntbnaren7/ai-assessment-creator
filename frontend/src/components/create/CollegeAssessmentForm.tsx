@@ -24,8 +24,7 @@ export function CollegeAssessmentForm({ onCancel }: CollegeAssessmentFormProps) 
   useEffect(() => {
     if (!form.year) setFormField("year", "1st Year");
     if (!form.semester) setFormField("semester", "Semester 1");
-    // Clear competitive/school fields
-    setFormField("examType", "");
+    // Clear school fields
     setFormField("grade", "");
   }, [form.year, form.semester, setFormField]);
 
@@ -44,8 +43,14 @@ export function CollegeAssessmentForm({ onCancel }: CollegeAssessmentFormProps) 
     <form onSubmit={handleSubmit}>
       <div className="card create-card animate-fadeIn">
         <div className="create-card-header">
-          <h4>College / University Details</h4>
-          <p>Set up assessment for higher education modules</p>
+          <h4>
+            <span className="hide-on-mobile">College / University Details</span>
+            <span className="show-on-mobile">Assignment Details</span>
+          </h4>
+          <p>
+            <span className="hide-on-mobile">Set up assessment for higher education modules</span>
+            <span className="show-on-mobile">Basic information about your assignment</span>
+          </p>
         </div>
 
         {/* Title */}
@@ -272,7 +277,8 @@ export function CollegeAssessmentForm({ onCancel }: CollegeAssessmentFormProps) 
           onClick={onCancel}
         >
           <Image src="/assets/icons/icon-arrow-prev.svg" alt="" width={16} height={16} />
-          Change Type
+          <span className="hide-on-mobile">Change Type</span>
+          <span className="show-on-mobile">Previous</span>
         </button>
 
         <button
