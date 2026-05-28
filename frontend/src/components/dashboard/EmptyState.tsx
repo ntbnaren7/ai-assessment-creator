@@ -27,7 +27,7 @@ export function EmptyState() {
         assist with grading.
       </p>
 
-      <Link href="/create">
+      <Link href="/?create=true" style={{ textDecoration: "none" }}>
         <button className="empty-state-btn" type="button">
           <Image
             src="/assets/icons/icon-plus.svg"

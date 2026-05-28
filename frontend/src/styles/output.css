@@ -105,6 +105,10 @@
   color: #000000;
 }
 
+.paper-instructions p {
+  margin: 4px 0;
+}
+
 .paper-student-info {
   margin-bottom: 32px;
   display: flex;
@@ -153,25 +157,34 @@
 
 .paper-question-list {
   list-style: none;
-  counter-reset: question;
   padding: 0;
 }
 
 .paper-question-item {
   margin-bottom: 16px;
   padding-left: 24px;
+  padding-right: 48px;
   position: relative;
   line-height: 1.6;
   font-size: 14px;
   color: #000000;
+  white-space: pre-wrap;
 }
 
 .paper-question-item::before {
-  counter-increment: question;
-  content: counter(question) '. ';
+  content: attr(value) '. ';
   position: absolute;
   left: 0;
   font-weight: 600;
+}
+
+.paper-question-marks-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-weight: 700;
+  font-size: 14px;
+  color: #000000;
 }
 
 .paper-question-difficulty {
@@ -219,7 +232,6 @@
 
 .paper-answer-key-list {
   list-style: none;
-  counter-reset: answer;
   padding: 0;
 }
 
@@ -234,12 +246,49 @@
 }
 
 .paper-answer-key-item::before {
-  counter-increment: answer;
-  content: counter(answer) '. ';
+  content: attr(value) '. ';
   position: absolute;
   left: 0;
   font-weight: 600;
   color: #000000;
+}
+
+.paper-department-name {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16px;
+  margin-top: -4px;
+}
+
+.paper-student-info.college {
+  max-width: 480px;
+}
+
+.choice-options-container {
+  margin-top: 8px;
+  padding-left: 24px;
+}
+
+.choice-option {
+  font-size: 14px;
+  color: #000000;
+  line-height: 1.6;
+}
+
+.choice-letter {
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.choice-or {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: lowercase;
+  margin: 4px 0;
+  color: #000000;
+  padding-left: 0;
 }
 
 /* ══════════════════════════════════════════

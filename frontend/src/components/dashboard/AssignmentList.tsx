@@ -99,7 +99,7 @@ export function AssignmentList({
 
       {/* Floating Create Button */}
       <div className="floating-create-btn">
-        <Link href="/create">
+        <Link href="/?create=true">
           <button className="btn btn-primary btn-lg" type="button">
             + Create Assignment
           </button>

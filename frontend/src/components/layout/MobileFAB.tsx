@@ -8,7 +8,7 @@ export function MobileFAB() {
   const [imageError, setImageError] = useState(false);
 
   return (
-    <Link href="/create" className="mobile-fab">
+    <Link href="/?create=true" className="mobile-fab">
       <span className="mobile-fab-icon">
         {imageError ? (
           "+"

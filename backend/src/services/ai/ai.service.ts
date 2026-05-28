@@ -27,6 +27,10 @@ const orchestrator = new LLMOrchestrator(providers);
  * Builds a highly structured prompt from assignment parameters.
  */
 function buildPrompt(assignment: IAssignment): string {
+  const isCollege = assignment.grade && (
+    assignment.grade.toLowerCase().includes("semester") ||
+    assignment.grade.toLowerCase().includes("year")
+  );
   const questionTypesList = assignment.questionTypes.join(", ");
 
   let prompt = `You are an expert academic examination paper creator. Generate a structured question paper based on the following specifications.
@@ -94,18 +98,24 @@ ${assignment.fileContent.substring(0, 15000)}
 
   prompt += `
 RULES:
-1. Divide the paper into sections (A, B, C, etc.) grouped by question type or difficulty.
-2. Each section MUST have a clear instruction (e.g., "Attempt all questions", "Choose any 3").
-3. Assign difficulty levels: "Easy", "Moderate", or "Hard" to each question.
-4. Distribute marks logically so they sum to exactly ${assignment.totalMarks}.
-5. For MCQ questions, provide exactly 4 options labeled (a), (b), (c), (d).
-6. Ensure questions are pedagogically sound, clear, and unambiguous.
-7. Cover a broad range of topics within the subject.
-8. For EVERY question (including MCQ, Short Answer, Long Answer, True/False, Fill in the Blanks), you MUST provide a non-empty \`correctAnswer\` field.
+${isCollege ? `1. The paper MUST be organized into sections explicitly named "Part A", "Part B", and optionally "Part C".
+2. Part B (and Part C if present) contain Long Answer questions. EVERY single question in Part B and Part C MUST have an internal either/or choice format explicitly written in the questionText field exactly as follows (using lowercase 'or' on a newline):
+   A) [Question text for choice A]
+   or
+   B) [Question text for choice B]
+3. The instruction field for each section MUST be a simple instruction tagline like "Answer all X questions." (e.g. "Answer all 10 questions.") without including any marks calculation details in parentheses (do NOT append "(10 x 2 = 20 Marks)").
+4. The correctAnswer field for these choice questions MUST contain the key points for BOTH choices clearly labeled (e.g. "Choice A: ... \\n\\nChoice B: ...").` : `1. Divide the paper into sections (A, B, C, etc.) grouped by question type or difficulty.
+2. Each section MUST have a clear instruction (e.g., "Attempt all questions", "Choose any 3").`}
+4. Assign difficulty levels: "Easy", "Moderate", or "Hard" to each question.
+5. Distribute marks logically so they sum to exactly ${assignment.totalMarks}.
+6. For MCQ questions, provide exactly 4 options labeled (a), (b), (c), (d).
+7. Ensure questions are pedagogically sound, clear, and unambiguous.
+8. Cover a broad range of topics within the subject.
+9. For EVERY question (including MCQ, Short Answer, Long Answer, True/False, Fill in the Blanks), you MUST provide a non-empty \`correctAnswer\` field.
    - For MCQ: Provide the correct option text or label (e.g., "(a) covalent bond").
    - For True/False: Provide "True" or "False".
    - For Fill in the Blanks: Provide the correct blank value.
-   - For Short Answer & Long Answer: The \`correctAnswer\` MUST consist of exactly X distinct key points or sentences, where X is the number of marks allotted to that question (e.g., if the question is worth 3 marks, provide exactly 3 sentences or key points). Format them clearly (e.g. as numbered points "1. ... \n2. ...").`;
+   - For Short Answer & Long Answer: ${isCollege ? `Unless it is a choice question (see Rule 3), the` : `The`} \`correctAnswer\` MUST consist of exactly X distinct key points or sentences, where X is the number of marks allotted to that question (e.g., if the question is worth 3 marks, provide exactly 3 sentences or key points). Format them clearly (e.g. as numbered points "1. ... \\n2. ...").`;
 
   return prompt;
 }
@@ -145,8 +155,13 @@ export async function generateQuestionPaper(
   const paper = validation.data;
 
   // Dynamic Section Labeling Post-Processing
+  const isCollege = assignment.grade && (
+    assignment.grade.toLowerCase().includes("semester") ||
+    assignment.grade.toLowerCase().includes("year")
+  );
+
   const sections = paper.sections;
-  if (sections && sections.length > 0) {
+  if (sections && sections.length > 0 && !isCollege) {
     const hasObjective = sections.some((s) =>
       s.questions.some((q) =>
         ["MCQ", "True/False", "Fill in the Blanks"].includes(q.questionType)
