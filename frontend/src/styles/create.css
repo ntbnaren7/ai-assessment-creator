@@ -1040,8 +1040,12 @@
     border-radius: 16px;
   }
 
+  .spotlight-header {
+    padding: 0 20px;
+  }
+
   .spotlight-header h2 {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .spotlight-header p {
@@ -1064,8 +1068,8 @@
   }
 
   .spotlight-close-btn {
-    top: 16px;
-    right: 16px;
+    top: 10px;
+    right: 10px;
   }
 }
 
