@@ -39,7 +39,7 @@ export class SchoolPromptStrategy implements PromptStrategy {
       "",
       buildSchoolStructureRules(),
       "",
-      buildAnswerKeyRules(false),
+      buildAnswerKeyRules(false, chunkContext),
       "",
       buildAntiPatternRules(),
       "",

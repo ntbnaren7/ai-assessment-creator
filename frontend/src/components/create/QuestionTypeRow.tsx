@@ -11,7 +11,8 @@ export interface QuestionTypeConfig {
 
 const AVAILABLE_TYPES = [
   { value: "Multiple Choice Questions", label: "Multiple Choice Questions" },
-  { value: "Short Questions", label: "Short Questions" },
+  { value: "Short Answer Questions", label: "Short Answer Questions" },
+  { value: "Long Answer Questions", label: "Long Answer Questions" },
   { value: "Diagram/Graph-Based Questions", label: "Diagram/Graph-Based Questions" },
   { value: "Numerical Problems", label: "Numerical Problems" },
 ];

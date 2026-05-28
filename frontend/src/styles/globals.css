@@ -97,6 +97,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 body {
@@ -104,8 +106,8 @@ body {
   background: var(--bg-app);
   color: var(--text-primary);
   line-height: 1.6;
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 a {
@@ -137,7 +139,8 @@ h5 { font-size: 1rem; }
 
 .app-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 /* ── Sidebar ── */
@@ -352,7 +355,8 @@ h5 { font-size: 1rem; }
 .main-content {
   flex: 1;
   margin-left: calc(304px + 24px);
-  min-height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -360,6 +364,7 @@ h5 { font-size: 1rem; }
 /* ── Header ── */
 .header {
   height: 56px;
+  flex-shrink: 0;
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(12px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -368,11 +373,18 @@ h5 { font-size: 1rem; }
   align-items: center;
   justify-content: space-between;
   padding: 0 12px 0 24px;
-  position: sticky;
-  top: 12px;
   margin: 12px 12px 0 0;
   z-index: 50;
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Page Content (Scrollable Area) ── */
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  padding-bottom: 24px;
 }
 
 .header-left {
@@ -833,8 +845,6 @@ h5 { font-size: 1rem; }
   /* Reset AppShell Layout */
   .app-shell {
     flex-direction: column;
-    padding-top: 88px; /* Space for Header */
-    padding-bottom: 100px; /* Space for NavBar */
     background-color: #F0F0F0;
   }
 
@@ -850,7 +860,7 @@ h5 { font-size: 1rem; }
   h2 { font-size: 1.25rem; }
 
   .page-content {
-    padding: var(--space-4) !important;
+    padding: calc(88px + env(safe-area-inset-top)) var(--space-4) calc(100px + env(safe-area-inset-bottom)) var(--space-4) !important;
   }
 
   .show-on-mobile {
@@ -1190,4 +1200,20 @@ h5 { font-size: 1rem; }
     height: 20px !important;
   }
 
+}
+
+/* ── Page Transition ── */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition-enter {
+  animation: pageFadeIn var(--transition-slow) forwards;
 }

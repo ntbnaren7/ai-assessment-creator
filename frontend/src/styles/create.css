@@ -602,9 +602,17 @@
   background: var(--success);
 }
 
-/* Circle wrapper for the Add Question Type button — hidden by default, shown via show-on-mobile-flex */
+.footer-row-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
 .btn-add-type-circle {
-  display: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ══════════════════════════════════════════
@@ -993,7 +1001,7 @@
   background: #ffffff;
   border-radius: 20px;
   padding: 32px;
-  max-width: 760px;
+  max-width: 560px;
   width: 100%;
   box-shadow:
     0 20px 48px rgba(0, 0, 0, 0.08),
@@ -1047,7 +1055,7 @@
 
 .option-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 

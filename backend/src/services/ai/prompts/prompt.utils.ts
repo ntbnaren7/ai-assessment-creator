@@ -1,4 +1,5 @@
 import type { IAssignment } from "../../../models/index.js";
+import type { ChunkContext } from "./prompt.strategy.js";
 
 /**
  * Shared prompt building blocks used across all strategies.
@@ -50,9 +51,9 @@ export function buildDifficultyRules(assignment: IAssignment): string {
     const type = detail.type;
     const count = detail.numberOfQuestions;
 
-    if (type === "Short Answer") {
+    if (type === "Short Answer Questions") {
       hasRules = true;
-      rules += `- Short Answer (${count} questions):\n`;
+      rules += `- Short Answer Questions (${count} questions):\n`;
       if (count === 1) {
         rules += `  Must be "Moderate" difficulty.\n`;
       } else if (count === 2) {
@@ -62,9 +63,9 @@ export function buildDifficultyRules(assignment: IAssignment): string {
       } else {
         rules += `  At least 1 "Hard". Rest: balanced mix of "Easy" and "Moderate".\n`;
       }
-    } else if (type === "Long Answer") {
+    } else if (type === "Long Answer Questions") {
       hasRules = true;
-      rules += `- Long Answer (${count} questions):\n`;
+      rules += `- Long Answer Questions (${count} questions):\n`;
       if (count === 1) {
         rules += `  Must be "Moderate" difficulty.\n`;
       } else if (count === 2) {
@@ -94,16 +95,41 @@ ${assignment.fileContent.substring(0, 15000)}
 
 /**
  * Rules for how the correctAnswer field should be formatted.
+ * College papers: no answer keys at all.
+ * School papers: answer keys only for MCQ and Short Answer questions.
  */
-export function buildAnswerKeyRules(isCollege: boolean): string {
+export function buildAnswerKeyRules(isCollege: boolean, chunkContext?: ChunkContext): string {
+  // College papers: no answer keys whatsoever
+  if (isCollege) {
+    return `ANSWER KEY RULES:
+Do NOT generate any answer keys. Omit the \`correctAnswer\` field entirely from every question object.`;
+  }
+
+  // School papers: only MCQ and Short Answer get answer keys
+  if (chunkContext) {
+    const qType = chunkContext.questionType.toLowerCase();
+    const needsAnswerKey = qType.includes("multiple choice") || qType.includes("mcq") || qType.includes("short answer");
+
+    if (needsAnswerKey) {
+      if (qType.includes("multiple choice") || qType.includes("mcq")) {
+        return `ANSWER KEY RULES:
+For every MCQ question, provide a \`correctAnswer\` field with the correct option text and label (e.g., "(a) covalent bond").`;
+      }
+      return `ANSWER KEY RULES:
+For every Short Answer question, provide a \`correctAnswer\` field with brief key phrases. Keep it extremely concise.`;
+    }
+
+    // Long Answer, Numerical, Diagram, etc. — no answer key
+    return `ANSWER KEY RULES:
+Do NOT generate any answer keys for this section. Omit the \`correctAnswer\` field entirely from every question object.`;
+  }
+
+  // Global fallback (single-chunk, no context): answer keys only for MCQ and Short Answer
   return `ANSWER KEY RULES:
-For EVERY question, you MUST provide a non-empty \`correctAnswer\` field:
+Answer keys are required ONLY for Multiple Choice Questions and Short Answer Questions.
 - MCQ: The correct option text with label (e.g., "(a) covalent bond").
-- True/False: "True" or "False".
-- Fill in the Blanks: The correct value.
-- Short Answer & Long Answer: ${isCollege
-    ? `Unless it is a choice question, the`
-    : `The`} \`correctAnswer\` MUST consist of exactly X distinct key points, where X = marks allotted. Format as numbered points "1. ...\\n2. ...".`;
+- Short Answer: Brief key phrases.
+- For ALL other question types (Long Answer, Numerical, Diagram, etc.): Omit the \`correctAnswer\` field entirely.`;
 }
 
 /**
@@ -116,8 +142,7 @@ export function buildCollegeStructureRules(): string {
    A) [Question text for choice A]
    or
    B) [Question text for choice B]
-3. Section instruction must be simple (e.g., "Answer all 10 questions.") — no marks calculation in instruction.
-4. The correctAnswer for choice questions MUST cover BOTH choices labeled clearly.`;
+3. Section instruction must be simple (e.g., "Answer all 10 questions.") — no marks calculation in instruction.`;
 }
 
 /**
@@ -154,7 +179,7 @@ You MUST respond with ONLY a valid JSON object matching this exact structure:
           "marks": number,
           "questionType": "string",
           "options": ["(a) ...", "(b) ...", "(c) ...", "(d) ..."],
-          "correctAnswer": "string"
+          "correctAnswer": "string (OPTIONAL — only include for MCQ and Short Answer)"
         }
       ]
     }

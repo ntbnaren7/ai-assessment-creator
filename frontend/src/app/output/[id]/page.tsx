@@ -10,6 +10,7 @@ import { LoadingState } from "@/components/output/LoadingState";
 import { FailedState } from "@/components/output/FailedState";
 import { useAssignmentStore } from "@/store/useAssignmentStore";
 import { useWebSocket } from "@/hooks/useWebSocket";
+import { GothicLoader } from "@/components/output/GothicLoader";
 
 export default function OutputPage() {
   const params = useParams();
@@ -87,14 +88,23 @@ export default function OutputPage() {
     );
   }
 
-  // ── Processing / Pending ──
-  if (currentStatus === "pending" || currentStatus === "processing") {
+  // ── Pending ──
+  if (currentStatus === "pending") {
     return (
       <AppShell breadcrumb="Assignment" breadcrumbIcon="/assets/icons/icon-grid.svg">
         <LoadingState
           status={currentStatus}
           message={statusMessage || undefined}
         />
+      </AppShell>
+    );
+  }
+
+  // ── Processing (Gothic Loader) ──
+  if (currentStatus === "processing") {
+    return (
+      <AppShell breadcrumb="Assignment" breadcrumbIcon="/assets/icons/icon-grid.svg">
+        <GothicLoader />
       </AppShell>
     );
   }

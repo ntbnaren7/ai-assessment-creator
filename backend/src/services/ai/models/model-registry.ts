@@ -63,7 +63,7 @@ const MODEL_REGISTRY: ModelEntry[] = [
     disabled: false,
   },
   {
-    id: "google/gemini-2.0-flash-lite-preview-02-05:free",
+    id: "deepseek/deepseek-v4-flash:free",
     provider: "openrouter",
     providerClass: ProviderClass.OPPORTUNISTIC,
     tier: ModelTier.TIER_1,
@@ -85,7 +85,7 @@ const MODEL_REGISTRY: ModelEntry[] = [
 
   // ── Tier 2: Opportunistic Free Scaling ──
   {
-    id: "meta-llama/llama-3.1-8b-instruct:free",
+    id: "google/gemma-2-9b-it:free",
     provider: "openrouter",
     providerClass: ProviderClass.OPPORTUNISTIC,
     tier: ModelTier.TIER_2,

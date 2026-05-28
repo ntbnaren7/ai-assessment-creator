@@ -35,7 +35,7 @@ export class CollegePromptStrategy implements PromptStrategy {
       "",
       buildCollegeStructureRules(),
       "",
-      buildAnswerKeyRules(true),
+      buildAnswerKeyRules(true, chunkContext),
       "",
       buildAntiPatternRules(),
       "",

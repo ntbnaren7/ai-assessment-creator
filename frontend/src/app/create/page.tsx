@@ -36,7 +36,7 @@ function CreatePageContent() {
     >
       {/* Page Header */}
       <div className="create-page-header animate-fadeIn">
-        <button className="btn-mobile-back show-on-mobile-flex" onClick={handleCancel} aria-label="Go back">
+        <button className="btn-mobile-back show-on-mobile-flex" onClick={() => router.push("/")} aria-label="Go back">
           <Image src="/assets/icons/icon-arrow-prev.svg" alt="Back" width={16} height={16} />
         </button>
         <h2>

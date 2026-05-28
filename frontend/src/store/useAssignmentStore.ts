@@ -13,7 +13,7 @@ const MOCK_ASSIGNMENT: Assignment = {
   subject: "Science",
   grade: "8",
   dueDate: new Date().toISOString().split("T")[0],
-  questionTypes: ["Short Questions"],
+  questionTypes: ["Short Answer Questions"],
   numberOfQuestions: 10,
   totalMarks: 20,
   duration: "45 minutes",
@@ -42,7 +42,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "Define electroplating. Explain its purpose.",
             difficulty: "Easy",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "Electroplating is the process of depositing a thin layer of metal on the surface of another metal using electric current. Its purpose is to prevent corrosion, improve appearance, or increase thickness."
           },
           {
@@ -50,7 +50,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "Explain how a conductor allows the flow of electric current.",
             difficulty: "Moderate",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "A conductor allows the flow of electric current, causing ions in the electrolyte to move and enabling chemical changes at electrodes."
           },
           {
@@ -58,7 +58,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "Why does a copper sulfate solution conduct electricity?",
             difficulty: "Moderate",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "Copper sulfate solution contains free copper and sulfate ions which carry electric charge, thus conducting electricity."
           },
           {
@@ -66,7 +66,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "Describe one example of the chemical effect of electric current in daily life.",
             difficulty: "Moderate",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "An example is the electroplating of silver on jewelry to prevent tarnishing."
           },
           {
@@ -74,7 +74,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "Explain why electric current is said to have chemical effects.",
             difficulty: "Moderate",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "Electric current causes the movement of ions leading to chemical changes at the electrodes, hence it shows chemical effects."
           },
           {
@@ -82,7 +82,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "How is sodium hydroxide prepared during the electrolysis of brine? Write the chemical reaction involved.",
             difficulty: "Challenging",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "Sodium hydroxide is formed at the cathode during brine electrolysis as water gains electrons:\n\n2H2O + 2e- -> H2 + 2OH-\nNa+ + OH- -> NaOH (in solution)"
           },
           {
@@ -90,7 +90,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "What happens at the cathode and anode during the electrolysis of water? Name the gases evolved.",
             difficulty: "Challenging",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "At the cathode: water is reduced to hydrogen gas and hydroxide ions.\nAt the anode: water is oxidized to oxygen gas and hydrogen ions."
           },
           {
@@ -98,7 +98,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "Mention the type of current used in electroplating and justify why it is used.",
             difficulty: "Easy",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "Direct current (DC) is used in electroplating to ensure a steady, one-directional flow of electric charge for uniform deposition."
           },
           {
@@ -106,7 +106,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "What is the importance of electric current in the field of metallurgy?",
             difficulty: "Moderate",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "Electric current is used in metallurgy for extracting and refining metals from their ores (electrometallurgy) and for electroplating."
           },
           {
@@ -114,7 +114,7 @@ const MOCK_ASSIGNMENT: Assignment = {
             questionText: "Explain with a chemical equation how copper is deposited during the electroplating of an object.",
             difficulty: "Challenging",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "Copper ions (Cu2+) in solution gain electrons at the cathode and are deposited as copper metal:\nCu2+ + 2e- -> Cu (solid)"
           }
         ]
@@ -129,7 +129,7 @@ const MOCK_COLLEGE_ASSIGNMENT: Assignment = {
   subject: "Data Structures and Algorithms",
   grade: "Year 2, Semester 3",
   dueDate: new Date().toISOString().split("T")[0],
-  questionTypes: ["Short Questions", "Numerical Problems"],
+  questionTypes: ["Short Answer Questions", "Numerical Problems"],
   numberOfQuestions: 16,
   totalMarks: 100,
   duration: "3 Hours",
@@ -160,7 +160,7 @@ const MOCK_COLLEGE_ASSIGNMENT: Assignment = {
             questionText: "Define a binary search tree.",
             difficulty: "Easy",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "A BST is a node-based binary tree data structure where each node has a maximum of two child nodes and the left child value is less than the parent, right child value is greater."
           },
           {
@@ -168,7 +168,7 @@ const MOCK_COLLEGE_ASSIGNMENT: Assignment = {
             questionText: "What is the time complexity of quicksort in the worst case?",
             difficulty: "Easy",
             marks: 2,
-            questionType: "Short Questions",
+            questionType: "Short Answer Questions",
             correctAnswer: "O(n^2)"
           }
         ]
@@ -294,7 +294,7 @@ const initialFormState: FormState = {
   dueDate: "",
   questionTypeRows: [
     { id: nextRowId(), type: "Multiple Choice Questions", numberOfQuestions: 4, marks: 1 },
-    { id: nextRowId(), type: "Short Questions", numberOfQuestions: 3, marks: 2 },
+    { id: nextRowId(), type: "Short Answer Questions", numberOfQuestions: 3, marks: 2 },
   ],
   duration: "",
   additionalInstructions: "",
@@ -433,13 +433,13 @@ export const useAssignmentStore = create<AssignmentState>()(
         if (isCollege) {
           if (form.includePartC) {
             actualRows = [
-              { id: "college-row-1", type: "Short Questions", numberOfQuestions: 10, marks: 2 },
+              { id: "college-row-1", type: "Short Answer Questions", numberOfQuestions: 10, marks: 2 },
               { id: "college-row-2", type: "Numerical Problems", numberOfQuestions: 5, marks: 13 },
               { id: "college-row-3", type: "Numerical Problems", numberOfQuestions: 1, marks: 15 },
             ];
           } else {
             actualRows = [
-              { id: "college-row-1", type: "Short Questions", numberOfQuestions: 10, marks: 2 },
+              { id: "college-row-1", type: "Short Answer Questions", numberOfQuestions: 10, marks: 2 },
               { id: "college-row-2", type: "Numerical Problems", numberOfQuestions: 5, marks: 16 },
             ];
           }

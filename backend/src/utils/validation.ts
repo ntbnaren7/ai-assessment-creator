@@ -2,7 +2,8 @@ import { z } from "zod";
 
 export const QuestionTypeEnum = z.enum([
   "Multiple Choice Questions",
-  "Short Questions",
+  "Short Answer Questions",
+  "Long Answer Questions",
   "Diagram/Graph-Based Questions",
   "Numerical Problems",
 ]);
@@ -77,7 +78,7 @@ export const GeneratedQuestionSchema = z
     marks: z.number().int().min(1),
     questionType: z.string().min(1),
     options: z.array(z.string()).optional(),
-    correctAnswer: z.string().min(1, "Correct answer is required for all questions"),
+    correctAnswer: z.string().optional(),
   })
   .passthrough();
 

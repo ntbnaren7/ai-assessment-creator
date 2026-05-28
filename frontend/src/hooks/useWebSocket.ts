@@ -68,6 +68,11 @@ export function useWebSocket(assignmentId: string | null) {
       }
     });
 
+    socket.on("generation_failed", (data: StatusUpdate) => {
+      console.error("🚨 Generation permanently failed:", data);
+      setStatusUpdate("failed", data.message);
+    });
+
     socket.on("disconnect", () => {
       console.log("🔌 WebSocket disconnected");
     });

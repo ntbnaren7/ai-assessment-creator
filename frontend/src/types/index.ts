@@ -2,9 +2,10 @@
 
 export type QuestionType =
   | "Multiple Choice Questions"
-  | "Short Questions"
+  | "Short Answer Questions"
   | "Diagram/Graph-Based Questions"
-  | "Numerical Problems";
+  | "Numerical Problems"
+  | "Long Answer Questions";
 
 export type Difficulty = "Easy" | "Moderate" | "Hard" | "Challenging";
 

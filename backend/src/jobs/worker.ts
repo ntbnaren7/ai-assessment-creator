@@ -113,26 +113,49 @@ export function startWorker(): Worker {
   worker.on("failed", async (job, err) => {
     if (!job) return;
     const { assignmentId } = job.data;
-    logger.error("Job failed", {
+    const maxAttempts = job.opts.attempts || 1;
+    const isTerminal = job.attemptsMade >= maxAttempts;
+
+    logger.error(`Job failed (attempt ${job.attemptsMade}/${maxAttempts})`, {
       assignmentId,
       jobId: job.id,
-      attemptsMade: job.attemptsMade,
       error: err.message,
     });
 
-    // Update DB status to failed
-    await Assignment.findByIdAndUpdate(assignmentId, {
-      status: "failed",
-      errorMessage: err.message,
-    });
-
-    // Notify client: failed
     const io = getIO();
-    io.to(assignmentId).emit("status-update", {
-      assignmentId,
-      status: "failed",
-      message: `Generation failed: ${err.message}`,
-    });
+
+    if (isTerminal) {
+      // Normalize errors for frontend display
+      let normalizedError = "GENERATION_FAILED";
+      const errMsg = err.message || "";
+      if (errMsg.includes("QuotaExhaustedError") || errMsg.includes("429") && errMsg.includes("quota")) {
+        normalizedError = "QUOTA_EXHAUSTED";
+      } else if (errMsg.includes("ETIMEDOUT") || errMsg.includes("timeout") || errMsg.includes("Timeout")) {
+        normalizedError = "PROVIDER_TIMEOUT";
+      } else if (errMsg.includes("429") || errMsg.includes("rate limit")) {
+        normalizedError = "RATE_LIMITED";
+      }
+
+      // Update DB status to failed only on terminal failure
+      await Assignment.findByIdAndUpdate(assignmentId, {
+        status: "failed",
+        errorMessage: normalizedError,
+      });
+
+      // Notify client: fatal failure
+      io.to(assignmentId).emit("generation_failed", {
+        assignmentId,
+        status: "failed",
+        message: normalizedError,
+      });
+    } else {
+      // Just notify that we are retrying
+      io.to(assignmentId).emit("status-update", {
+        assignmentId,
+        status: "processing",
+        message: `Temporary error encountered. Retrying (${job.attemptsMade}/${maxAttempts})...`,
+      });
+    }
   });
 
   worker.on("completed", (job) => {

@@ -1,15 +1,15 @@
 import multer from "multer";
-
 import path from "path";
+import os from "os";
 
 /**
  * Multer middleware configured with disk storage.
- * Files are stored on disk for text extraction, then discarded.
+ * Files are stored in the OS temp directory for text extraction, then discarded.
  * Max file size: 10MB.
  */
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, path.join(process.cwd(), "uploads"));
+    cb(null, os.tmpdir());
   },
   filename: (_req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);

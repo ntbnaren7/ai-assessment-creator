@@ -4,6 +4,7 @@ import { extractTextFromFile } from "../services/index.js";
 import { addGenerationJob } from "../jobs/index.js";
 import { CreateAssignmentInput } from "../utils/validation.js";
 import { loadRun } from "../services/ai/generation/generation-run.js";
+import { getRedisConnection } from "../config/index.js";
 import fs from "fs/promises";
 
 /**
@@ -149,6 +150,11 @@ export async function regenerateAssignment(
     assignment.errorMessage = null;
     await assignment.save();
 
+    // Force clear any stuck locks or runs in Redis so the worker can start fresh
+    const redis = getRedisConnection();
+    await redis.del(`gen-lock:${id}`);
+    await redis.del(`gen-run:${id}`);
+
     // Re-queue generation
     await addGenerationJob(assignment._id.toString());
 
@@ -176,7 +182,7 @@ export async function getAssignmentProgress(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const assignment = await Assignment.findById(id).select("status");
+    const assignment = await Assignment.findById(id).select("status errorMessage");
 
     if (!assignment) {
       res.status(404).json({ success: false, message: "Assignment not found" });
@@ -189,7 +195,7 @@ export async function getAssignmentProgress(
     }
 
     if (assignment.status === "failed") {
-      res.json({ success: true, data: { progress: 0, status: "failed" } });
+      res.json({ success: true, data: { progress: 0, status: "failed", message: assignment.errorMessage } });
       return;
     }
 
