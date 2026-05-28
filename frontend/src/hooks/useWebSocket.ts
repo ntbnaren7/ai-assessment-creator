@@ -54,7 +54,7 @@ export function useWebSocket(assignmentId: string | null) {
 
     socket.on("status-update", async (data: StatusUpdate) => {
       console.log("📡 Status update:", data);
-      setStatusUpdate(data.status, data.message);
+      setStatusUpdate(data.status, data.message, data.progress);
 
       // If completed, fetch the full assignment (with retry for DB replication lag)
       if (data.status === "completed") {

@@ -268,9 +268,10 @@ interface AssignmentState {
   currentAssignment: Assignment | null;
   currentStatus: AssignmentStatus | null;
   statusMessage: string | null;
+  generationProgress: number;
   isLoading: boolean;
   fetchAssignment: (id: string) => Promise<void>;
-  setStatusUpdate: (status: AssignmentStatus, message?: string | null) => void;
+  setStatusUpdate: (status: AssignmentStatus, message?: string | null, progress?: number) => void;
   setCurrentAssignment: (assignment: Assignment) => void;
 
   // Regeneration
@@ -544,10 +545,11 @@ export const useAssignmentStore = create<AssignmentState>()(
       currentAssignment: null,
       currentStatus: null,
       statusMessage: null,
+      generationProgress: 0,
       isLoading: false,
 
       fetchAssignment: async (id) => {
-        set({ isLoading: true }, false, "fetchStart");
+        set({ isLoading: true, generationProgress: 0 }, false, "fetchStart");
         try {
           if (id === "mock-assignment" || id === "mock-college" || id === "1") {
             throw new Error("Simulate API failure for mock fallback");
@@ -627,11 +629,15 @@ export const useAssignmentStore = create<AssignmentState>()(
         }
       },
 
-      setStatusUpdate: (status, message) =>
-        set({ currentStatus: status, statusMessage: message || null }, false, "statusUpdate"),
+      setStatusUpdate: (status, message, progress) =>
+        set((state) => ({ 
+          currentStatus: status, 
+          statusMessage: message || null,
+          generationProgress: progress !== undefined ? progress : state.generationProgress 
+        }), false, "statusUpdate"),
 
       setCurrentAssignment: (assignment) =>
-        set({ currentAssignment: assignment, currentStatus: assignment.status }, false, "setCurrentAssignment"),
+        set({ currentAssignment: assignment, currentStatus: assignment.status, generationProgress: 100 }, false, "setCurrentAssignment"),
 
       // ── Regeneration ──
       isRegenerating: false,

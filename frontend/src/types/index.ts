@@ -81,4 +81,5 @@ export interface StatusUpdate {
   assignmentId: string;
   status: AssignmentStatus;
   message: string;
+  progress?: number;
 }

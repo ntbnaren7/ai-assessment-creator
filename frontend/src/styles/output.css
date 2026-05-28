@@ -323,20 +323,6 @@
   gap: 24px;
 }
 
-.minimal-spinner-black {
-  width: 32px;
-  height: 32px;
-  border: 2px solid transparent;
-  border-top-color: #000000;
-  border-radius: 50%;
-  animation: minimalSpin 0.8s linear infinite;
-}
-
-@keyframes minimalSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 .gothic-loader-text {
   font-family: var(--font-bricolage), sans-serif;
