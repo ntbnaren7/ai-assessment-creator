@@ -46,6 +46,7 @@ export class CohereProvider implements ILLMProvider {
         preamble: request.systemPrompt,
         message: request.userPrompt,
         temperature: request.temperature ?? 0.7,
+        maxTokens: request.maxOutputTokens || 4096,
       }, { abortSignal: request.abortSignal });
 
       const latencyMs = Date.now() - startTime;

@@ -1,11 +1,10 @@
 import { z } from "zod";
 
 export const QuestionTypeEnum = z.enum([
-  "MCQ",
-  "Short Answer",
-  "Long Answer",
-  "True/False",
-  "Fill in the Blanks",
+  "Multiple Choice Questions",
+  "Short Questions",
+  "Diagram/Graph-Based Questions",
+  "Numerical Problems",
 ]);
 
 export const QuestionTypeDetailSchema = z.object({
@@ -42,12 +41,12 @@ export const CreateAssignmentSchema = z.object({
     .number()
     .int("Number of questions must be a whole number")
     .min(1, "At least 1 question is required")
-    .max(100, "Maximum 100 questions allowed"),
+    .max(50, "Maximum 50 questions allowed"),
   totalMarks: z
     .number()
     .int("Total marks must be a whole number")
     .min(1, "Total marks must be at least 1")
-    .max(500, "Maximum 500 marks allowed"),
+    .max(100, "Maximum 100 marks allowed"),
   duration: z
     .string()
     .min(1, "Duration is required")

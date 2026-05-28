@@ -94,7 +94,7 @@ export class SchoolPromptStrategy implements PromptStrategy {
       primary: `${base} You specialize in early childhood education and age-appropriate assessment design for young learners (Grades 1-5). Your questions use simple vocabulary, short sentences, and visual/concrete examples.`,
       middle: `${base} You specialize in middle school education (Grades 6-8), crafting questions that build conceptual understanding through real-world scenarios, diagrams, and application-based problems.`,
       secondary: `${base} You specialize in board-exam preparation for Grades 9-10, creating HOTS (Higher Order Thinking Skills) questions with case-based scenarios and multi-step reasoning.`,
-      senior: `${base} You specialize in senior secondary (Grades 11-12) pre-competitive exam preparation, creating questions that test deep conceptual mastery, derivation skills, and analytical reasoning at near-competitive exam rigor.`,
+      senior: `${base} You specialize in senior secondary (Grades 11-12) board-level exam preparation, creating questions that test deep conceptual mastery, derivation skills, and analytical reasoning at advanced CBSE/ICSE board-exam rigor.`,
     };
     return bandSpecific[band] || base;
   }
@@ -123,7 +123,7 @@ export class SchoolPromptStrategy implements PromptStrategy {
 - Focus: APPLY + ANALYZE + EVALUATE (justify, critique, design solutions)
 - Difficulty mix: 15% Easy, 45% Moderate, 40% Hard
 - Include: Derivation-based questions, numerical problems with conceptual depth
-- Pre-competitive rigor: Questions should prepare students for JEE/NEET entrance level`,
+- Advanced board-exam rigor: Questions should match the hardest CBSE/ICSE board-level standards`,
     };
     return guidelines[band] || guidelines.middle;
   }
@@ -150,7 +150,7 @@ export class SchoolPromptStrategy implements PromptStrategy {
 - MCQ distractors MUST represent common student errors (not random values)`,
 
       senior: `GRADE-SPECIFIC RULES:
-- Pre-competitive exam difficulty — these students are preparing for JEE/NEET
+- Advanced board-exam difficulty matching CBSE/ICSE board standards
 - Include derivation-based questions that test understanding of fundamentals
 - Numerical problems should test conceptual application, not just formula substitution
 - At least 20% of questions should combine concepts from multiple chapters/topics

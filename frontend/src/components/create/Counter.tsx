@@ -4,6 +4,8 @@ interface CounterProps {
   value: number;
   min?: number;
   max?: number;
+  /** Optional global ceiling — overrides local max when lower */
+  dynamicMax?: number;
   onChange: (value: number) => void;
 }
 
@@ -15,14 +17,17 @@ export function Counter({
   value,
   min = 1,
   max = 99,
+  dynamicMax,
   onChange,
 }: CounterProps) {
+  const effectiveMax = dynamicMax !== undefined ? Math.min(max, dynamicMax) : max;
+
   const decrement = () => {
     if (value > min) onChange(value - 1);
   };
 
   const increment = () => {
-    if (value < max) onChange(value + 1);
+    if (value < effectiveMax) onChange(value + 1);
   };
 
   return (
@@ -41,7 +46,7 @@ export function Counter({
         className="counter-btn"
         type="button"
         onClick={increment}
-        disabled={value >= max}
+        disabled={value >= effectiveMax}
         aria-label="Increase"
       >
         +

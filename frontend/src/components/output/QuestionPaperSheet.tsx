@@ -151,11 +151,11 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
 
       {/* Subject & Class */}
       <p className="paper-sub-header">
-        <strong>{paper.subject}</strong>
+        <strong>Subject: {paper.subject}</strong>
       </p>
       {grade && (
         <p className="paper-sub-header">
-          <strong>{isCollege ? formatCollegeGrade(grade) : grade}</strong>
+          <strong>{isCollege ? `Year/Semester: ${formatCollegeGrade(grade)}` : `Grade: ${grade}`}</strong>
         </p>
       )}
 

@@ -110,7 +110,7 @@ export function aggregateChunks(
 }
 
 /**
- * Aggregate a single-chunk result (non-mock papers).
+ * Aggregate a single-chunk result (papers with only one question type).
  */
 export function aggregateSingleChunk(
   chunkResult: ChunkResult,

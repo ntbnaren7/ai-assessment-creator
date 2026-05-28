@@ -92,7 +92,7 @@ export function CollegeAssessmentForm({ onCancel }: CollegeAssessmentFormProps) 
         {/* File Upload */}
         <FileDropzone file={form.file} onFileChange={setFile} />
 
-        <div className="form-grid-three-col" style={{ gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
+        <div className="form-grid-four-col">
           {/* Subject */}
           <div className="form-group">
             <label className="form-label" htmlFor="subject">
@@ -180,8 +180,8 @@ export function CollegeAssessmentForm({ onCancel }: CollegeAssessmentFormProps) 
 
         {/* Exam Structure */}
         <div className="exam-structure-section">
-          <div className="exam-structure-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-            <h5 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: 'var(--text-main)' }}>Exam Structure (Auto-Generated)</h5>
+          <div className="exam-structure-header-row">
+            <h5 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: 'var(--text-main)' }}>Exam Structure</h5>
             <label className="toggle-switch-container" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer' }}>
               <span className="toggle-label" style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Include Part C (Core Question)</span>
               <div className="toggle-switch" style={{ position: 'relative', width: '44px', height: '24px' }}>

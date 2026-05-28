@@ -1,9 +1,17 @@
 import type { IAssignment } from "../../../models/index.js";
-import { extractGradeNumber, isCollegeLevel } from "../prompts/prompt.utils.js";
 
 /**
- * Chunk planner: splits large workloads into smaller generation units.
+ * Chunk planner: splits generation workloads into smaller units.
  * Each chunk is an independent LLM call that produces a portion of the paper.
+ *
+ * When `questionTypeDetails` is available (the user defined multiple question
+ * types in the form), each type becomes its own chunk so that:
+ *   1. Each LLM call produces a smaller, more focused JSON response.
+ *   2. Output token limits are far less likely to be hit.
+ *   3. The aggregator re-numbers and merges sections automatically.
+ *
+ * When only a single question type is present, the paper is generated
+ * as a single chunk (no overhead from merging).
  */
 
 // ── Types ──
@@ -24,19 +32,25 @@ export interface ChunkPlan {
   executionMode: "sequential" | "limited-parallel";
   delayBetweenChunksMs: number;
   totalExpectedQuestions: number;
-  isMockPaper: boolean;
 }
 
 // ── Planner ──
 
 /**
- * Builds a chunk plan based on the assignment type and size.
- * 
- * Non-mock papers: single chunk (the whole paper).
- * Mock papers: split by subject × section for complex multi-subject patterns.
+ * Builds a chunk plan based on the assignment's question type details.
+ *
+ * Multiple question types → one chunk per type (section-by-section).
+ * Single / missing details → single chunk (whole paper in one call).
  */
 export function buildChunkPlan(assignment: IAssignment): ChunkPlan {
-  // Currently, all school and college papers are built as a single chunk.
+  const details = assignment.questionTypeDetails;
+
+  // If we have granular per-type info with more than one type, split by type
+  if (details && details.length > 1) {
+    return buildMultiTypePlan(assignment, details);
+  }
+
+  // Fallback: single chunk
   return buildSingleChunkPlan(assignment);
 }
 
@@ -62,22 +76,34 @@ function buildSingleChunkPlan(assignment: IAssignment): ChunkPlan {
     executionMode: "sequential",
     delayBetweenChunksMs: 0,
     totalExpectedQuestions: assignment.numberOfQuestions,
-    isMockPaper: false,
   };
 }
 
-// ── Helpers ──
+function buildMultiTypePlan(
+  assignment: IAssignment,
+  details: NonNullable<IAssignment["questionTypeDetails"]>,
+): ChunkPlan {
+  const sectionLabels = "ABCDEFGHIJ".split("");
+  const chunks: ChunkDefinition[] = details.map((d, i) => ({
+    chunkId: `type-${i}`,
+    subject: assignment.subject,
+    sectionLabel: sectionLabels[i] || `Section ${i + 1}`,
+    questionCount: d.numberOfQuestions,
+    questionType: d.type,
+    marksPerQuestion: d.marks,
+    negativeMarking: 0,
+    attemptRule: "Attempt all questions",
+  }));
 
-function isMockPaper(assignment: IAssignment): boolean {
-  const title = (assignment.title || "").toLowerCase();
-  const subject = (assignment.subject || "").toLowerCase();
-  const instructions = (assignment.additionalInstructions || "").toLowerCase();
-
-  return (
-    title.includes("mock") ||
-    subject.includes("mock") ||
-    instructions.includes("mock paper") ||
-    instructions.includes("full test") ||
-    assignment.numberOfQuestions >= 50  // heuristic: 50+ questions implies mock
+  const totalExpectedQuestions = details.reduce(
+    (sum, d) => sum + d.numberOfQuestions,
+    0,
   );
+
+  return {
+    chunks,
+    executionMode: "sequential",
+    delayBetweenChunksMs: 500, // small delay to avoid rate-limits
+    totalExpectedQuestions,
+  };
 }

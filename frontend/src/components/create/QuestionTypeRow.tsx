@@ -10,17 +10,20 @@ export interface QuestionTypeConfig {
 }
 
 const AVAILABLE_TYPES = [
-  { value: "MCQ", label: "Multiple Choice Questions" },
-  { value: "Short Answer", label: "Short Answer" },
-  { value: "Long Answer", label: "Long Answer" },
-  { value: "True/False", label: "True / False" },
-  { value: "Fill in the Blanks", label: "Fill in the Blanks" },
+  { value: "Multiple Choice Questions", label: "Multiple Choice Questions" },
+  { value: "Short Questions", label: "Short Questions" },
+  { value: "Diagram/Graph-Based Questions", label: "Diagram/Graph-Based Questions" },
+  { value: "Numerical Problems", label: "Numerical Problems" },
 ];
 
 interface QuestionTypeRowProps {
   config: QuestionTypeConfig;
   onChange: (updated: QuestionTypeConfig) => void;
   onRemove: () => void;
+  /** Max questions this row can reach (current value + global remaining) */
+  maxQuestionsForRow?: number;
+  /** Max marks-per-question this row can reach */
+  maxMarksForRow?: number;
 }
 
 /**
@@ -31,6 +34,8 @@ export function QuestionTypeRow({
   config,
   onChange,
   onRemove,
+  maxQuestionsForRow,
+  maxMarksForRow,
 }: QuestionTypeRowProps) {
   return (
     <div className="question-type-row-container">
@@ -70,6 +75,7 @@ export function QuestionTypeRow({
               value={config.numberOfQuestions}
               min={1}
               max={50}
+              dynamicMax={maxQuestionsForRow}
               onChange={(v) => onChange({ ...config, numberOfQuestions: v })}
             />
           </div>
@@ -79,6 +85,7 @@ export function QuestionTypeRow({
               value={config.marks}
               min={1}
               max={20}
+              dynamicMax={maxMarksForRow}
               onChange={(v) => onChange({ ...config, marks: v })}
             />
           </div>
@@ -115,6 +122,7 @@ export function QuestionTypeRow({
           value={config.numberOfQuestions}
           min={1}
           max={50}
+          dynamicMax={maxQuestionsForRow}
           onChange={(v) => onChange({ ...config, numberOfQuestions: v })}
         />
 
@@ -123,6 +131,7 @@ export function QuestionTypeRow({
           value={config.marks}
           min={1}
           max={20}
+          dynamicMax={maxMarksForRow}
           onChange={(v) => onChange({ ...config, marks: v })}
         />
       </div>

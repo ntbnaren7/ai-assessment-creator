@@ -161,7 +161,6 @@ export class GenerationOrchestrator {
       const chunkPlan = buildChunkPlan(assignment);
       logger.info("Chunk plan built", {
         chunks: chunkPlan.chunks.length,
-        isMock: chunkPlan.isMockPaper,
         mode: chunkPlan.executionMode,
       });
 
@@ -179,7 +178,7 @@ export class GenerationOrchestrator {
       await this.persistRunState(ctx);
 
       // ── 6. Execute generation ──
-      if (chunkPlan.chunks.length === 1 && !chunkPlan.isMockPaper) {
+      if (chunkPlan.chunks.length === 1) {
         return await this.generateSingleChunk(ctx, assignment, progressCallback);
       } else {
         return await this.generateChunked(ctx, assignment, progressCallback);
@@ -190,7 +189,7 @@ export class GenerationOrchestrator {
     }
   }
 
-  // ── Single Chunk (Non-Mock) ──
+  // ── Single Chunk ──
 
   private async generateSingleChunk(
     ctx: GenerationContext,
@@ -204,13 +203,6 @@ export class GenerationOrchestrator {
     const systemPrompt = ctx.strategy.buildSystemPrompt(assignment);
     const expectedSchema = zodToJsonSchema(GeneratedPaperSchema, "GeneratedPaper");
 
-    const abortController = new AbortController();
-    const timeoutId = setTimeout(() => abortController.abort(new Error("LLM request timed out")), 90_000); // 90s timeout
-
-    if (ctx.abortSignal) {
-      ctx.abortSignal.addEventListener('abort', () => abortController.abort(new Error("Generation cancelled")));
-    }
-
     const request: LLMRequest = {
       systemPrompt,
       userPrompt: "Generate the assessment JSON now.",
@@ -219,14 +211,24 @@ export class GenerationOrchestrator {
       minimumTier: ctx.strategy.getMinimumTier(),
       preferredModelId: ctx.strategy.getPreferredModel() || undefined,
       maxOutputTokens: ctx.strategy.getMaxOutputTokens(),
-      abortSignal: abortController.signal,
     };
+
+    // Fresh AbortController per attempt — prevents cascading aborts across fallback models
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(new Error("LLM request timed out")), 180_000); // 3 min
+
+    const onParentAbort = () => abortController.abort(new Error("Generation cancelled"));
+    if (ctx.abortSignal && !ctx.abortSignal.aborted) {
+      ctx.abortSignal.addEventListener('abort', onParentAbort, { once: true });
+    }
+    request.abortSignal = abortController.signal;
 
     let result;
     try {
       result = await this.llm.generateJSON<GeneratedPaperOutput>(request);
     } finally {
       clearTimeout(timeoutId);
+      ctx.abortSignal?.removeEventListener('abort', onParentAbort);
     }
     const latencyMs = Date.now() - startTime;
 
@@ -257,7 +259,7 @@ export class GenerationOrchestrator {
     return { paper: validatedPaper, metadata };
   }
 
-  // ── Chunked Generation (Mock Papers) ──
+  // ── Chunked Generation (Multi-Type) ──
 
   private async generateChunked(
     ctx: GenerationContext,
@@ -352,13 +354,6 @@ export class GenerationOrchestrator {
         const systemPrompt = ctx.strategy.buildSystemPrompt(assignment, chunkContext);
         const expectedSchema = zodToJsonSchema(GeneratedPaperSchema, "GeneratedPaper");
 
-        const abortController = new AbortController();
-        const timeoutId = setTimeout(() => abortController.abort(new Error("LLM request timed out")), 90_000);
-
-        if (ctx.abortSignal) {
-          ctx.abortSignal.addEventListener('abort', () => abortController.abort(new Error("Generation cancelled")));
-        }
-
         const request: LLMRequest = {
           systemPrompt,
           userPrompt: `Generate EXACTLY ${chunk.questionCount} questions for the "${chunk.sectionLabel}" section as a JSON paper. Only include this section.`,
@@ -367,14 +362,24 @@ export class GenerationOrchestrator {
           minimumTier: ctx.strategy.getMinimumTier(),
           preferredModelId: ctx.strategy.getPreferredModel() || undefined,
           maxOutputTokens: ctx.strategy.getMaxOutputTokens(),
-          abortSignal: abortController.signal,
         };
+
+        // Fresh AbortController per retry attempt — isolates timeout from fallback chain
+        const abortController = new AbortController();
+        const timeoutId = setTimeout(() => abortController.abort(new Error("LLM request timed out")), 180_000);
+
+        const onParentAbort = () => abortController.abort(new Error("Generation cancelled"));
+        if (ctx.abortSignal && !ctx.abortSignal.aborted) {
+          ctx.abortSignal.addEventListener('abort', onParentAbort, { once: true });
+        }
+        request.abortSignal = abortController.signal;
 
         let result;
         try {
           result = await this.llm.generateJSON<GeneratedPaperOutput>(request);
         } finally {
           clearTimeout(timeoutId);
+          ctx.abortSignal?.removeEventListener('abort', onParentAbort);
         }
         const latencyMs = Date.now() - startTime;
 

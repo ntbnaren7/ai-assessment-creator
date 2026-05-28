@@ -106,7 +106,7 @@ export function Sidebar() {
           {NAV_ITEMS.map((item) => {
             const isActive =
               item.href === "/"
-                ? pathname === "/" || pathname.startsWith("/output")
+                ? pathname === "/" || pathname.startsWith("/output") || pathname.startsWith("/create")
                 : pathname === item.href;
 
             return (

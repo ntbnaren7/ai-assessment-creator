@@ -25,7 +25,7 @@ export function MobileNavBar() {
       {navItems.map((item) => {
         const isActive =
           item.path === "/"
-            ? pathname === "/" || pathname.startsWith("/output")
+            ? pathname === "/" || pathname.startsWith("/output") || pathname.startsWith("/create")
             : pathname === item.path;
 
         return (

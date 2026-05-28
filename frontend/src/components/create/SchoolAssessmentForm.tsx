@@ -147,14 +147,27 @@ export function SchoolAssessmentForm({ onCancel }: SchoolAssessmentFormProps) {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-            {form.questionTypeRows.map((row) => (
-              <QuestionTypeRow
-                key={row.id}
-                config={row}
-                onChange={(updated) => updateQuestionTypeRow(row.id, updated)}
-                onRemove={() => removeQuestionTypeRow(row.id)}
-              />
-            ))}
+            {form.questionTypeRows.map((row) => {
+              const MAX_TOTAL_QUESTIONS = 50;
+              const MAX_TOTAL_MARKS = 100;
+              const otherRows = form.questionTypeRows.filter((r) => r.id !== row.id);
+              const otherQuestions = otherRows.reduce((s, r) => s + r.numberOfQuestions, 0);
+              const otherMarks = otherRows.reduce((s, r) => s + r.numberOfQuestions * r.marks, 0);
+              const maxQuestionsForRow = Math.max(1, MAX_TOTAL_QUESTIONS - otherQuestions);
+              const remainingMarksBudget = MAX_TOTAL_MARKS - otherMarks;
+              const maxMarksForRow = Math.max(1, Math.floor(remainingMarksBudget / row.numberOfQuestions));
+
+              return (
+                <QuestionTypeRow
+                  key={row.id}
+                  config={row}
+                  onChange={(updated) => updateQuestionTypeRow(row.id, updated)}
+                  onRemove={() => removeQuestionTypeRow(row.id)}
+                  maxQuestionsForRow={maxQuestionsForRow}
+                  maxMarksForRow={maxMarksForRow}
+                />
+              );
+            })}
           </div>
 
           <div className="question-types-footer-row">

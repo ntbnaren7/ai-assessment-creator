@@ -1,11 +1,10 @@
 /* ── Shared TypeScript types ── */
 
 export type QuestionType =
-  | "MCQ"
-  | "Short Answer"
-  | "Long Answer"
-  | "True/False"
-  | "Fill in the Blanks";
+  | "Multiple Choice Questions"
+  | "Short Questions"
+  | "Diagram/Graph-Based Questions"
+  | "Numerical Problems";
 
 export type Difficulty = "Easy" | "Moderate" | "Hard" | "Challenging";
 

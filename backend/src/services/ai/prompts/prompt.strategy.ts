@@ -3,7 +3,7 @@ import { ModelTier } from "../models/model-registry.js";
 
 /**
  * Context passed to strategy's buildSystemPrompt when generating a chunk
- * of a larger paper (e.g., one subject of a college mock).
+ * of a larger paper (e.g., one question type section of a multi-section paper).
  */
 export interface ChunkContext {
   chunkId: string;
