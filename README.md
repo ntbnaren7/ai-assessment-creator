@@ -1,142 +1,288 @@
-# 🧠 AI Assessment Creator
+# AI Assessment Creator Architecture & Orchestration
 
-> An AI-powered assessment generator that creates structured, professionally formatted question papers using Gemini AI.
+This document outlines the architecture, orchestration lifecycle, and engineering design of the AI Assessment Creator. Built as an enterprise-grade platform, this system orchestrates multi-provider Large Language Models (LLMs) to generate pedagogically rigorous examinations asynchronously.
 
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white)
-![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat&logo=redis&logoColor=white)
+The architecture is explicitly decoupled to handle long-running, unpredictable generative AI workloads via message queues, persistent state locks, and real-time WebSocket synchronization.
 
 ---
 
-## Architecture Overview
+## 1. System Architecture Overview
 
+The system operates across three distinct planes: the client (Next.js), the API Gateway (Express), and the background processing tier (Node.js/BullMQ). State is persisted in MongoDB, while Redis handles transient job queues, rate limiting, and distributed locking.
+
+```mermaid
+graph TD
+    subgraph Client Tier
+        UI[Next.js App Router]
+        WS_Client[Socket.io Client]
+    end
+
+    subgraph API Tier
+        API[Express API]
+        WS_Server[Socket.io Server]
+    end
+
+    subgraph Orchestration Tier
+        BullMQ[BullMQ Job Queue]
+        Worker[Node.js Worker]
+        LockManager[Redis Lock Manager]
+    end
+
+    subgraph Data Tier
+        MongoDB[(MongoDB Persistent State)]
+        Redis[(Redis Queue & Cache)]
+    end
+
+    subgraph AI Provider Tier
+        Cohere[Cohere API]
+        Groq[Groq API]
+        OpenRouter[OpenRouter API]
+    end
+
+    UI -->|HTTP POST| API
+    UI <-->|WebSocket| WS_Server
+    
+    API -->|Read/Write| MongoDB
+    API -->|Enqueue Job| Redis
+    
+    Redis <--> BullMQ
+    BullMQ -->|Dequeue| Worker
+    Worker <-->|Acquire/Release Lock| LockManager
+    LockManager <--> Redis
+    
+    Worker -->|Read/Write| MongoDB
+    Worker -->|Emit Progress| WS_Server
+    
+    Worker -->|Tier 1/2/3 Routing| Cohere
+    Worker -->|Tier 1/2/3 Routing| Groq
+    Worker -->|Tier 1/2/3 Routing| OpenRouter
 ```
-┌───────────────────┐       ┌────────────────────┐       ┌──────────────┐
-│   Next.js Client  │──────▶│  Express API Server │──────▶│   MongoDB    │
-│   (Zustand Store) │◀──────│  (REST + Socket.io) │       │  (Mongoose)  │
-│                   │  WS   │                     │       └──────────────┘
-└───────────────────┘       │   ┌─────────────┐   │       ┌──────────────┐
-                            │   │  BullMQ      │   │──────▶│    Redis     │
-                            │   │  Worker      │   │       │  (Job Queue) │
-                            │   └──────┬───────┘   │       └──────────────┘
-                            │          │           │
-                            │   ┌──────▼───────┐   │
-                            │   │  Gemini API  │   │
-                            │   │  (AI Gen)    │   │
-                            │   └──────────────┘   │
-                            └────────────────────┘
-```
-
-### Flow
-
-1. **Teacher submits** the assignment creation form (with optional PDF/text upload)
-2. **Express API** validates input (Zod), extracts file text (pdf-parse), saves to MongoDB, and queues a BullMQ job
-3. **BullMQ Worker** picks up the job, builds a structured prompt, calls Gemini 2.0 Flash in JSON mode
-4. **Gemini returns** strict JSON → worker validates, saves to MongoDB, emits Socket.io event
-5. **Frontend receives** the WebSocket event and renders the structured question paper
 
 ---
 
-## Tech Stack
+## 2. Core Workflows & Request Lifecycle
 
-| Layer      | Technology                                     |
-| ---------- | ---------------------------------------------- |
-| Frontend   | Next.js 15, React 19, TypeScript, Zustand      |
-| Backend    | Node.js, Express 5, TypeScript                 |
-| Database   | MongoDB (Mongoose)                             |
-| Cache/Queue| Redis, BullMQ                                  |
-| Real-time  | Socket.io (WebSocket)                          |
-| AI         | Google Gemini 2.0 Flash (free tier, JSON mode) |
-| PDF Export | html2canvas + jsPDF                            |
-| Validation | Zod (frontend + backend)                       |
-| Security   | Helmet, CORS, express-rate-limit               |
+Generative AI requests often exceed standard HTTP timeout thresholds (30s+). Therefore, generation is completely detached from the HTTP request cycle.
+
+### 2.1 Async Job Enqueueing & Execution
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Express API
+    participant MongoDB
+    participant Redis (Queue)
+    participant Worker
+    
+    Client->>Express API: POST /api/generate (Parameters)
+    Express API->>MongoDB: Create Assignment Document (Status: Pending)
+    Express API->>Redis: Enqueue Job (Queue: 'generation', Data: ID)
+    Express API-->>Client: HTTP 202 Accepted (Returns Assignment ID)
+    
+    Note over Client,Express API: HTTP Request Ends. Client polls or connects via WS.
+    
+    Worker->>Redis: Dequeue Job
+    Worker->>Redis: Acquire Lock (NX gen-lock:ID)
+    Worker->>MongoDB: Update Status (Status: Generating)
+    Worker->>Worker: Execute LLM Orchestration
+    Worker->>MongoDB: Save Final Paper (Status: Completed)
+    Worker->>Redis: Release Lock
+```
+
+### 2.2 Frontend-Backend WebSocket Synchronization
+
+Because the HTTP request terminates immediately, the frontend relies on WebSockets for real-time progress hydration.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant WebSocket Server
+    participant Worker Queue
+    
+    Client->>WebSocket Server: Connect
+    Client->>WebSocket Server: Emit 'join-room' (assignmentId)
+    WebSocket Server-->>Client: Ack 'joined'
+    
+    loop During Generation
+        Worker Queue->>WebSocket Server: Emit 'generation:progress' (Internal)
+        WebSocket Server->>Client: Broadcast 'generation:progress' (Room)
+        Client->>Client: Update Loading UI (e.g. "Generating Section A")
+    end
+    
+    Worker Queue->>WebSocket Server: Emit 'generation:complete' (Internal)
+    WebSocket Server->>Client: Broadcast 'generation:complete' (Room)
+    Client->>Client: Fetch Final Document via HTTP
+```
 
 ---
 
-## Approach
+## 3. AI Provider Orchestration Strategy
 
-- **Structured AI Output**: Gemini is called in `responseMimeType: "application/json"` mode with a detailed schema prompt. The LLM response is never rendered raw — it's parsed, validated, and stored as structured data.
-- **Background Processing**: BullMQ with Redis ensures the API responds instantly while AI generation happens asynchronously. Failed jobs retry 3 times with exponential backoff.
-- **Real-time Updates**: Socket.io rooms scoped to `assignmentId` deliver targeted status events (pending → processing → completed/failed).
-- **In-Memory File Handling**: Uploaded files are processed in-memory via Multer buffers. Only extracted text is persisted in MongoDB — no binary storage overhead.
-- **PDF Export**: Client-side PDF generation using html2canvas for rendering and jsPDF for multi-page PDF assembly.
+Relying on a single LLM provider creates a single point of failure and wastes compute resources. The `LLMOrchestrator` implements cognitive-based model routing and automatic fallbacks.
+
+### 3.1 Cognitive Tier Routing
+
+Different question types demand different levels of reasoning:
+- **Tier 3 (Lightning):** Groq (Llama 3). Used for MCQs and Short Answers. Generates hundreds of tokens per second.
+- **Tier 2 (Moderate):** Gemma 2 / Mixtral. Used for Numerical Problems requiring basic math reasoning.
+- **Tier 1 (Heavy):** Cohere (Command R) / Deepseek. Used for Long Answers and Diagram evaluation rubrics requiring deep synthesis.
+
+### 3.2 Provider Fallback Execution
+
+```mermaid
+flowchart TD
+    Start[Worker Begins Chunk Generation] --> TierCheck{Determine Required Tier}
+    TierCheck -->|Tier 3| Groq[Attempt Groq Llama 3]
+    TierCheck -->|Tier 1| Cohere[Attempt Cohere Command-R]
+    
+    Groq --> Success{Success?}
+    Cohere --> Success
+    
+    Success -->|Yes| Output[Return JSON Payload]
+    Success -->|No - HTTP 429 / Timeout| Fallback[Trigger Orchestrator Fallback]
+    
+    Fallback --> FetchEligible[Fetch next eligible provider from Registry]
+    FetchEligible --> OpenRouter[Attempt OpenRouter Secondary]
+    
+    OpenRouter --> FinalSuccess{Success?}
+    FinalSuccess -->|Yes| Output
+    FinalSuccess -->|No| Abort[Throw Orchestration Error -> BullMQ Retry]
+```
 
 ---
 
-## Setup Instructions
+## 4. Structured Output Enforcement
 
-### Prerequisites
+LLMs are highly prone to injecting markdown wrappers (`````json ... `````) or conversational text around payloads, which breaks naive `JSON.parse()`.
 
-- **Node.js** ≥ 18
-- **MongoDB** (local or Atlas)
-- **Redis** (local or cloud)
-- **Gemini API Key** (free from [Google AI Studio](https://aistudio.google.com/apikey))
+### 4.1 Generation Pipeline
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/<your-username>/ai-assessment-creator.git
-cd ai-assessment-creator
+```mermaid
+flowchart LR
+    A[Raw LLM Output] --> B[String Sanitization]
+    B --> C{Detect Markdown Block?}
+    C -->|Yes| D[Extract content inside backticks]
+    C -->|No| E[Attempt Parsing]
+    D --> E
+    E --> F[Parse JSON]
+    F --> G[Zod Schema Validation]
+    G -->|Valid| H[Accept Chunk]
+    G -->|Invalid Schema| I[Reject -> Retry LLM Call]
 ```
 
-### 2. Setup Backend
+**Optimization Note (Answer Keys):** To drastically reduce output tokens, the prompt strategy conditionally instructs the LLM to completely omit the `correctAnswer` field for non-MCQ questions or College-level papers. The Zod validation schema strictly supports this optionality to prevent validation crashes.
 
-```bash
-cd backend
-npm install
+---
+
+## 5. File Upload & Processing Pipeline
+
+```mermaid
+flowchart TD
+    Upload[Client Uploads File] --> Multer[Express Multer Middleware]
+    Multer --> Parse{File Type?}
+    Parse -->|PDF| PDFExtract[pdf-parse Extraction]
+    Parse -->|TXT| TXTExtract[Read File Buffer]
+    PDFExtract --> Sanitizer[Strip non-UTF8 / Control Chars]
+    TXTExtract --> Sanitizer
+    Sanitizer --> Truncate[Truncate to Token Limit ~15k chars]
+    Truncate --> Context[Inject into LLM Context Window]
 ```
 
-Create `.env`:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/ai-assessment-creator
-REDIS_URL=redis://localhost:6379
-GEMINI_API_KEY=your_gemini_api_key_here
+---
+
+## 6. Docker & Deployment Topology
+
+The local development environment and production build utilize a containerized microservice approach.
+
+```mermaid
+graph TD
+    subgraph Docker Host
+        subgraph ai-assessment-frontend
+            Next[Next.js Server: 3000]
+        end
+        subgraph ai-assessment-backend
+            Express[Express & WS: 5001]
+            WorkerNode[BullMQ Worker]
+        end
+        subgraph ai-assessment-redis
+            RedisDB[(Redis: 6379)]
+        end
+        subgraph ai-assessment-mongo
+            MongoDB[(MongoDB: 27017)]
+        end
+        
+        Next --> Express
+        Express <--> RedisDB
+        Express <--> MongoDB
+        WorkerNode <--> RedisDB
+        WorkerNode <--> MongoDB
+    end
+```
+
+---
+
+## 7. Operational & Engineering Decisions
+
+### 7.1 Why BullMQ and Redis?
+- **Durability:** Standard `setTimeout` or `Promise.all` in Node.js disappears if the process crashes (e.g., OOM kill). BullMQ persists the job in Redis. If the server restarts, the job is dequeued and resumed.
+- **Concurrency Control:** LLM APIs strictly rate-limit concurrent requests. BullMQ allows us to set exact concurrency limits across workers.
+
+### 7.2 Redis State Locking
+- **The Problem:** If a worker crashes midway through generation but BullMQ immediately retries the job while the original process is still somehow writing to DB, it causes race conditions (`ConcurrentRunError`).
+- **The Solution:** Implemented distributed locking using Redis `SET key value NX PX ttl`. A worker must acquire the lock before generating. If the lock is held, the retry is aborted until the lock expires or is cleared.
+
+### 7.3 Structured Output over Tools
+- **Decision:** Rather than relying on fragile OpenAI Function Calling (which some OSS models on OpenRouter struggle with), the system injects a hardcoded JSON schema definition into the system prompt and utilizes Zod for backend enforcement. This guarantees cross-provider compatibility.
+
+---
+
+## 8. Setup & Development Environment
+
+### 8.1 Prerequisites
+- Node.js `v20+`
+- Docker Engine `v24+` & Compose
+- API Keys: Cohere, Groq, OpenRouter
+
+### 8.2 Environment Configuration
+Create `.env` in both `/backend` and `/frontend`.
+
+**Backend (`/backend/.env`):**
+```ini
+PORT=5001
 NODE_ENV=development
-CORS_ORIGIN=http://localhost:3000
+CLIENT_URL=http://localhost:3000
+MONGODB_URI=mongodb://localhost:27017/ai-assessment
+REDIS_URL=redis://localhost:6379
+COHERE_API_KEY=your_key
+GROQ_API_KEY=your_key
+OPENROUTER_API_KEY=your_key
 ```
 
-Start the backend:
-```bash
-npm run dev
+**Frontend (`/frontend/.env.local`):**
+```ini
+NEXT_PUBLIC_API_URL=http://localhost:5001/api
+NEXT_PUBLIC_SOCKET_URL=http://localhost:5001
 ```
 
-### 3. Setup Frontend
+### 8.3 Bootstrapping Scripts
 
-```bash
-cd frontend
-npm install
-```
-
-Create `.env.local`:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-NEXT_PUBLIC_WS_URL=http://localhost:5000
-```
-
-Start the frontend:
-```bash
-npm run dev
-```
-
-### 4. Open the app
-
-Navigate to `http://localhost:3000`
+1. Start Infrastructure:
+   ```bash
+   docker-compose up -d
+   ```
+2. Start Backend API & Worker:
+   ```bash
+   cd backend && npm install && npm run dev
+   ```
+3. Start Frontend:
+   ```bash
+   cd frontend && npm install && npm run dev
+   ```
 
 ---
 
-## Features
+## 9. Known Limitations & Scaling Considerations
 
-- ✅ Assignment creation form with full validation
-- ✅ Drag-and-drop file upload (PDF / TXT)
-- ✅ AI question paper generation (Gemini 2.0 Flash)
-- ✅ Structured output with sections, difficulty badges, and marks
-- ✅ Real-time status updates via WebSocket
-- ✅ Background job processing with BullMQ
-- ✅ Regeneration support
-- ✅ PDF export
-- ✅ Student info section (Name, Roll No, Section)
-- ✅ Mobile responsive design
-- ✅ Dark theme with glassmorphism UI
+- **State Lock Stalls:** If a Node process crashes violently without executing `finally` blocks, a Redis generation lock may persist. A manual flush (`DEL gen-lock:<id>`) is required.
+- **Vector Search (RAG) Absence:** Currently, textbook uploads rely on a naive truncation strategy (15k characters). For large texts, a Vector Database (Pinecone/Milvus) should be introduced for semantic RAG injection.
+- **Horizontal Scaling:** The backend currently runs the Express API and the BullMQ worker in the same process. To scale production horizontally, the worker logic should be decoupled into a standalone Docker image, allowing you to run 10x Worker containers independently of the API gateways.
