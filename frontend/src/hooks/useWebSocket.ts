@@ -54,7 +54,6 @@ export function useWebSocket(assignmentId: string | null) {
 
     socket.on("status-update", async (data: StatusUpdate) => {
       console.log("📡 Status update:", data);
-      setStatusUpdate(data.status, data.message, data.progress);
 
       // If completed, fetch the full assignment (with retry for DB replication lag)
       if (data.status === "completed") {
@@ -65,13 +64,17 @@ export function useWebSocket(assignmentId: string | null) {
           if (result.success) {
             if (result.data.status !== "completed" && retries < 5) {
               retries++;
-              setTimeout(fetchFinal, 1000); // DB lag: retry in 1s
+              setTimeout(fetchFinal, 1000);
             } else {
+              // Atomically sets paper data + status to "completed" in one render
               setCurrentAssignment(result.data);
             }
           }
         };
         fetchFinal();
+      } else {
+        // Only update status directly for non-completed events (pending, processing)
+        setStatusUpdate(data.status, data.message, data.progress);
       }
     });
 
