@@ -20,6 +20,7 @@ async function bootstrap(): Promise<void> {
 
   // 3. Create Express app
   const app = express();
+  app.set("trust proxy", 1); // Trust the reverse proxy (Render) to get real client IPs
   const httpServer = createServer(app);
 
   // 4. Security & parsing middleware
