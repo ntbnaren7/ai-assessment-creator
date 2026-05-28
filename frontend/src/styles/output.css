@@ -352,12 +352,31 @@
   box-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
+.gothic-text-carousel {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+}
 
 .gothic-loader-text {
+  position: absolute;
+  width: 100%;
   font-family: var(--font-bricolage), sans-serif;
   font-size: 16px;
   font-weight: 500;
   color: var(--text-primary);
   text-align: center;
   max-width: 400px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease-in-out, transform 0.6s ease-out;
+  pointer-events: none;
+}
+
+.gothic-loader-text.active {
+  opacity: 1;
+  transform: translateY(0);
 }

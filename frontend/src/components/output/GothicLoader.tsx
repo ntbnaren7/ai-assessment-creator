@@ -19,16 +19,8 @@ export function GothicLoader() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      // Start fade out
-      setFade(false);
-      
-      // Wait for fade out to complete, then change message and fade back in
-      setTimeout(() => {
-        setMessageIndex((prev) => (prev + 1) % GOTHIC_MESSAGES.length);
-        setFade(true);
-      }, 500); // 500ms matches the CSS transition duration
-      
-    }, 3500);
+      setMessageIndex((prev) => (prev + 1) % GOTHIC_MESSAGES.length);
+    }, 3000);
 
     return () => clearInterval(timer);
   }, []);
@@ -45,15 +37,16 @@ export function GothicLoader() {
         </div>
       </div>
 
-      <p 
-        className="gothic-loader-text" 
-        style={{ 
-          opacity: fade ? 1 : 0, 
-          transition: "opacity 0.5s ease-in-out" 
-        }}
-      >
-        {GOTHIC_MESSAGES[messageIndex]}
-      </p>
+      <div className="gothic-text-carousel">
+        {GOTHIC_MESSAGES.map((msg, idx) => (
+          <p 
+            key={idx}
+            className={`gothic-loader-text ${idx === messageIndex ? "active" : ""}`}
+          >
+            {msg}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }
