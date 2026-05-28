@@ -14,7 +14,6 @@ const QuestionSchema = new Schema(
     marks: { type: Number, required: true, min: 1 },
     questionType: {
       type: String,
-      enum: ["Multiple Choice Questions", "Short Answer Questions", "Long Answer Questions", "Diagram/Graph-Based Questions", "Numerical Problems"],
       required: true,
     },
     options: { type: [String], default: undefined }, // Only for MCQ
