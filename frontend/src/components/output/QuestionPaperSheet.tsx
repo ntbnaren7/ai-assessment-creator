@@ -297,9 +297,12 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
         <div className="paper-answer-key-section">
           <h3 className="paper-answer-key-title">Answer Key:</h3>
           <ol className="paper-answer-key-list">
-            {paper.sections.flatMap(section => section.questions).map((q, qIdx) => (
+            {paper.sections
+              .flatMap(section => section.questions)
+              .filter(q => q.correctAnswer)
+              .map((q, qIdx) => (
               <li key={qIdx} value={q.questionNumber} className="paper-answer-key-item">
-                {q.correctAnswer || "No answer key available."}
+                {q.correctAnswer}
               </li>
             ))}
           </ol>
