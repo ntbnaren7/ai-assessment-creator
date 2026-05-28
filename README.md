@@ -114,6 +114,15 @@ sequenceDiagram
     Client->>Client: Fetch Final Document via HTTP
 ```
 
+### 2.3 Safe Deletion Orchestration
+
+Hard deleting an assignment in a distributed architecture requires cleaning up state across multiple layers to prevent memory leaks and API cost bleeding. When `DELETE /api/assignments/:id` is called:
+
+1. **Redis Cleanup**: The backend clears any active `gen-lock:ID` and `gen-run:ID` keys.
+2. **BullMQ Termination**: The worker queue is queried for active or pending generation jobs (`gen-ID`). If found, the job is forcibly terminated (`job.remove()`), stopping any expensive LLM API calls mid-flight.
+3. **MongoDB Deletion**: Finally, the document is securely purged from the primary database.
+```
+
 ---
 
 ## 3. AI Provider Orchestration Strategy
