@@ -78,7 +78,7 @@ export const GeneratedQuestionSchema = z
     marks: z.number().int().min(1),
     questionType: z.string().min(1),
     options: z.array(z.string()).optional(),
-    correctAnswer: z.string().optional(),
+    correctAnswer: z.string().nullish(),
   })
   .passthrough();
 
