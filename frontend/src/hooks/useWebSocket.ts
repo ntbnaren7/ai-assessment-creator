@@ -40,7 +40,11 @@ export function useWebSocket(assignmentId: string | null) {
       try {
         const result = await api.getAssignmentProgress(assignmentId);
         if (result.success) {
-          setStatusUpdate(result.data.status, result.data.progress > 0 ? `Generating... ${result.data.progress}%` : undefined);
+          setStatusUpdate(
+            result.data.status, 
+            result.data.progress > 0 ? `Generating... ${result.data.progress}%` : undefined,
+            result.data.progress
+          );
           
           if (result.data.status === "completed") {
              const full = await api.getAssignment(assignmentId) as { success: boolean; data: Assignment };
