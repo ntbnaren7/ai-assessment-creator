@@ -6,6 +6,20 @@ The architecture is explicitly decoupled to handle long-running, unpredictable g
 
 ---
 
+## Table of Contents
+1. [System Architecture Overview](#1-system-architecture-overview)
+2. [Core Workflows & Request Lifecycle](#2-core-workflows--request-lifecycle)
+3. [AI Provider Orchestration Strategy](#3-ai-provider-orchestration-strategy)
+4. [Generation Performance & Timeouts](#4-generation-performance--timeouts)
+5. [Structured Output Enforcement](#5-structured-output-enforcement)
+6. [File Upload & Processing Pipeline](#6-file-upload--processing-pipeline)
+7. [Docker & Deployment Topology](#7-docker--deployment-topology)
+8. [Operational & Engineering Decisions](#8-operational--engineering-decisions)
+9. [Setup & Development Environment](#9-setup--development-environment)
+10. [Known Limitations & Scaling Considerations](#10-known-limitations--scaling-considerations)
+
+---
+
 ## 1. System Architecture Overview
 
 The system operates across three distinct planes: the client (Next.js), the API Gateway (Express), and the background processing tier (Node.js/BullMQ). State is persisted in MongoDB, while Redis handles transient job queues, rate limiting, and distributed locking.
@@ -165,7 +179,32 @@ flowchart TD
 
 ---
 
-## 4. Structured Output Enforcement
+## 4. Generation Performance & Timeouts
+
+Generating a full assessment requires massive token outputs. The backend is designed with strict performance budgets and safety mechanisms to handle this.
+
+### 4.1 Token Generation Speeds & Chunking
+- A typical 30-question MCQ paper requires outputting **~4,500 tokens**.
+- Modern models (like Cohere Command R or Llama 3) generate at roughly **50 to 80 tokens per second**.
+- If a user requests a single question type (e.g., just 30 MCQs), the `ChunkPlanner` groups it into a **single massive chunk**, taking **45 to 90 seconds** to complete.
+- If multiple question types are requested, the planner breaks them into smaller sequential chunks, updating the UI progress incrementally.
+- To prevent UI freezing during single massive chunks, the frontend utilizes an **Asymptotic Progress Simulation** that crawls the progress bar forward autonomously until the backend syncs.
+
+### 4.2 The 3-Minute Hard Timeout & Abort Cascade
+To protect server memory from hanging AI API requests, the orchestrator enforces a strict **3-minute (`180,000ms`) timeout** per chunk. 
+If an AI provider (e.g., Cohere) experiences severe degradation and takes longer than 3 minutes, the following sequence occurs:
+1. The orchestrator triggers an `AbortController`.
+2. The primary request is instantly killed with a `"LLM request timed out"` or `"User aborted a request"` error.
+3. The orchestrator attempts to cascade to fallback models (Deepseek, Llama, Gemma).
+4. Because the global 3-minute timer has expired, the fallback models are instantly aborted in the same millisecond (`APIUserAbortError: Request was aborted`).
+5. The `LLMOrchestrator` officially fails the attempt.
+6. The background worker (BullMQ) catches the failure and **automatically schedules a full retry** (Attempt 2 of 3).
+
+This mechanism ensures the system is self-healing and never permanently locks up during provider outages.
+
+---
+
+## 5. Structured Output Enforcement
 
 LLMs are highly prone to injecting markdown wrappers (`````json ... `````) or conversational text around payloads, which breaks naive `JSON.parse()`.
 
@@ -188,7 +227,7 @@ flowchart LR
 
 ---
 
-## 5. File Upload & Processing Pipeline
+## 6. File Upload & Processing Pipeline
 
 ```mermaid
 flowchart TD
@@ -204,7 +243,7 @@ flowchart TD
 
 ---
 
-## 6. Docker & Deployment Topology
+## 7. Docker & Deployment Topology
 
 The local development environment and production build utilize a containerized microservice approach.
 
@@ -235,7 +274,7 @@ graph TD
 
 ---
 
-## 7. Operational & Engineering Decisions
+## 8. Operational & Engineering Decisions
 
 ### 7.1 Why BullMQ and Redis?
 - **Durability:** Standard `setTimeout` or `Promise.all` in Node.js disappears if the process crashes (e.g., OOM kill). BullMQ persists the job in Redis. If the server restarts, the job is dequeued and resumed.
@@ -250,7 +289,7 @@ graph TD
 
 ---
 
-## 8. Setup & Development Environment
+## 9. Setup & Development Environment
 
 ### 8.1 Prerequisites
 - Node.js `v20+`
@@ -295,7 +334,7 @@ NEXT_PUBLIC_SOCKET_URL=http://localhost:5001
 
 ---
 
-## 9. Known Limitations & Scaling Considerations
+## 10. Known Limitations & Scaling Considerations
 
 - **State Lock Stalls:** If a Node process crashes violently without executing `finally` blocks, a Redis generation lock may persist. A manual flush (`DEL gen-lock:<id>`) is required.
 - **Vector Search (RAG) Absence:** Currently, textbook uploads rely on a naive truncation strategy (15k characters). For large texts, a Vector Database (Pinecone/Milvus) should be introduced for semantic RAG injection.
