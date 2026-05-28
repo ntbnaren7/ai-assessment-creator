@@ -56,15 +56,21 @@ export function useWebSocket(assignmentId: string | null) {
       console.log("📡 Status update:", data);
       setStatusUpdate(data.status, data.message);
 
-      // If completed, fetch the full assignment data with the generated paper
+      // If completed, fetch the full assignment (with retry for DB replication lag)
       if (data.status === "completed") {
-        const result = (await api.getAssignment(assignmentId)) as {
-          success: boolean;
-          data: Assignment;
+        let retries = 0;
+        const fetchFinal = async () => {
+          const result = (await api.getAssignment(assignmentId)) as { success: boolean; data: Assignment };
+          if (result.success) {
+            if (result.data.status !== "completed" && retries < 5) {
+              retries++;
+              setTimeout(fetchFinal, 1000); // DB lag: retry in 1s
+            } else {
+              setCurrentAssignment(result.data);
+            }
+          }
         };
-        if (result.success) {
-          setCurrentAssignment(result.data);
-        }
+        fetchFinal();
       }
     });
 
