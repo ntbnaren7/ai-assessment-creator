@@ -5,6 +5,7 @@ import {
   listAssignments,
   regenerateAssignment,
   getAssignmentProgress,
+  deleteAssignment,
 } from "../controllers/index.js";
 import { validateBody, upload } from "../middlewares/index.js";
 import { CreateAssignmentSchema } from "../utils/validation.js";
@@ -54,5 +55,8 @@ router.post("/:id/regenerate", regenerateAssignment);
 
 // GET /api/assignments/:id/progress — Get current progress state
 router.get("/:id/progress", getAssignmentProgress);
+
+// DELETE /api/assignments/:id — Delete an assignment and clean up background jobs
+router.delete("/:id", deleteAssignment);
 
 export default router;

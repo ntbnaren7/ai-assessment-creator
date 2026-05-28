@@ -4,4 +4,5 @@ export {
   listAssignments,
   regenerateAssignment,
   getAssignmentProgress,
+  deleteAssignment,
 } from "./assignmentController.js";

@@ -228,3 +228,46 @@ export async function getAssignmentProgress(
     next(error);
   }
 }
+
+/**
+ * DELETE /api/assignments/:id
+ * Hard delete an assignment, cancelling active jobs and clearing Redis state.
+ */
+export async function deleteAssignment(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { id } = req.params;
+    
+    // 1. Clear Redis distributed state
+    const redis = getRedisConnection();
+    await redis.del(`gen-lock:${id}`);
+    await redis.del(`gen-run:${id}`);
+
+    // 2. Terminate active/pending BullMQ background jobs
+    // We already import getAssessmentQueue from ../jobs/queue.js at the top (used by regenerate)
+    const { getAssessmentQueue } = await import("../jobs/queue.js");
+    const queue = getAssessmentQueue();
+    const job = await queue.getJob(`gen-${id}`);
+    if (job) {
+      await job.remove();
+    }
+
+    // 3. Delete from MongoDB
+    const assignment = await Assignment.findByIdAndDelete(id);
+    
+    if (!assignment) {
+      res.status(404).json({ success: false, message: "Assignment not found" });
+      return;
+    }
+
+    res.json({
+      success: true,
+      message: "Assignment successfully deleted and background processes terminated",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
