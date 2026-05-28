@@ -16,7 +16,6 @@ export function getAssessmentQueue(): Queue {
           type: "exponential",
           delay: 2000,
         },
-        timeout: 120000, // 120 seconds hard timeout
         removeOnComplete: { count: 100 },
         removeOnFail: { count: 50 },
       },
