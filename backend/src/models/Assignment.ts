@@ -70,6 +70,7 @@ export interface IAssignment extends Document {
   fileContent: string | null; // Extracted text from uploaded file
   status: "pending" | "processing" | "completed" | "failed";
   generatedPaper: typeof GeneratedPaperSchema | null;
+  generationMetadata?: Record<string, any>;
   errorMessage: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -111,6 +112,7 @@ const AssignmentSchema = new Schema<IAssignment>(
       default: "pending",
     },
     generatedPaper: { type: GeneratedPaperSchema, default: null },
+    generationMetadata: { type: Schema.Types.Mixed, default: null },
     errorMessage: { type: String, default: null },
   },
   {

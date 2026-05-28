@@ -1,13 +1,14 @@
 import { Groq } from 'groq-sdk';
 import { ILLMProvider, LLMRequest, LLMResponse, ModelCapability, ProviderConfig } from '../types.js';
+import { getModelsForProvider } from '../models/model-registry.js';
 
 export class GroqProvider implements ILLMProvider {
   public name = 'Groq';
   private client: Groq | null = null;
   private config: ProviderConfig;
 
-  // The default models we will use
-  private readonly DEFAULT_MODEL = 'llama-3.3-70b-versatile'; 
+  // Fallback only — orchestrator should always specify modelOverride
+  private readonly FALLBACK_MODEL = 'llama-3.3-70b-versatile'; 
   
   constructor(config: ProviderConfig) {
     this.config = config;
@@ -26,11 +27,16 @@ export class GroqProvider implements ILLMProvider {
     return true; 
   }
 
-  public async generate(request: LLMRequest): Promise<LLMResponse> {
+  public getAvailableModels(): string[] {
+    return getModelsForProvider('groq').map((m) => m.id);
+  }
+
+  public async generate(request: LLMRequest, modelOverride?: string): Promise<LLMResponse> {
     if (!this.client) {
       throw new Error('Groq client not initialized (missing API key)');
     }
 
+    const model = modelOverride || this.FALLBACK_MODEL;
     const startTime = Date.now();
     
     // Construct messages
@@ -46,10 +52,11 @@ export class GroqProvider implements ILLMProvider {
     try {
       const chatCompletion = await this.client.chat.completions.create({
         messages,
-        model: this.DEFAULT_MODEL,
+        model,
         temperature: request.temperature ?? 0.7,
         response_format: responseFormat,
-      });
+        ...(request.maxOutputTokens ? { max_tokens: request.maxOutputTokens } : {}),
+      }, { signal: request.abortSignal });
 
       const latencyMs = Date.now() - startTime;
       const content = chatCompletion.choices[0]?.message?.content || '';
@@ -68,7 +75,7 @@ export class GroqProvider implements ILLMProvider {
       };
 
     } catch (error) {
-      console.error(`[GroqProvider] Error during generation:`, error);
+      console.error(`[GroqProvider] Error during generation (model: ${model}):`, error);
       throw error;
     }
   }

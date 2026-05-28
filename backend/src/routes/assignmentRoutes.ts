@@ -4,6 +4,7 @@ import {
   getAssignment,
   listAssignments,
   regenerateAssignment,
+  getAssignmentProgress,
 } from "../controllers/index.js";
 import { validateBody, upload } from "../middlewares/index.js";
 import { CreateAssignmentSchema } from "../utils/validation.js";
@@ -48,7 +49,10 @@ router.get("/", listAssignments);
 // GET /api/assignments/:id — Get a single assignment with generated paper
 router.get("/:id", getAssignment);
 
-// POST /api/assignments/:id/regenerate — Regenerate the question paper
+// GET /api/assignments/:id/regenerate — Regenerate the question paper
 router.post("/:id/regenerate", regenerateAssignment);
+
+// GET /api/assignments/:id/progress — Get current progress state
+router.get("/:id/progress", getAssignmentProgress);
 
 export default router;

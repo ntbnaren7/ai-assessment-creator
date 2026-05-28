@@ -32,9 +32,24 @@ export function useWebSocket(assignmentId: string | null) {
       reconnectionDelay: 1000,
     });
 
-    socket.on("connect", () => {
+    socket.on("connect", async () => {
       console.log("🔌 WebSocket connected");
       socket.emit("join-assignment", assignmentId);
+
+      // Reconcile progress in case we missed events while disconnected
+      try {
+        const result = await api.getAssignmentProgress(assignmentId);
+        if (result.success) {
+          setStatusUpdate(result.data.status, result.data.progress > 0 ? `Generating... ${result.data.progress}%` : undefined);
+          
+          if (result.data.status === "completed") {
+             const full = await api.getAssignment(assignmentId) as { success: boolean; data: Assignment };
+             if (full.success) setCurrentAssignment(full.data);
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to reconcile progress:", e);
+      }
     });
 
     socket.on("status-update", async (data: StatusUpdate) => {

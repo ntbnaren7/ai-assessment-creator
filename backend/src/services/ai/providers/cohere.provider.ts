@@ -1,5 +1,6 @@
 import { CohereClient } from 'cohere-ai';
 import { ILLMProvider, LLMRequest, LLMResponse, ModelCapability, ProviderConfig } from '../types.js';
+import { getModelsForProvider } from '../models/model-registry.js';
 
 export class CohereProvider implements ILLMProvider {
   public name = 'Cohere';
@@ -27,20 +28,25 @@ export class CohereProvider implements ILLMProvider {
     return true; 
   }
 
-  public async generate(request: LLMRequest): Promise<LLMResponse> {
+  public getAvailableModels(): string[] {
+    return getModelsForProvider('cohere').map((m) => m.id);
+  }
+
+  public async generate(request: LLMRequest, modelOverride?: string): Promise<LLMResponse> {
     if (!this.client) {
       throw new Error('Cohere client not initialized (missing API key)');
     }
 
     const startTime = Date.now();
+    const modelToUse = modelOverride || this.DEFAULT_MODEL;
 
     try {
       const response = await this.client.chat({
-        model: this.DEFAULT_MODEL,
+        model: modelToUse,
         preamble: request.systemPrompt,
         message: request.userPrompt,
         temperature: request.temperature ?? 0.7,
-      });
+      }, { abortSignal: request.abortSignal });
 
       const latencyMs = Date.now() - startTime;
       const content = response.text || '';
@@ -51,7 +57,7 @@ export class CohereProvider implements ILLMProvider {
       return {
         content,
         providerName: this.name,
-        modelUsed: this.DEFAULT_MODEL,
+        modelUsed: modelToUse,
         latencyMs,
         usage: usage ? {
           promptTokens: usage.inputTokens || 0,

@@ -1,13 +1,14 @@
 import OpenAI from 'openai';
 import { ILLMProvider, LLMRequest, LLMResponse, ModelCapability, ProviderConfig } from '../types.js';
+import { getModelsForProvider } from '../models/model-registry.js';
 
 export class OpenRouterProvider implements ILLMProvider {
   public name = 'OpenRouter';
   private client: OpenAI | null = null;
   private config: ProviderConfig;
 
-  // We can target specific free models or let it fallback
-  private readonly DEFAULT_MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
+  // Fallback only — orchestrator should always specify modelOverride
+  private readonly FALLBACK_MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
 
   constructor(config: ProviderConfig) {
     this.config = config;
@@ -32,11 +33,16 @@ export class OpenRouterProvider implements ILLMProvider {
     return true; 
   }
 
-  public async generate(request: LLMRequest): Promise<LLMResponse> {
+  public getAvailableModels(): string[] {
+    return getModelsForProvider('openrouter').map((m) => m.id);
+  }
+
+  public async generate(request: LLMRequest, modelOverride?: string): Promise<LLMResponse> {
     if (!this.client) {
       throw new Error('OpenRouter client not initialized (missing API key)');
     }
 
+    const model = modelOverride || this.FALLBACK_MODEL;
     const startTime = Date.now();
 
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
@@ -50,11 +56,12 @@ export class OpenRouterProvider implements ILLMProvider {
 
     try {
       const chatCompletion = await this.client.chat.completions.create({
-        model: this.DEFAULT_MODEL,
+        model,
         messages,
         temperature: request.temperature ?? 0.7,
         response_format: responseFormat,
-      });
+        ...(request.maxOutputTokens ? { max_tokens: request.maxOutputTokens } : {}),
+      }, { signal: request.abortSignal });
 
       const latencyMs = Date.now() - startTime;
       const content = chatCompletion.choices[0]?.message?.content || '';
@@ -73,7 +80,7 @@ export class OpenRouterProvider implements ILLMProvider {
       };
 
     } catch (error) {
-      console.error(`[OpenRouterProvider] Error during generation:`, error);
+      console.error(`[OpenRouterProvider] Error during generation (model: ${model}):`, error);
       throw error;
     }
   }

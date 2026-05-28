@@ -93,3 +93,12 @@ export async function deleteAssignment(id: string) {
     method: "DELETE",
   });
 }
+
+/**
+ * Get the current progress of a generating assignment.
+ */
+export async function getAssignmentProgress(id: string) {
+  return apiClient<{ success: boolean; data: { progress: number; status: import("@/types").AssignmentStatus } }>(
+    `/assignments/${id}/progress`
+  );
+}

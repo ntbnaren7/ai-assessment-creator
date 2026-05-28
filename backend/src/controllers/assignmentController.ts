@@ -3,6 +3,8 @@ import { Assignment } from "../models/index.js";
 import { extractTextFromFile } from "../services/index.js";
 import { addGenerationJob } from "../jobs/index.js";
 import { CreateAssignmentInput } from "../utils/validation.js";
+import { loadRun } from "../services/ai/generation/generation-run.js";
+import fs from "fs/promises";
 
 /**
  * POST /api/assignments
@@ -13,13 +15,16 @@ export async function createAssignment(
   res: Response,
   next: NextFunction
 ): Promise<void> {
+  let uploadedFilePath: string | null = null;
+  
   try {
     const body = req.body as CreateAssignmentInput;
 
     // Extract text from uploaded file (if present)
     let fileContent: string | null = null;
     if (req.file) {
-      fileContent = await extractTextFromFile(req.file.buffer, req.file.mimetype);
+      uploadedFilePath = req.file.path;
+      fileContent = await extractTextFromFile(req.file.path, req.file.mimetype);
     }
 
     // Create the assignment document in MongoDB
@@ -51,6 +56,15 @@ export async function createAssignment(
     });
   } catch (error) {
     next(error);
+  } finally {
+    if (uploadedFilePath) {
+      try {
+        await fs.unlink(uploadedFilePath);
+      } catch (cleanupError) {
+        // Log error but do not fail the request if cleanup fails
+        console.error(`Failed to cleanup temp file: ${uploadedFilePath}`, cleanupError);
+      }
+    }
   }
 }
 
@@ -144,6 +158,64 @@ export async function regenerateAssignment(
       data: {
         assignmentId: assignment._id,
         status: "pending",
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /api/assignments/:id/progress
+ * Polls the current generation progress directly from Redis.
+ */
+export async function getAssignmentProgress(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { id } = req.params;
+    const assignment = await Assignment.findById(id).select("status");
+
+    if (!assignment) {
+      res.status(404).json({ success: false, message: "Assignment not found" });
+      return;
+    }
+
+    if (assignment.status === "completed") {
+      res.json({ success: true, data: { progress: 100, status: "completed" } });
+      return;
+    }
+
+    if (assignment.status === "failed") {
+      res.json({ success: true, data: { progress: 0, status: "failed" } });
+      return;
+    }
+
+    // Status is 'pending' or 'processing', check Redis run state
+    const run = await loadRun(id as string);
+    if (!run) {
+      res.json({ success: true, data: { progress: 0, status: assignment.status } });
+      return;
+    }
+
+    let progress = 0;
+    
+    if (run.totalChunks > 0) {
+      progress = Math.round((run.completedChunkIds.length / run.totalChunks) * 100);
+    }
+
+    // Ensure it doesn't return 100 if we are still assembling
+    if (progress >= 100 && run.status !== "completed") {
+      progress = 99; // Cap at 99 until DB sets to completed
+    }
+
+    res.json({
+      success: true,
+      data: {
+        progress,
+        status: assignment.status,
       },
     });
   } catch (error) {

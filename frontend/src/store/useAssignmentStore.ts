@@ -351,7 +351,7 @@ interface AssignmentState {
   statusMessage: string | null;
   isLoading: boolean;
   fetchAssignment: (id: string) => Promise<void>;
-  setStatusUpdate: (status: AssignmentStatus, message: string) => void;
+  setStatusUpdate: (status: AssignmentStatus, message?: string | null) => void;
   setCurrentAssignment: (assignment: Assignment) => void;
 
   // Regeneration
@@ -710,7 +710,7 @@ export const useAssignmentStore = create<AssignmentState>()(
       },
 
       setStatusUpdate: (status, message) =>
-        set({ currentStatus: status, statusMessage: message }, false, "statusUpdate"),
+        set({ currentStatus: status, statusMessage: message || null }, false, "statusUpdate"),
 
       setCurrentAssignment: (assignment) =>
         set({ currentAssignment: assignment, currentStatus: assignment.status }, false, "setCurrentAssignment"),

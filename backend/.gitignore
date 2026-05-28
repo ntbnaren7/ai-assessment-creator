@@ -1,0 +1,37 @@
+# =========================================
+# Dependencies
+# =========================================
+# Why: node_modules contains binary bindings tied to the host OS. Never track.
+node_modules/
+
+# =========================================
+# Build Output
+# =========================================
+# Why: Transpiled TS must be ignored to prevent massive merge conflicts.
+dist/
+build/
+*.tsbuildinfo
+
+# =========================================
+# Runtime State & Uploads
+# =========================================
+# Why: The uploads folder will contain user PII/PDFs. Tracking this is a critical security violation.
+uploads/*
+!uploads/.gitignore
+
+# =========================================
+# Environment Secrets
+# =========================================
+# Why: Hardcoded keys (GROQ, OpenAI, etc.) lead to immediate compromise.
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================================
+# Logs
+# =========================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

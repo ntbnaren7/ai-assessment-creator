@@ -1,13 +1,17 @@
 import pdf from "pdf-parse";
 
+import fs from "fs/promises";
+
 /**
- * Extracts text content from an uploaded file buffer.
+ * Extracts text content from an uploaded file on disk.
  * Supports PDF and plain text files.
  */
 export async function extractTextFromFile(
-  buffer: Buffer,
+  filePath: string,
   mimetype: string
 ): Promise<string> {
+  const buffer = await fs.readFile(filePath);
+
   if (mimetype === "text/plain") {
     return buffer.toString("utf-8").trim();
   }

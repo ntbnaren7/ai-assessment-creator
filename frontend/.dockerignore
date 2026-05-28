@@ -1,0 +1,12 @@
+# Why: To leverage Next.js "standalone" output effectively, we must prevent local .next caches and node_modules from ruining the Docker layer cache.
+.git
+.gitignore
+.dockerignore
+node_modules
+npm-debug.log
+.next
+out
+.env
+.env.local
+Dockerfile
+README.md

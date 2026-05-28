@@ -1,0 +1,12 @@
+# Why: Docker needs a pristine build context. 
+# Sending node_modules to the Docker daemon slows down the build significantly and risks pulling in macOS binaries instead of Linux ones.
+.git
+.gitignore
+.dockerignore
+node_modules
+npm-debug.log
+dist
+.env
+uploads
+Dockerfile
+README.md

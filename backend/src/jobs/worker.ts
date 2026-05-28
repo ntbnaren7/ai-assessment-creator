@@ -44,7 +44,22 @@ export function startWorker(): Worker {
 
       // 2. Call AI Service to generate the paper
       const startTime = Date.now();
-      const generatedPaper = await generateQuestionPaper(assignment);
+      
+      const progressCallback = (message: string, completed: number, total: number) => {
+        io.to(assignmentId).emit("status-update", {
+          assignmentId,
+          status: "processing",
+          message,
+          progress: Math.round((completed / total) * 100),
+        });
+      };
+
+      const { paper: generatedPaper, metadata } = await generateQuestionPaper(
+        assignment,
+        job.id!,
+        progressCallback
+      );
+      
       const durationMs = Date.now() - startTime;
 
       log.info("AI generation completed", {
@@ -52,11 +67,32 @@ export function startWorker(): Worker {
         sections: (generatedPaper as { sections?: unknown[] }).sections?.length,
       });
 
-      // 3. Save the result
+      // 3. Save the result with retry logic
       assignment.generatedPaper = generatedPaper as unknown as typeof assignment.generatedPaper;
+      assignment.generationMetadata = metadata;
       assignment.status = "completed";
       assignment.errorMessage = null;
-      await assignment.save();
+      
+      let saveAttempts = 0;
+      let lastSaveError: any;
+      while (saveAttempts < 3) {
+        try {
+          await assignment.save();
+          lastSaveError = null;
+          break; // Success
+        } catch (err) {
+          saveAttempts++;
+          lastSaveError = err;
+          log.warn(`Failed to save assignment (attempt ${saveAttempts}/3)`, { error: (err as Error).message });
+          if (saveAttempts < 3) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * saveAttempts));
+          }
+        }
+      }
+
+      if (lastSaveError) {
+        throw new Error(`Failed to save completed assignment after 3 attempts: ${lastSaveError.message}`);
+      }
 
       // 4. Notify client: completed
       io.to(assignmentId).emit("status-update", {

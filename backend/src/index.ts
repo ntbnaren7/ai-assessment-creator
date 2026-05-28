@@ -3,7 +3,8 @@ import { createServer } from "http";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import { config, validateConfig, connectDatabase } from "./config/index.js";
+import { RedisStore } from "rate-limit-redis";
+import { config, validateConfig, connectDatabase, getRedisConnection } from "./config/index.js";
 import { errorHandler } from "./middlewares/index.js";
 import { initializeSocket } from "./websockets/index.js";
 import { startWorker } from "./jobs/index.js";
@@ -34,6 +35,9 @@ async function bootstrap(): Promise<void> {
 
   // 5. Rate limiting
   const limiter = rateLimit({
+    store: new RedisStore({
+      sendCommand: async (...args: string[]) => (await getRedisConnection().call(args[0], ...args.slice(1))) as any,
+    }),
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per window
     standardHeaders: true,
