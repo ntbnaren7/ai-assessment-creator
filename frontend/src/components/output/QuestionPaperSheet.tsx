@@ -299,9 +299,9 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
           <ol className="paper-answer-key-list">
             {paper.sections
               .flatMap(section => section.questions)
-              .filter(q => q.correctAnswer)
-              .map((q, qIdx) => (
-              <li key={qIdx} value={q.questionNumber} className="paper-answer-key-item">
+              .filter((q): q is typeof q & { correctAnswer: string } => Boolean(q.correctAnswer))
+              .map((q) => (
+              <li key={`ans-${q.questionNumber}`} value={q.questionNumber} className="paper-answer-key-item">
                 {q.correctAnswer}
               </li>
             ))}
