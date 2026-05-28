@@ -114,6 +114,11 @@ sequenceDiagram
     Client->>Client: Fetch Final Document via HTTP
 ```
 
+**Database Replication Lag Mitigation:**
+Because the architecture uses a distributed MongoDB Replica Set, a Read-after-Write consistency race condition can occur when the WebSocket `completed` event triggers an instant HTTP GET request before the database fully syncs the completed state across nodes. 
+
+To mitigate this, the frontend implements a **Retry with Exponential Backoff** architecture. If the fetched document returns a `processing` status immediately after a `completed` socket event, the client will wait 1,000ms and retry, ensuring perfect state reconciliation without requiring strict primary read preferences on the database.
+
 ### 2.3 Safe Deletion Orchestration
 
 Hard deleting an assignment in a distributed architecture requires cleaning up state across multiple layers to prevent memory leaks and API cost bleeding. When `DELETE /api/assignments/:id` is called:
