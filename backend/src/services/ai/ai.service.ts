@@ -87,6 +87,15 @@ SPECIFICATIONS:
     prompt += `- Additional Instructions from Teacher: ${assignment.additionalInstructions}\n`;
   }
 
+  if (assignment.subject && assignment.subject.toLowerCase().includes("mock paper")) {
+    prompt += `
+MOCK PAPER GUIDELINES (CRITICAL):
+- What the Paper Feels Like: Deep conceptual traps, Multi-step reasoning, High cognitive fatigue, Designed to destroy rote learners.
+- Pedagogical Focus: It's less about syllabus completion and more about abstraction, mental stamina, error control, and pattern recognition.
+- Strictly adhere to these guidelines for EVERY question generated.
+`;
+  }
+
   if (assignment.fileContent) {
     prompt += `
 REFERENCE MATERIAL (use this as the knowledge base for generating questions):

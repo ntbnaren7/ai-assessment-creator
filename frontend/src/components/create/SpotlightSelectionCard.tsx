@@ -55,7 +55,7 @@ export function SpotlightSelectionCard({ onSelect, onCancel }: SpotlightSelectio
           >
             <div className="option-content">
               <h3>Competitive Exams</h3>
-              <p>NEET, NEET Advanced, JEE Mains, and JEE Advanced</p>
+              <p>NEET, JEE Mains and Advanced</p>
             </div>
           </div>
         </div>

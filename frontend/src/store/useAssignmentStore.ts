@@ -215,6 +215,86 @@ const MOCK_COLLEGE_ASSIGNMENT: Assignment = {
   }
 };
 
+const MOCK_COMPETITIVE_ASSIGNMENT: Assignment = {
+  _id: "mock-competitive",
+  title: "Allen Career Institute Mock Test",
+  subject: "JEE Advanced - Mock Paper",
+  grade: "Competitive / N/A",
+  dueDate: new Date().toISOString().split("T")[0],
+  questionTypes: ["MCQ"],
+  numberOfQuestions: 25,
+  totalMarks: 100,
+  duration: "3 Hours",
+  additionalInstructions: "Generate a question paper for 3 hour exam duration..",
+  fileContent: null,
+  status: "completed",
+  errorMessage: null,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  generatedPaper: {
+    title: "Allen Career Institute Mock Test",
+    subject: "JEE Advanced - Mock Paper",
+    totalMarks: 100,
+    duration: "3 Hours",
+    generalInstructions: [
+      "All questions are compulsory.",
+      "Each question carries 4 marks.",
+      "Negative marking applies: -1 for every incorrect answer."
+    ],
+    sections: [
+      {
+        sectionLabel: "A",
+        sectionTitle: "Multiple Choice Questions",
+        instruction: "Choose the correct option. (25 x 4 = 100 Marks)",
+        questions: [
+          {
+            questionNumber: 1,
+            questionText: "A solid cylinder of mass M and radius R rolls without slipping down an inclined plane of length L and height h. What is the speed of its center of mass when it reaches the bottom?",
+            difficulty: "Hard",
+            marks: 4,
+            questionType: "MCQ",
+            options: [
+              "(a) √(gh)",
+              "(b) √(4gh/3)",
+              "(c) √(2gh)",
+              "(d) √(gh/2)"
+            ],
+            correctAnswer: "(b) √(4gh/3)"
+          },
+          {
+            questionNumber: 2,
+            questionText: "Which of the following molecules has the highest dipole moment, assuming typical idealized geometries?",
+            difficulty: "Moderate",
+            marks: 4,
+            questionType: "MCQ",
+            options: [
+              "(a) CH4",
+              "(b) NH3",
+              "(c) H2O",
+              "(d) CO2"
+            ],
+            correctAnswer: "(c) H2O"
+          },
+          {
+            questionNumber: 3,
+            questionText: "Let f(x) = ∫(from 0 to x) (t^2 - t + 1) e^t dt. What is the value of f''(0)?",
+            difficulty: "Hard",
+            marks: 4,
+            questionType: "MCQ",
+            options: [
+              "(a) -1",
+              "(b) 0",
+              "(c) 1",
+              "(d) 2"
+            ],
+            correctAnswer: "(b) 0"
+          }
+        ]
+      }
+    ]
+  }
+};
+
 /* ── Question Type Row Config ── */
 export interface QuestionTypeConfig {
   id: string;
@@ -538,7 +618,7 @@ export const useAssignmentStore = create<AssignmentState>()(
       fetchAssignment: async (id) => {
         set({ isLoading: true }, false, "fetchStart");
         try {
-          if (id === "mock-assignment" || id === "mock-college" || id === "1") {
+          if (id === "mock-assignment" || id === "mock-college" || id === "mock-competitive" || id === "1") {
             throw new Error("Simulate API failure for mock fallback");
           }
 
@@ -568,6 +648,20 @@ export const useAssignmentStore = create<AssignmentState>()(
               },
               false,
               "fetchSuccessMockCollege"
+            );
+            return;
+          }
+
+          if (id === "mock-competitive") {
+            set(
+              {
+                currentAssignment: MOCK_COMPETITIVE_ASSIGNMENT,
+                currentStatus: "completed",
+                isLoading: false,
+                statusMessage: null,
+              },
+              false,
+              "fetchSuccessMockCompetitive"
             );
             return;
           }

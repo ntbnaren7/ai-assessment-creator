@@ -134,6 +134,8 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
     grade.toLowerCase().includes("college")
   );
 
+  const isCompetitive = grade && grade.toLowerCase().includes("competitive");
+
   let displayTitle = title || paper.title;
   let department = "";
   if (isCollege && displayTitle && displayTitle.includes(" - ")) {
@@ -152,11 +154,11 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
 
       {/* Subject & Class */}
       <p className="paper-sub-header">
-        <strong>{isCollege ? paper.subject : `Subject: ${paper.subject}`}</strong>
+        <strong>{paper.subject}</strong>
       </p>
       {grade && (
         <p className="paper-sub-header">
-          <strong>{isCollege ? formatCollegeGrade(grade) : `Class: ${grade}`}</strong>
+          <strong>{isCollege ? formatCollegeGrade(grade) : grade}</strong>
         </p>
       )}
 
@@ -179,7 +181,7 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
             <p>Part B carries 80 marks.</p>
           )}
         </div>
-      ) : paper.generalInstructions && paper.generalInstructions.length > 0 ? (
+      ) : isCompetitive ? null : paper.generalInstructions && paper.generalInstructions.length > 0 ? (
         <div className="paper-instructions">
           {paper.generalInstructions.map((inst, idx) => (
             <p key={idx}>{inst}</p>
@@ -201,10 +203,12 @@ export function QuestionPaperSheet({ paper, title, grade }: QuestionPaperSheetPr
           {isCollege ? "Register Number:" : "Roll Number:"}
           <div className="paper-student-line" />
         </div>
-        <div className="paper-student-field">
-          {isCollege ? "Section:" : `Class: ${grade || ""} Section:`}
-          <div className="paper-student-line" />
-        </div>
+        {!isCompetitive && (
+          <div className="paper-student-field">
+            {isCollege ? "Section:" : `Class: ${grade || ""} Section:`}
+            <div className="paper-student-line" />
+          </div>
+        )}
       </div>
 
       {/* Sections */}

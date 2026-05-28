@@ -9,13 +9,18 @@ interface CompetitiveAssessmentFormProps {
   onCancel: () => void;
 }
 
-const EXAM_TYPES = ["JEE Mains", "JEE Advanced", "NEET", "NEET Advanced"];
+const EXAM_TYPES = ["JEE Mains", "JEE Advanced", "NEET UG"];
 
 const EXAM_SUBJECTS: Record<string, string[]> = {
-  "JEE Mains": ["Physics", "Chemistry", "Mathematics"],
-  "JEE Advanced": ["Physics", "Chemistry", "Mathematics"],
-  "NEET": ["Physics", "Chemistry", "Biology", "Botany", "Zoology"],
-  "NEET Advanced": ["Physics", "Chemistry", "Biology", "Botany", "Zoology"],
+  "JEE Mains": ["Physics", "Chemistry", "Mathematics", "Mock Paper"],
+  "JEE Advanced": ["Physics", "Chemistry", "Mathematics", "Mock Paper"],
+  "NEET UG": ["Physics", "Chemistry", "Biology", "Botany", "Zoology", "Mock Paper"],
+};
+
+const MOCK_PAPER_QUESTIONS: Record<string, number> = {
+  "JEE Mains": 75,
+  "JEE Advanced": 54,
+  "NEET UG": 180,
 };
 
 export function CompetitiveAssessmentForm({ onCancel }: CompetitiveAssessmentFormProps) {
@@ -43,13 +48,37 @@ export function CompetitiveAssessmentForm({ onCancel }: CompetitiveAssessmentFor
     setFormField("year", "");
     setFormField("semester", "");
     setFormField("department", "");
-  }, [form.examType, setFormField]);
+    // Initialize question rows
+    if (form.questionTypeRows.length !== 1 || form.questionTypeRows[0].type !== "MCQ") {
+      setFormField("questionTypeRows", [
+        { id: "competitive-mcq-row", type: "MCQ", numberOfQuestions: 25, marks: 4 }
+      ]);
+    }
+  }, [form.examType, setFormField, form.questionTypeRows]);
+
+  // Handle Mock Paper Default Questions
+  useEffect(() => {
+    if (form.subject === "Mock Paper" && form.examType) {
+      const defaultQ = MOCK_PAPER_QUESTIONS[form.examType] || 75;
+      if (form.questionTypeRows[0]?.numberOfQuestions !== defaultQ) {
+        setFormField("questionTypeRows", [
+          { id: "competitive-mcq-row", type: "MCQ", numberOfQuestions: defaultQ, marks: 4 }
+        ]);
+      }
+    }
+  }, [form.subject, form.examType, form.questionTypeRows, setFormField]);
 
   // Handle Exam Type change
   const handleExamTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newExamType = e.target.value;
     setFormField("examType", newExamType);
-    setFormField("subject", EXAM_SUBJECTS[newExamType]?.[0] || "");
+    const newSub = EXAM_SUBJECTS[newExamType]?.[0] || "";
+    setFormField("subject", newSub);
+    if (newSub !== "Mock Paper") {
+      setFormField("questionTypeRows", [
+        { id: "competitive-mcq-row", type: "MCQ", numberOfQuestions: 25, marks: 4 }
+      ]);
+    }
   };
 
   const handleSubmit = useCallback(
@@ -124,7 +153,15 @@ export function CompetitiveAssessmentForm({ onCancel }: CompetitiveAssessmentFor
               id="subject"
               className={`form-input-select ${form.errors.subject ? "error" : ""}`}
               value={form.subject}
-              onChange={(e) => setFormField("subject", e.target.value)}
+              onChange={(e) => {
+                const newSub = e.target.value;
+                setFormField("subject", newSub);
+                if (newSub !== "Mock Paper") {
+                  setFormField("questionTypeRows", [
+                    { id: "competitive-mcq-row", type: "MCQ", numberOfQuestions: 25, marks: 4 }
+                  ]);
+                }
+              }}
               disabled={availableSubjects.length === 0}
             >
               {availableSubjects.map(sub => (
@@ -134,6 +171,27 @@ export function CompetitiveAssessmentForm({ onCancel }: CompetitiveAssessmentFor
             {form.errors.subject && (
               <span className="form-error">{form.errors.subject}</span>
             )}
+          </div>
+
+          {/* Number of Questions */}
+          <div className="form-group">
+            <label className="form-label" htmlFor="numberOfQuestions">
+              Number of Questions (Min 25)
+            </label>
+            <input
+              id="numberOfQuestions"
+              className="form-input-text"
+              type="number"
+              min="25"
+              disabled={form.subject === "Mock Paper"}
+              value={form.questionTypeRows?.[0]?.numberOfQuestions || 25}
+              onChange={(e) => {
+                const val = parseInt(e.target.value) || 25;
+                setFormField("questionTypeRows", [
+                  { id: "competitive-mcq-row", type: "MCQ", numberOfQuestions: val, marks: 4 }
+                ]);
+              }}
+            />
           </div>
 
           {/* Due Date */}
@@ -159,46 +217,6 @@ export function CompetitiveAssessmentForm({ onCancel }: CompetitiveAssessmentFor
               <span className="form-error">{form.errors.dueDate}</span>
             )}
           </div>
-        </div>
-
-        {/* Question Types Builder */}
-        <div className="question-types-section">
-          <div className="question-type-header">
-            <span>Question Type</span>
-            <span />
-            <span style={{ textAlign: "center" }}>No. of Questions</span>
-            <span style={{ textAlign: "center" }}>Marks</span>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-            {form.questionTypeRows.map((row) => (
-              <QuestionTypeRow
-                key={row.id}
-                config={row}
-                onChange={(updated) => updateQuestionTypeRow(row.id, updated)}
-                onRemove={() => removeQuestionTypeRow(row.id)}
-              />
-            ))}
-          </div>
-
-          <div className="question-types-footer-row">
-            <button
-              type="button"
-              className="btn-add-type"
-              onClick={addQuestionTypeRow}
-            >
-              <Image src="/assets/icons/icon-add-circle.svg" alt="" width={24} height={24} />
-              Add Question Type
-            </button>
-            <div className="totals-summary">
-              <div>Total Questions : {form.questionTypeRows.reduce((sum, row) => sum + row.numberOfQuestions, 0)}</div>
-              <div>Total Marks : {form.questionTypeRows.reduce((sum, row) => sum + (row.numberOfQuestions * row.marks), 0)}</div>
-            </div>
-          </div>
-
-          {form.errors.questionTypes && (
-            <span className="form-error">{form.errors.questionTypes}</span>
-          )}
         </div>
 
         {/* Additional Information */}
