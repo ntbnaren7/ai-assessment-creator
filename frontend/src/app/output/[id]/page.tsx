@@ -11,6 +11,8 @@ import { FailedState } from "@/components/output/FailedState";
 import { useAssignmentStore } from "@/store/useAssignmentStore";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { GothicLoader } from "@/components/output/GothicLoader";
+import * as api from "@/services/api";
+import type { Assignment } from "@/types";
 
 export default function OutputPage() {
   const params = useParams();
@@ -25,9 +27,11 @@ export default function OutputPage() {
     isRegenerating,
     fetchAssignment,
     regenerate,
+    setCurrentAssignment,
+    setStatusUpdate,
   } = useAssignmentStore();
 
-  // Connect WebSocket for real-time updates
+  // Connect WebSocket for real-time updates (instant when it works)
   useWebSocket(assignmentId);
 
   // Fetch assignment data on mount
@@ -36,6 +40,40 @@ export default function OutputPage() {
       fetchAssignment(assignmentId);
     }
   }, [assignmentId, fetchAssignment]);
+
+  // Poll for completion as a fallback (in case WebSocket is unavailable)
+  useEffect(() => {
+    if (!assignmentId || currentStatus === "completed" || currentStatus === "failed") return;
+
+    const poll = setInterval(async () => {
+      try {
+        const progress = await api.getAssignmentProgress(assignmentId) as { 
+          success: boolean; 
+          data: { progress: number; status: "pending" | "processing" | "completed" | "failed"; message?: string } 
+        };
+        if (progress.success && progress.data.status === "completed") {
+          clearInterval(poll);
+          const full = await api.getAssignment(assignmentId) as { success: boolean; data: Assignment };
+          if (full.success) {
+            setCurrentAssignment(full.data);
+          }
+        } else if (progress.success && progress.data.status === "failed") {
+          clearInterval(poll);
+          setStatusUpdate("failed", progress.data.message);
+        } else if (progress.success) {
+          setStatusUpdate(
+            progress.data.status,
+            progress.data.progress > 0 ? `Generating... ${progress.data.progress}%` : undefined,
+            progress.data.progress
+          );
+        }
+      } catch (e) {
+        console.warn("Polling failed:", e);
+      }
+    }, 5000);
+
+    return () => clearInterval(poll);
+  }, [assignmentId, currentStatus, setCurrentAssignment, setStatusUpdate]);
 
   const handleRegenerate = () => {
     regenerate(assignmentId);
