@@ -93,6 +93,7 @@
   margin-top: 24px;
   margin-bottom: 24px;
   font-size: 15px;
+  font-weight: 700;
   color: #000000;
 }
 
@@ -117,6 +118,7 @@
   align-items: baseline;
   gap: 8px;
   font-size: 14px;
+  font-weight: 700;
   color: #000000;
 }
 

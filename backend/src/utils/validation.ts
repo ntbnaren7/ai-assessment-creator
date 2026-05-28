@@ -8,6 +8,13 @@ export const QuestionTypeEnum = z.enum([
   "Fill in the Blanks",
 ]);
 
+export const QuestionTypeDetailSchema = z.object({
+  id: z.string().optional(),
+  type: QuestionTypeEnum,
+  numberOfQuestions: z.number().int().min(1),
+  marks: z.number().int().min(1),
+});
+
 export const CreateAssignmentSchema = z.object({
   title: z
     .string()
@@ -52,6 +59,9 @@ export const CreateAssignmentSchema = z.object({
     .trim()
     .optional()
     .default(""),
+  questionTypeDetails: z
+    .array(QuestionTypeDetailSchema)
+    .optional(),
 });
 
 export type CreateAssignmentInput = z.infer<typeof CreateAssignmentSchema>;
@@ -68,7 +78,7 @@ export const GeneratedQuestionSchema = z
     marks: z.number().int().min(1),
     questionType: z.string().min(1),
     options: z.array(z.string()).optional(),
-    correctAnswer: z.string().optional(),
+    correctAnswer: z.string().min(1, "Correct answer is required for all questions"),
   })
   .passthrough();
 

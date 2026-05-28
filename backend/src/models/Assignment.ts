@@ -49,6 +49,13 @@ const GeneratedPaperSchema = new Schema(
 
 /* ── Main Assignment document ── */
 
+export interface IQuestionTypeDetail {
+  id?: string;
+  type: string;
+  numberOfQuestions: number;
+  marks: number;
+}
+
 export interface IAssignment extends Document {
   title: string;
   subject: string;
@@ -59,6 +66,7 @@ export interface IAssignment extends Document {
   totalMarks: number;
   duration: string;
   additionalInstructions: string;
+  questionTypeDetails?: IQuestionTypeDetail[];
   fileContent: string | null; // Extracted text from uploaded file
   status: "pending" | "processing" | "completed" | "failed";
   generatedPaper: typeof GeneratedPaperSchema | null;
@@ -85,6 +93,17 @@ const AssignmentSchema = new Schema<IAssignment>(
     totalMarks: { type: Number, required: true, min: 1, max: 500 },
     duration: { type: String, required: true, trim: true },
     additionalInstructions: { type: String, default: "", trim: true },
+    questionTypeDetails: {
+      type: [
+        {
+          id: { type: String },
+          type: { type: String, required: true },
+          numberOfQuestions: { type: Number, required: true, min: 1 },
+          marks: { type: Number, required: true, min: 1 },
+        },
+      ],
+      default: undefined,
+    },
     fileContent: { type: String, default: null },
     status: {
       type: String,

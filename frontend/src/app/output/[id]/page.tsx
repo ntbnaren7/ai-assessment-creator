@@ -157,6 +157,7 @@ export default function OutputPage() {
         {/* Question Paper Sheet */}
         <QuestionPaperSheet
           paper={paper}
+          title={currentAssignment?.title}
           grade={currentAssignment?.grade}
         />
       </div>

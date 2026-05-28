@@ -42,12 +42,12 @@ export function startWorker(): Worker {
         message: "AI is generating your question paper...",
       });
 
-      // 2. Call Gemini to generate the paper
+      // 2. Call AI Service to generate the paper
       const startTime = Date.now();
       const generatedPaper = await generateQuestionPaper(assignment);
       const durationMs = Date.now() - startTime;
 
-      log.info("Gemini generation completed", {
+      log.info("AI generation completed", {
         durationMs,
         sections: (generatedPaper as { sections?: unknown[] }).sections?.length,
       });

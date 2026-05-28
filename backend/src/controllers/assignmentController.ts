@@ -33,6 +33,7 @@ export async function createAssignment(
       totalMarks: body.totalMarks,
       duration: body.duration,
       additionalInstructions: body.additionalInstructions || "",
+      questionTypeDetails: body.questionTypeDetails,
       fileContent,
       status: "pending",
     });

@@ -23,6 +23,13 @@ router.post(
         // leave as-is, validation will catch it
       }
     }
+    if (typeof req.body.questionTypeDetails === "string") {
+      try {
+        req.body.questionTypeDetails = JSON.parse(req.body.questionTypeDetails);
+      } catch {
+        // leave as-is, validation will catch it
+      }
+    }
     if (typeof req.body.numberOfQuestions === "string") {
       req.body.numberOfQuestions = parseInt(req.body.numberOfQuestions, 10);
     }
