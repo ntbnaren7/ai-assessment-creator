@@ -58,6 +58,7 @@ export function useWebSocket(assignmentId: string | null) {
 
       // If completed, fetch the full assignment (with retry for DB replication lag)
       if (data.status === "completed") {
+        setStatusUpdate("processing", "Finalizing document...", 100);
         let retries = 0;
         const fetchFinal = async () => {
           const result = (await api.getAssignment(assignmentId)) as { success: boolean; data: Assignment };

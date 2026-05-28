@@ -34,22 +34,19 @@ export function GothicLoader() {
   }, []);
 
   return (
-    <div className="gothic-loader-container animate-fadeIn px-6 text-center w-full max-w-lg mx-auto">
+    <div className="gothic-loader-container animate-fadeIn">
       {/* Progress Bar Container */}
-      <div className="w-full bg-[#1a1a1a] rounded-full h-1.5 mb-6 overflow-hidden relative">
-        <div 
-          className="bg-white h-1.5 rounded-full transition-all duration-500 ease-out absolute top-0 left-0"
-          style={{ width: `${generationProgress}%` }}
-        />
-        {/* Glow effect on the progress bar */}
-        <div 
-          className="bg-white h-1.5 rounded-full transition-all duration-500 ease-out absolute top-0 left-0 blur-sm opacity-50"
-          style={{ width: `${generationProgress}%` }}
-        />
+      <div className="gothic-progress-container">
+        <div className="gothic-progress-track">
+          <div 
+            className="gothic-progress-fill"
+            style={{ width: `${generationProgress}%` }}
+          />
+        </div>
       </div>
 
       <p 
-        className="gothic-loader-text text-sm md:text-base leading-relaxed" 
+        className="gothic-loader-text" 
         style={{ 
           opacity: fade ? 1 : 0, 
           transition: "opacity 0.5s ease-in-out" 
