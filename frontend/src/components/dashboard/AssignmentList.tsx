@@ -49,6 +49,18 @@ export function AssignmentList({
       {/* Dashboard Header */}
       <div className="dashboard-header-modern">
         <div className="dashboard-title-group">
+          <button 
+            className="mobile-back-btn show-on-mobile" 
+            onClick={() => {}} 
+            type="button" 
+            aria-label="Back placeholder"
+            style={{ cursor: 'default' }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="back-arrow-icon">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
           <div className="dashboard-title-wrapper">
             <div className="status-green-dot">
               <div className="status-green-dot-inner" />
@@ -89,7 +101,7 @@ export function AssignmentList({
           <input
             className="modern-search-input"
             type="text"
-            placeholder="Search Assignment"
+            placeholder="Search Name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
