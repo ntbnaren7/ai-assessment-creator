@@ -83,18 +83,6 @@ export class LockLostError extends Error {
   }
 }
 
-/** All providers hit their daily free-tier quota. */
-export class QuotaExhaustedError extends Error {
-  constructor(
-    public readonly providers: string[]
-  ) {
-    super(
-      `Daily quota exhausted for all providers: ${providers.join(", ")}`
-    );
-    this.name = "QuotaExhaustedError";
-  }
-}
-
 /** A specific model/provider is temporarily rate limited and needs to cool down. */
 export class QuotaCooldownError extends Error {
   constructor(

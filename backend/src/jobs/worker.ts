@@ -128,7 +128,7 @@ export function startWorker(): Worker {
       // Normalize errors for frontend display
       let normalizedError = "GENERATION_FAILED";
       const errMsg = err.message || "";
-      if (errMsg.includes("QuotaExhaustedError") || errMsg.includes("429") && errMsg.includes("quota")) {
+      if (errMsg.includes("CapabilityExhaustedError") || errMsg.includes("NoEligibleModelsError") || errMsg.includes("quota")) {
         normalizedError = "QUOTA_EXHAUSTED";
       } else if (errMsg.includes("ETIMEDOUT") || errMsg.includes("timeout") || errMsg.includes("Timeout")) {
         normalizedError = "PROVIDER_TIMEOUT";
