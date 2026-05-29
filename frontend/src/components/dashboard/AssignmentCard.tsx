@@ -42,22 +42,15 @@ export function AssignmentCard({
 
   const formatGrade = (gradeStr: string | undefined) => {
     if (!gradeStr) return "";
-    let g = gradeStr;
-    
-    // Fix duplicate "Year 3rd Year" -> "3rd Year"
-    g = g.replace(/Year\s+(.*?)Year/gi, "$1 Year"); 
-    // Fix duplicate "Semester Semester 6" -> "Semester 6"
-    g = g.replace(/Semester\s+Semester/gi, "Semester");
-    // Fix duplicate "Year Year" -> "Year"
-    g = g.replace(/Year\s+Year\s+/gi, "Year ");
+    let g = gradeStr.trim();
     
     // For school, if it's just "12th" or "10" etc
-    const isJustGrade = /^\d+(st|nd|rd|th)?$/i.test(g.trim()) || /^Class\s+\d+/i.test(g.trim());
+    const isJustGrade = /^\d+(st|nd|rd|th)?$/i.test(g) || /^Class\s+\d+/i.test(g);
     if (isJustGrade) {
-      return `Grade: ${g.trim()}`;
+      return `Grade: ${g}`;
     }
     
-    return g.trim();
+    return g;
   };
 
   return (

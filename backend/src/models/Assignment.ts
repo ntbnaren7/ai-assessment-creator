@@ -79,7 +79,18 @@ const AssignmentSchema = new Schema<IAssignment>(
   {
     title: { type: String, required: true, trim: true },
     subject: { type: String, required: true, trim: true },
-    grade: { type: String, required: true, trim: true },
+    grade: { 
+      type: String, 
+      required: true, 
+      trim: true,
+      validate: {
+        validator: (v: string) => {
+          const num = parseInt(v, 10);
+          return !isNaN(num) && num >= 1 && num <= 12;
+        },
+        message: "Grade must be a number between 1 and 12",
+      }
+    },
     dueDate: { type: Date, required: true },
     questionTypes: {
       type: [String],

@@ -27,10 +27,6 @@ export function SchoolAssessmentForm({ onCancel }: SchoolAssessmentFormProps) {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      // Make sure we clear any leftover college fields
-      setFormField("year", "");
-      setFormField("semester", "");
-      setFormField("department", "");
       
       const assignmentId = await submitAssignment();
       if (assignmentId) {

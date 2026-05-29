@@ -156,7 +156,7 @@ export default function OutputPage() {
             statusMessage || currentAssignment?.errorMessage || undefined
           }
           onRetry={handleRegenerate}
-          onNew={() => router.push("/?create=true")}
+          onNew={() => router.push("/create")}
           isRetrying={isRegenerating}
         />
       </AppShell>
@@ -172,7 +172,7 @@ export default function OutputPage() {
           <p className="loading-text">No generated paper data available.</p>
           <button
             className="btn btn-primary"
-            onClick={() => router.push("/?create=true")}
+            onClick={() => router.push("/create")}
             type="button"
           >
             ← Create New

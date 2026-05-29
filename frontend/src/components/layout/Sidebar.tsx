@@ -83,7 +83,7 @@ export function Sidebar() {
         </div>
 
         {/* Create Assignment Button */}
-        <Link href="/?create=true" style={{ textDecoration: "none" }}>
+        <Link href="/create" style={{ textDecoration: "none" }}>
           <button className="sidebar-create-btn" type="button">
             {failedImages["/assets/icons/icon-sparkles.svg"] ? (
               <span>✦</span>

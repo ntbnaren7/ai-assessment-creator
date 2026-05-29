@@ -6,6 +6,7 @@ export const QuestionTypeEnum = z.enum([
   "Long Answer Questions",
   "Diagram/Graph-Based Questions",
   "Numerical Problems",
+  "Case Study Questions",
 ]);
 
 export const QuestionTypeDetailSchema = z.object({
@@ -29,8 +30,11 @@ export const CreateAssignmentSchema = z.object({
   grade: z
     .string()
     .min(1, "Grade is required")
-    .max(50, "Grade must be less than 50 characters")
-    .trim(),
+    .trim()
+    .refine((val) => {
+      const num = parseInt(val, 10);
+      return !isNaN(num) && num >= 1 && num <= 12;
+    }, "Grade must be a number between 1 and 12"),
   dueDate: z
     .string()
     .min(1, "Due date is required")
@@ -70,31 +74,64 @@ export type CreateAssignmentInput = z.infer<typeof CreateAssignmentSchema>;
 
 const DifficultyEnum = z.enum(["Easy", "Moderate", "Hard"]);
 
-export const GeneratedQuestionSchema = z
-  .object({
-    questionNumber: z.number().int().min(1),
-    questionText: z.string().min(1, "Question text cannot be empty"),
-    difficulty: DifficultyEnum,
-    marks: z.number().int().min(1),
-    questionType: z.string().min(1),
-    options: z.array(z.string()).optional(),
-    correctAnswer: z.string().nullish(),
-  })
-  .passthrough();
+const BaseQuestionSchema = z.object({
+  questionNumber: z.number().int().min(1),
+  questionText: z.string().min(1, "Question text cannot be empty"),
+  difficulty: DifficultyEnum,
+  marks: z.number().int().min(1),
+});
 
-export const GeneratedSectionSchema = z
+// ── School Schemas ──
+const SchoolMCQSchema = BaseQuestionSchema.extend({
+  questionType: z.literal("Multiple Choice Questions"),
+  options: z.array(z.string()).length(4, "MCQs must have exactly 4 options"),
+  correctAnswer: z.string().min(1),
+}).strict();
+
+const SchoolShortAnswerSchema = BaseQuestionSchema.extend({
+  questionType: z.literal("Short Answer Questions"),
+  correctAnswer: z.string().min(1, "Short Answer Questions require a concise correct answer"),
+}).strict();
+
+const SchoolLongAnswerSchema = BaseQuestionSchema.extend({
+  questionType: z.literal("Long Answer Questions"),
+}).strict();
+
+const SchoolNumericalSchema = BaseQuestionSchema.extend({
+  questionType: z.literal("Numerical Problems"),
+}).strict();
+
+const SchoolDiagramSchema = BaseQuestionSchema.extend({
+  questionType: z.literal("Diagram/Graph-Based Questions"),
+}).strict();
+
+const SchoolCaseStudySchema = BaseQuestionSchema.extend({
+  questionType: z.literal("Case Study Questions"),
+}).strict();
+
+export const SchoolGeneratedQuestionSchema = z.discriminatedUnion("questionType", [
+  SchoolMCQSchema,
+  SchoolShortAnswerSchema,
+  SchoolLongAnswerSchema,
+  SchoolNumericalSchema,
+  SchoolDiagramSchema,
+  SchoolCaseStudySchema,
+]);
+
+export const SchoolGeneratedSectionSchema = z
   .object({
     sectionLabel: z.string().min(1),
     sectionTitle: z.string().min(1),
     instruction: z.string().min(1),
     questions: z
-      .array(GeneratedQuestionSchema)
+      .array(SchoolGeneratedQuestionSchema)
       .min(1, "Each section must contain at least one question"),
   })
-  .passthrough();
+  .strict();
 
-export const GeneratedPaperSchema = z
+export const SchoolGeneratedPaperSchema = z
   .object({
+    schemaVersion: z.literal("v1"),
     title: z.string().min(1),
     subject: z.string().min(1),
     totalMarks: z.number().int().min(1),
@@ -103,9 +140,87 @@ export const GeneratedPaperSchema = z
       .array(z.string())
       .min(1, "At least one general instruction is required"),
     sections: z
-      .array(GeneratedSectionSchema)
+      .array(SchoolGeneratedSectionSchema)
       .min(1, "At least one section is required"),
   })
-  .passthrough();
+  .strict();
 
-export type GeneratedPaperOutput = z.infer<typeof GeneratedPaperSchema>;
+// Default types for generic passing around
+export type GeneratedPaperOutput = z.infer<typeof SchoolGeneratedPaperSchema>;
+
+import { zodToJsonSchema } from "zod-to-json-schema";
+
+const SchoolSchemaMap: Record<string, z.ZodTypeAny> = {
+  "Multiple Choice Questions": SchoolMCQSchema,
+  "Short Answer Questions": SchoolShortAnswerSchema,
+  "Long Answer Questions": SchoolLongAnswerSchema,
+  "Case Study Questions": SchoolCaseStudySchema,
+  "Numerical Problems": SchoolNumericalSchema,
+  "Diagram/Graph-Based Questions": SchoolDiagramSchema,
+};
+
+export function getDynamicPaperSchemaJSON(requestedTypes: string[]): any {
+  const map = SchoolSchemaMap;
+  
+  // Get only the schemas requested, defaulting to all if none requested or found
+  const activeSchemas = requestedTypes
+    .map(t => map[t])
+    .filter(Boolean) as z.ZodTypeAny[];
+
+  if (activeSchemas.length === 0) {
+    // Fallback to full schema if filtering fails
+    return zodToJsonSchema(SchoolGeneratedPaperSchema, "GeneratedPaper");
+  }
+
+  const DynamicQuestionSchema = z.discriminatedUnion("questionType", activeSchemas as any);
+  
+  const DynamicSectionSchema = z.object({
+    sectionLabel: z.string().min(1),
+    sectionTitle: z.string().min(1),
+    instruction: z.string().min(1),
+    questions: z.array(DynamicQuestionSchema).min(1),
+  }).strict();
+
+  const DynamicPaperSchema = z.object({
+    schemaVersion: z.literal("v1"),
+    title: z.string().min(1),
+    subject: z.string().min(1),
+    totalMarks: z.number().int().min(1),
+    duration: z.string().min(1),
+    generalInstructions: z.array(z.string()).min(1),
+    sections: z.array(DynamicSectionSchema).min(1),
+  }).strict();
+
+  return zodToJsonSchema(DynamicPaperSchema, "GeneratedPaper");
+}
+
+export function getDynamicChunkSchemaJSON(requestedTypes: string[]): any {
+  const map = SchoolSchemaMap;
+  
+  const activeSchemas = requestedTypes
+    .map(t => map[t])
+    .filter(Boolean) as z.ZodTypeAny[];
+
+  if (activeSchemas.length === 0) {
+    // Fallback to full schema if filtering fails
+    return zodToJsonSchema(
+      z.object({ sections: z.array(SchoolGeneratedSectionSchema) }).strict(),
+      "GeneratedChunk"
+    );
+  }
+
+  const DynamicQuestionSchema = z.discriminatedUnion("questionType", activeSchemas as any);
+  
+  const DynamicSectionSchema = z.object({
+    sectionLabel: z.string().min(1),
+    sectionTitle: z.string().min(1),
+    instruction: z.string().min(1),
+    questions: z.array(DynamicQuestionSchema).min(1),
+  }).strict();
+
+  const DynamicChunkSchema = z.object({
+    sections: z.array(DynamicSectionSchema).min(1),
+  }).strict();
+
+  return zodToJsonSchema(DynamicChunkSchema, "GeneratedChunk");
+}

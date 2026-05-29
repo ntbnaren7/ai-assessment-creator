@@ -123,97 +123,6 @@ const MOCK_ASSIGNMENT: Assignment = {
   }
 };
 
-const MOCK_COLLEGE_ASSIGNMENT: Assignment = {
-  _id: "mock-college",
-  title: "SRM Institute of Science and Technology - Department of Computer Science",
-  subject: "Data Structures and Algorithms",
-  grade: "Year 2, Semester 3",
-  dueDate: new Date().toISOString().split("T")[0],
-  questionTypes: ["Short Answer Questions", "Numerical Problems"],
-  numberOfQuestions: 16,
-  totalMarks: 100,
-  duration: "3 Hours",
-  additionalInstructions: "Answer all questions.",
-  fileContent: null,
-  status: "completed",
-  errorMessage: null,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  generatedPaper: {
-    title: "SRM Institute of Science and Technology - Department of Computer Science",
-    subject: "Data Structures and Algorithms",
-    totalMarks: 100,
-    duration: "3 Hours",
-    generalInstructions: [
-      "Part A carries 20 marks.",
-      "Part B carries 65 marks.",
-      "Part C carries 15 marks."
-    ],
-    sections: [
-      {
-        sectionLabel: "Part A",
-        sectionTitle: "Short Answer Questions",
-        instruction: "Answer all 10 questions. (10 x 2 = 20 Marks)",
-        questions: [
-          {
-            questionNumber: 1,
-            questionText: "Define a binary search tree.",
-            difficulty: "Easy",
-            marks: 2,
-            questionType: "Short Answer Questions",
-            correctAnswer: "A BST is a node-based binary tree data structure where each node has a maximum of two child nodes and the left child value is less than the parent, right child value is greater."
-          },
-          {
-            questionNumber: 2,
-            questionText: "What is the time complexity of quicksort in the worst case?",
-            difficulty: "Easy",
-            marks: 2,
-            questionType: "Short Answer Questions",
-            correctAnswer: "O(n^2)"
-          }
-        ]
-      },
-      {
-        sectionLabel: "Part B",
-        sectionTitle: "Long Answer Questions",
-        instruction: "Answer all 5 questions. (5 x 13 = 65 Marks)",
-        questions: [
-          {
-            questionNumber: 11,
-            questionText: "A) Explain Dijkstra's algorithm for finding the shortest path with an example.\n\nor\n\nB) Explain the Bellman-Ford algorithm with an example.",
-            difficulty: "Moderate",
-            marks: 13,
-            questionType: "Numerical Problems",
-            correctAnswer: "Refer to graph algorithms textbook."
-          },
-          {
-            questionNumber: 12,
-            questionText: "A) Discuss the various collision resolution techniques in hashing.\n\nor\n\nB) Write a C function to insert a node at the beginning of a circular linked list.",
-            difficulty: "Moderate",
-            marks: 13,
-            questionType: "Numerical Problems",
-            correctAnswer: "Refer to hashing and linked list chapters."
-          }
-        ]
-      },
-      {
-        sectionLabel: "Part C",
-        sectionTitle: "Long Answer Questions",
-        instruction: "Answer the question. (1 x 15 = 15 Marks)",
-        questions: [
-          {
-            questionNumber: 16,
-            questionText: "A) Design a data structure for an elevator system that optimizes wait times and power consumption.\n\nor\n\nB) Analyze the differences between Red-Black trees and AVL trees. When would you prefer one over the other?",
-            difficulty: "Challenging",
-            marks: 15,
-            questionType: "Numerical Problems",
-            correctAnswer: "Open-ended design question."
-          }
-        ]
-      }
-    ]
-  }
-};
 
 /* ── Question Type Row Config ── */
 export interface QuestionTypeConfig {
@@ -228,10 +137,6 @@ interface FormState {
   title: string;
   subject: string;
   grade: string;
-  department?: string; // For College
-  year?: string;     // For College
-  semester?: string; // For College
-  includePartC?: boolean; // For College
   dueDate: string;
   questionTypeRows: QuestionTypeConfig[];
   duration: string;
@@ -288,10 +193,6 @@ const initialFormState: FormState = {
   title: "",
   subject: "",
   grade: "",
-  department: "",
-  year: "",
-  semester: "",
-  includePartC: false,
   dueDate: "",
   questionTypeRows: [
     { id: nextRowId(), type: "Multiple Choice Questions", numberOfQuestions: 4, marks: 1 },
@@ -416,35 +317,10 @@ export const useAssignmentStore = create<AssignmentState>()(
         if (!form.title.trim()) errors.title = "Assignment title is required";
         if (!form.dueDate) errors.dueDate = "Due date is required";
 
-        if (form.year !== undefined && form.semester !== undefined && form.year !== "" && form.semester !== "") {
-          // College
-          if (!form.subject.trim()) errors.subject = "Course / Subject is required";
-          if (!form.year.trim()) errors.year = "Year is required";
-          if (!form.semester.trim()) errors.semester = "Semester is required";
-          if (!form.department?.trim()) errors.department = "Department is required";
-        } else {
-          // School
-          if (!form.subject.trim()) errors.subject = "Subject is required";
-          if (!form.grade.trim()) errors.grade = "Grade is required";
-        }
+        if (!form.subject.trim()) errors.subject = "Subject is required";
+        if (!form.grade.trim()) errors.grade = "Grade is required";
         
         let actualRows = form.questionTypeRows;
-        const isCollege = form.year !== undefined && form.semester !== undefined && form.year !== "" && form.semester !== "";
-
-        if (isCollege) {
-          if (form.includePartC) {
-            actualRows = [
-              { id: "college-row-1", type: "Short Answer Questions", numberOfQuestions: 10, marks: 2 },
-              { id: "college-row-2", type: "Numerical Problems", numberOfQuestions: 5, marks: 13 },
-              { id: "college-row-3", type: "Numerical Problems", numberOfQuestions: 1, marks: 15 },
-            ];
-          } else {
-            actualRows = [
-              { id: "college-row-1", type: "Short Answer Questions", numberOfQuestions: 10, marks: 2 },
-              { id: "college-row-2", type: "Numerical Problems", numberOfQuestions: 5, marks: 16 },
-            ];
-          }
-        }
 
         if (actualRows.length === 0) {
           errors.questionTypes = "Add at least one question type";
@@ -469,15 +345,7 @@ export const useAssignmentStore = create<AssignmentState>()(
           let finalSubject = form.subject.trim();
           let finalGrade = form.grade.trim();
 
-          if (form.year && form.semester) {
-            // College
-            finalGrade = `Year ${form.year.trim()}, Semester ${form.semester.trim()}`;
-            if (form.department?.trim()) {
-              const dept = form.department.trim();
-              const deptSuffix = dept.toLowerCase().startsWith("department") ? dept : `Department of ${dept}`;
-              finalTitle = `${form.title.trim()} - ${deptSuffix}`;
-            }
-          }
+
 
           formData.append("title", finalTitle);
 
@@ -551,7 +419,7 @@ export const useAssignmentStore = create<AssignmentState>()(
       fetchAssignment: async (id) => {
         set({ isLoading: true, generationProgress: 0 }, false, "fetchStart");
         try {
-          if (id === "mock-assignment" || id === "mock-college" || id === "1") {
+          if (id === "mock-assignment" || id === "1") {
             throw new Error("Simulate API failure for mock fallback");
           }
 
@@ -570,21 +438,6 @@ export const useAssignmentStore = create<AssignmentState>()(
           );
         } catch (error) {
           console.warn("Using offline mock data fallback for assignment", id);
-          
-          if (id === "mock-college") {
-            set(
-              {
-                currentAssignment: MOCK_COLLEGE_ASSIGNMENT,
-                currentStatus: "completed",
-                isLoading: false,
-                statusMessage: null,
-              },
-              false,
-              "fetchSuccessMockCollege"
-            );
-            return;
-          }
-
 
           const form = get().form;
           
@@ -592,11 +445,6 @@ export const useAssignmentStore = create<AssignmentState>()(
           const totalMarks = form.questionTypeRows.reduce((sum, r) => sum + (r.numberOfQuestions * r.marks), 0) || MOCK_ASSIGNMENT.totalMarks;
 
           let finalTitle = form.title || MOCK_ASSIGNMENT.title;
-          if (form.year && form.semester && form.department) {
-            const dept = form.department.trim();
-            const deptSuffix = dept.toLowerCase().startsWith("department") ? dept : `Department of ${dept}`;
-            finalTitle = `${finalTitle} - ${deptSuffix}`;
-          }
 
           const customizedAssignment: Assignment = {
             ...MOCK_ASSIGNMENT,

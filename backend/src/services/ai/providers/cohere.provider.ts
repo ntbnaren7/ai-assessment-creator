@@ -14,6 +14,7 @@ export class CohereProvider implements ILLMProvider {
     if (this.config.apiKey) {
       this.client = new CohereClient({
         token: this.config.apiKey,
+        clientName: 'ai-assessment-creator',
       });
     }
   }

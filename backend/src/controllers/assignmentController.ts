@@ -33,7 +33,7 @@ export async function createAssignment(
       title: body.title,
       subject: body.subject,
       grade: body.grade,
-      dueDate: new Date(body.dueDate),
+      dueDate: new Date(body.dueDate as string),
       questionTypes: body.questionTypes,
       numberOfQuestions: body.numberOfQuestions,
       totalMarks: body.totalMarks,

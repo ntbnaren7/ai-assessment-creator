@@ -22,7 +22,7 @@ export interface ChunkContext {
  * Interface that every exam-specific prompt strategy must implement.
  */
 export interface PromptStrategy {
-  /** Unique identifier for this strategy (e.g., "college-advanced-v1") */
+  /** Unique identifier for this strategy (e.g., "school-v3") */
   readonly strategyId: string;
   /** Semantic version of this prompt (for metadata tracking) */
   readonly promptVersion: string;
@@ -37,23 +37,27 @@ export interface PromptStrategy {
   /** Temperature for this exam type */
   getTemperature(): number;
 
-  /** Minimum model tier required — orchestrator will hard-reject below this */
-  getMinimumTier(): ModelTier;
+  /** The ideal model tier for this strategy's cognitive requirements */
+  getPreferredTier(): ModelTier;
+
+  /** The lowest acceptable emergency fallback tier */
+  getFallbackTier(): ModelTier;
 
   /** Preferred model ID to try first (null = let orchestrator decide) */
   getPreferredModel(): string | null;
 
   /** Maximum output tokens to request from the provider */
   getMaxOutputTokens(): number;
+
+  /** Returns per-component token estimates for profiling */
+  getPromptProfile(assignment: IAssignment, chunkContext?: ChunkContext): Record<string, number>;
+
+  /** Estimate completion tokens based on question count and types */
+  estimateCompletionTokens(assignment: IAssignment, chunkContext?: ChunkContext): number;
 }
 
 import { SchoolPromptStrategy } from "./school.prompt.js";
-import { CollegePromptStrategy } from "./college.prompt.js";
-
-// ── Strategy Resolver ──
-
 const schoolStrategy = new SchoolPromptStrategy();
-const collegeStrategy = new CollegePromptStrategy();
 
 /**
  * Resolves the correct prompt strategy based on the assignment's grade and subject.
@@ -63,11 +67,5 @@ const collegeStrategy = new CollegePromptStrategy();
 export async function resolveStrategy(assignment: IAssignment): Promise<PromptStrategy> {
   const grade = (assignment.grade || "").toLowerCase();
 
-  // ── College detection ──
-  if (grade.includes("semester") || grade.includes("year")) {
-    return collegeStrategy;
-  }
-
-  // ── Default: School ──
   return schoolStrategy;
 }

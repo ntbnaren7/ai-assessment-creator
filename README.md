@@ -339,3 +339,379 @@ NEXT_PUBLIC_SOCKET_URL=http://localhost:5001
 - **State Lock Stalls:** If a Node process crashes violently without executing `finally` blocks, a Redis generation lock may persist. A manual flush (`DEL gen-lock:<id>`) is required.
 - **Vector Search (RAG) Absence:** Currently, textbook uploads rely on a naive truncation strategy (15k characters). For large texts, a Vector Database (Pinecone/Milvus) should be introduced for semantic RAG injection.
 - **Horizontal Scaling:** The backend currently runs the Express API and the BullMQ worker in the same process. To scale production horizontally, the worker logic should be decoupled into a standalone Docker image, allowing you to run 10x Worker containers independently of the API gateways.
+
+---
+
+## 11. Phase 3A — Directive Content & Code Navigation Layer
+
+This README functions as both documentation and a repository navigation hub. Every architectural claim references actual implementation files.
+
+### 11.1 Directive Content System
+
+#### LLM Orchestrator
+**Purpose:**
+Routes requests to the most appropriate AI model based on capability, empirical success rate, provider health, capacity, load, cost, latency, and fallback rules.
+
+**Responsibilities:**
+- Candidate model selection via Empirical Scoring
+- Capability matching
+- Provider failover and circuit breaking
+- Capacity-aware routing and load balancing
+- Telemetry generation (`[ROUTING_DECISION]`)
+
+**Inputs:** `LLMRequest` (system prompt, expected schema, required capability, workload type)
+**Outputs:** `LLMResponse` (parsed JSON, raw response text, latency, token usage)
+**Dependencies:** `CapacityManager`, `ModelRegistry`, `ILLMProvider` interfaces
+**Failure Modes:**
+- Provider exhaustion (all providers 429/503)
+- Candidate pool collapse (no models match required capabilities)
+- Invalid model capability mapping
+
+**Primary Files:**
+- `src/services/ai/llm.orchestrator.ts`
+- `src/services/ai/models/model-registry.ts`
+- `src/services/ai/capacity.manager.ts`
+
+**Related Components:**
+- `GroqProvider`, `OpenRouterProvider`, `CohereProvider`
+- `GenerationOrchestrator`
+
+---
+
+#### Generation Orchestrator
+**Purpose:**
+Manages the entire lifecycle of an assessment generation request, breaking it into executable chunks, handling concurrency, aggregating results, and performing crash recovery.
+
+**Responsibilities:**
+- Strategy resolution (e.g., School vs College)
+- Chunk planning
+- Distributed locking via Redis
+- Batch recovery pass (Output Recovery)
+- Emitting WebSocket progress events
+- Result aggregation and final structuring
+
+**Inputs:** `IAssignment` (user configuration), `IConceptLedger` (curriculum knowledge)
+**Outputs:** `GeneratedPaperOutput` (final structured paper), `GenerationMetadata`
+**Dependencies:** `LLMOrchestrator`, `ChunkPlanner`, `Aggregator`, `IntegrityValidator`, `Redis`
+**Failure Modes:**
+- Redis lock acquisition failure (ConcurrentRunError)
+- Terminal provider exhaustion across all chunks
+- Worker crashes leading to stalled locks
+
+**Primary Files:**
+- `src/services/ai/generation/generation.orchestrator.ts`
+- `src/services/ai/generation/chunk-planner.ts`
+- `src/services/ai/generation/aggregator.ts`
+
+---
+
+#### Prompt Builder
+**Purpose:**
+Constructs pedagogically rigorous and schema-constrained system and user prompts based on the selected generation strategy.
+
+**Responsibilities:**
+- Combining curriculum knowledge (avoidance lists) with task instructions
+- Configuring few-shot examples
+- Optimizing formatting for specific question types
+
+**Inputs:** `IAssignment`, `ChunkContext`, `IConceptLedger`
+**Outputs:** Formatted `systemPrompt` and `userPrompt` string payloads
+**Dependencies:** `prompt.strategy.ts` interfaces
+**Failure Modes:**
+- Token overflow if curriculum avoidance lists grow too large
+- Prompt injection from user-supplied topics
+
+**Primary Files:**
+- `src/services/ai/prompts/school.prompt.ts`
+- `src/services/ai/prompts/prompt.utils.ts`
+- `src/services/ai/prompts/prompt.strategy.ts`
+
+---
+
+#### Capacity Manager
+**Purpose:**
+Acts as the single source of truth for rate limits (RPM/TPM), model cooldowns, provider health, and load balancing across the multi-provider ecosystem.
+
+**Responsibilities:**
+- Admission control based on available TPM
+- Inflight request tracking (Concurrency control)
+- Empirical health scoring (tracking success vs. malformed outputs)
+- Provider degradation logic
+
+**Inputs:** Provider ID, Model ID, Estimated Token counts
+**Outputs:** `CapacityStatus` (availability, remaining quotas, health score, admission reason)
+**Dependencies:** None (In-memory state)
+**Failure Modes:**
+- Throttling out healthy requests due to token overestimation
+- Memory leaks if inflight requests aren't decremented gracefully on crashes
+
+**Primary Files:**
+- `src/services/ai/capacity.manager.ts`
+
+---
+
+#### Output Recovery Manager
+**Purpose:**
+Detects when the LLM generates fewer questions than requested in a chunk and orchestrates targeted recovery passes to fill the shortfall.
+
+**Responsibilities:**
+- Counting valid output items vs requested items
+- Triggering secondary generation chunks for the exact missing amount
+- Merging recovered items back into the primary chunk result
+
+**Inputs:** Original `ChunkDefinition`, `ChunkResult`
+**Outputs:** Augmented `ChunkResult`
+**Dependencies:** `LLMOrchestrator`, `ChunkPlanner`
+**Failure Modes:**
+- Infinite loops if recovery continuously yields 0 items
+- Token starvation
+
+**Primary Files:**
+- Embedded within `src/services/ai/generation/generation.orchestrator.ts` (Batch Recovery Pass logic)
+
+---
+
+#### Validation Layer
+**Purpose:**
+Ensures the raw JSON outputs from the LLMs strictly conform to the expected schema before they are saved to the database.
+
+**Responsibilities:**
+- Zod schema parsing and type coercion
+- Stripping hallucinated markdown wrappers (`````json ... `````)
+- Ensuring structural integrity of the final aggregated paper
+
+**Inputs:** Raw LLM string output or unknown JSON
+**Outputs:** Strictly typed `GeneratedPaperOutput` or `ChunkResult`
+**Dependencies:** `zod`, `LLMOrchestrator`
+**Failure Modes:**
+- Schema drift causing false positive rejections
+- Malformed nested arrays bypassing shallow checks
+
+**Primary Files:**
+- `src/utils/validation.ts`
+- `src/services/ai/generation/integrity-validator.ts`
+
+---
+
+#### Model Registry
+**Purpose:**
+Maintains a static registry of all available AI models, their cognitive tiers, capabilities, token limits, and associated providers.
+
+**Responsibilities:**
+- Exposing available models to the orchestrator
+- Defining model capability mappings (e.g., `supportsMCQ`)
+
+**Inputs:** None (static configuration)
+**Outputs:** Array of `ModelEntry` objects
+**Dependencies:** None
+**Failure Modes:**
+- Outdated physical token limits
+- Misconfigured model IDs causing 404s at the provider level
+
+**Primary Files:**
+- `src/services/ai/models/model-registry.ts`
+
+---
+
+#### Provider Implementations
+**Purpose:**
+Adapts the standard `ILLMProvider` interface to specific third-party API SDKs (Groq, Cohere, OpenRouter).
+
+**Responsibilities:**
+- API authentication and HTTP request formatting
+- Response parsing and latency tracking
+- Mapping standardized provider errors (e.g., HTTP 429) to internal error types (`QuotaCooldownError`)
+
+**Inputs:** `LLMRequest`
+**Outputs:** `LLMResponse`
+**Dependencies:** External SDKs (`@cohere/cohere-api`, `groq-sdk`, `openai`)
+**Failure Modes:**
+- External API outages
+- SDK breaking changes
+- Unhandled network socket timeouts
+
+**Primary Files:**
+- `src/services/ai/providers/groq.provider.ts`
+- `src/services/ai/providers/cohere.provider.ts`
+- `src/services/ai/providers/openrouter.provider.ts`
+
+---
+
+#### Benchmark Framework
+**Purpose:**
+Provides a standalone execution environment to stress-test the orchestration layer, evaluate provider success rates, and validate schema adherence without requiring the full backend stack.
+
+**Responsibilities:**
+- Simulating varied workloads (e.g., 10-40 MCQs)
+- Capturing telemetry and Empirical scoring
+- Evaluating fallback behaviors under simulated or real load
+
+**Inputs:** Mock `LLMRequest` configurations
+**Outputs:** Terminal telemetry (`[ROUTING_DECISION]`, success/fail rates)
+**Dependencies:** `LLMOrchestrator`, `CapacityManager`
+**Failure Modes:**
+- EPERM errors when run in restricted environments lacking proper Node.js filesystem or socket permissions
+
+**Primary Files:**
+- `src/scripts/benchmark.ts`
+- `src/tests/llm.orchestrator.test.ts`
+
+---
+
+#### Redis Locking Layer
+**Purpose:**
+Prevents race conditions and ensures only one background worker processes a specific generation assignment at any given time.
+
+**Responsibilities:**
+- Acquiring `NX` locks
+- Extending TTLs via Lua scripts
+- Clearing locks on generation completion or assignment hard deletion
+
+**Inputs:** `assignmentId`
+**Outputs:** Lock acquisition success boolean
+**Dependencies:** `redis`
+**Failure Modes:**
+- Zombie locks if a worker process crashes completely without releasing, requiring manual TTL expiration
+
+**Primary Files:**
+- `src/services/ai/generation/generation-run.ts`
+- `src/controllers/assignmentController.ts`
+
+---
+
+#### Database Layer
+**Purpose:**
+Persists assignment configurations, lifecycle statuses, and the final generated assessment outputs.
+
+**Responsibilities:**
+- Mongoose schema enforcement
+- Controller-based CRUD operations
+
+**Inputs:** HTTP controller payloads, Worker final outputs
+**Outputs:** MongoDB documents
+**Dependencies:** `mongoose`, `MongoDB Replica Set`
+**Failure Modes:**
+- Read-after-write consistency delays on Replica Sets affecting frontend polling (mitigated by exponential backoff in the client)
+
+**Primary Files:**
+- `src/controllers/assignmentController.ts`
+- `src/routes/assignmentRoutes.ts`
+
+---
+
+### 11.2 Code Navigation Guide
+
+Use this index as a direct map of where core functionality lives.
+
+| Capability | File / Location |
+| :--- | :--- |
+| **Model Routing & Scoring** | `src/services/ai/llm.orchestrator.ts` |
+| **Capacity & Admission Tracking** | `src/services/ai/capacity.manager.ts` |
+| **Model Registry** | `src/services/ai/models/model-registry.ts` |
+| **Chunk Generation Lifecycle** | `src/services/ai/generation/generation.orchestrator.ts` |
+| **Chunk Planning** | `src/services/ai/generation/chunk-planner.ts` |
+| **Output Recovery** | `src/services/ai/generation/generation.orchestrator.ts` (Batch Recovery Pass) |
+| **Prompt Engineering** | `src/services/ai/prompts/school.prompt.ts` |
+| **Zod Validation Schemas** | `src/utils/validation.ts` |
+| **Benchmarks & Testing** | `src/scripts/benchmark.ts` & `src/tests/llm.orchestrator.test.ts` |
+| **AI Service Entry Point** | `src/services/ai/ai.service.ts` |
+| **Distributed Locking (Redis)** | `src/services/ai/generation/generation-run.ts` |
+| **Job Queue Worker (BullMQ)** | `src/jobs/worker.ts` |
+| **API Controllers (Assignments)** | `src/controllers/assignmentController.ts` |
+
+---
+
+### 11.3 Deep Architecture References
+
+#### Generation & Orchestration Core
+**Relevant Source Files:**
+- `src/services/ai/ai.service.ts`
+- `src/services/ai/generation/generation.orchestrator.ts`
+- `src/services/ai/llm.orchestrator.ts`
+- `src/services/ai/capacity.manager.ts`
+
+**Entry Points:**
+- Primary execution path: `src/jobs/worker.ts` -> `AIService.generateAssessment()`
+- Request entry points: `src/controllers/assignmentController.ts` (POST `/api/assignments`)
+- Generation entry points: `GenerationOrchestrator.generate()`
+- Provider entry points: `LLMOrchestrator.generateJSON()` -> `[Provider].generate()`
+
+**Dependency Graph:**
+```mermaid
+graph TD
+    API[Express API] --> Worker[BullMQ Worker]
+    Worker --> AIService[AI Service]
+    AIService --> GenerationOrchestrator[Generation Orchestrator]
+    GenerationOrchestrator --> LLMOrchestrator[LLM Orchestrator]
+    GenerationOrchestrator --> ChunkPlanner[Chunk Planner]
+    GenerationOrchestrator --> Aggregator[Aggregator]
+    LLMOrchestrator --> CapacityManager[Capacity Manager]
+    LLMOrchestrator --> ModelRegistry[Model Registry]
+    LLMOrchestrator --> GroqProvider[Groq Provider]
+    LLMOrchestrator --> OpenRouterProvider[OpenRouter Provider]
+    LLMOrchestrator --> CohereProvider[Cohere Provider]
+```
+
+**Traceability Answers:**
+- *Where does this live?* Orchestration is rooted in `src/services/ai/`.
+- *What implements it?* `LLMOrchestrator` handles routing; `GenerationOrchestrator` handles chunking.
+- *What depends on it?* The BullMQ background worker `src/jobs/worker.ts`.
+- *What depends on those dependencies?* The Express API `src/controllers/assignmentController.ts` enqueues jobs to the worker.
+
+---
+
+### 11.4 New Engineer Onboarding Section: 30-Minute Codebase Tour
+
+Welcome to the AI Assessment Creator! To understand how the system orchestrates LLMs reliably, follow this exact reading sequence:
+
+1. **Start Here: The API Entry Point**
+   - Read `src/controllers/assignmentController.ts` (Specifically `createAssignment`).
+   - Understand how the HTTP request creates a MongoDB document and enqueues a job, then immediately returns 202 Accepted.
+
+2. **Read These Files First: The Worker**
+   - Read `src/jobs/worker.ts`.
+   - See how BullMQ dequeues the job and calls `aiService.generateAssessment()`.
+
+3. **Understand Generation & Chunking**
+   - Read `src/services/ai/generation/generation.orchestrator.ts`.
+   - This is the brain of the operation. Trace the `generate()` method to see how it plans chunks, iterates over them, and calls `generateOneChunk()`.
+   - Notice the Batch Recovery Pass at the end.
+
+4. **Understand Model Routing (The "Smart" Layer)**
+   - Read `src/services/ai/llm.orchestrator.ts`.
+   - Focus on `getEligibleModels()`. Observe how it uses Empirical Scoring (Base Quality * Empirical Multiplier * Load Penalty * Cost) instead of hardcoded fallbacks.
+
+5. **Understand Capacity & Health**
+   - Read `src/services/ai/capacity.manager.ts`.
+   - Understand how inflight requests are tracked and how malformed JSON responses mathematically degrade a model's health score.
+
+6. **Understand Providers**
+   - Skim `src/services/ai/providers/groq.provider.ts`.
+   - See how it implements `ILLMProvider` and maps external 429 errors to internal `QuotaCooldownError`.
+
+7. **Understand Benchmarking (Testing)**
+   - Run or read `src/tests/llm.orchestrator.test.ts` to see how routing scenarios (e.g., Tier-1 cooldown -> Tier-3 fallback) are verified without making real API calls.
+
+---
+
+### 11.5 Repository Intelligence Layer
+
+#### Critical Paths
+The most important execution flow is the **Chunk Generation Pipeline**:
+`GenerationOrchestrator.generateOneChunk()` -> `LLMOrchestrator.generateJSON()` -> `CapacityManager.startRequest()` -> `Provider.generate()` -> `Zod Validation`. If this chain breaks, generation halts.
+
+#### High-Risk Components
+- **`src/services/ai/capacity.manager.ts`**: The mathematical core of load balancing. A logic error here (e.g., failing to decrement inflight requests) will cause all providers to appear fully loaded, completely bricking the platform with `NoEligibleModelsError`.
+- **`src/services/ai/generation/generation-run.ts`**: Modifying Redis Lua scripts incorrectly can cause distributed lock deadlocks, leaving assessments in a permanent "Generating" state.
+
+#### Extension Points
+- **Adding a New AI Provider:** Create a new class implementing `ILLMProvider` in `src/services/ai/providers/`, add it to `ModelRegistry`, and inject it into `LLMOrchestrator` in `src/services/ai/ai.service.ts`.
+- **Adding a New Question Type:** Update `ModelCapability` mappings, add the Zod schema to `src/utils/validation.ts`, and update the `ChunkPlanner`.
+
+#### Performance Hotspots
+- **JSON Parsing & Validation:** Zod parsing of massive 5,000+ token payloads can block the Node.js event loop.
+- **Provider TPM Headroom:** If multiple assignments are requested simultaneously, the `CapacityManager` dynamically routes based on tokens-per-minute (TPM) capacity. This is the primary latency hotspot when traffic scales.
+
+#### Technical Debt Findings
+- **In-Memory State:** `CapacityManager` currently relies on local Node.js memory. To scale to a multi-container Kubernetes deployment, this must be refactored to use Redis for distributed TPM tracking and Empirical Health Scoring.
+- **Polling Fallback:** The frontend implements exponential backoff polling for MongoDB Read-After-Write replication lag. This is robust but masks the root cause of database replication delays.

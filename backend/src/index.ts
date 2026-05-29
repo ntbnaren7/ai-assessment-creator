@@ -10,6 +10,7 @@ import { initializeSocket } from "./websockets/index.js";
 import { startWorker } from "./jobs/index.js";
 import apiRoutes from "./routes/index.js";
 import { logger } from "./utils/logger.js";
+import { runStartupBenchmark } from "./benchmark-runner.js";
 
 async function bootstrap(): Promise<void> {
   // 1. Validate environment config
@@ -17,6 +18,11 @@ async function bootstrap(): Promise<void> {
 
   // 2. Connect to MongoDB
   await connectDatabase();
+
+  // Run Benchmark once on startup if enabled via env, or just force it once for this test
+  if (process.env.RUN_BENCHMARK !== 'false') {
+    runStartupBenchmark().catch(console.error);
+  }
 
   // 3. Create Express app
   const app = express();

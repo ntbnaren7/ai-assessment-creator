@@ -128,7 +128,7 @@ export function AssignmentList({
 
       {/* Floating Create Button & Fade */}
       <div className="modern-floating-action">
-        <Link href="/?create=true" className="modern-create-btn">
+        <Link href="/create" className="modern-create-btn">
           <img src="/assets/icons/icon-plus.svg" alt="Create" className="create-plus-icon" /> Create Assignment
         </Link>
       </div>

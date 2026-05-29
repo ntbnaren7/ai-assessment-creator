@@ -1,5 +1,6 @@
 import { Groq } from 'groq-sdk';
 import { ILLMProvider, LLMRequest, LLMResponse, ModelCapability, ProviderConfig } from '../types.js';
+import { QuotaCooldownError } from '../errors.js';
 import { getModelsForProvider } from '../models/model-registry.js';
 
 export class GroqProvider implements ILLMProvider {
@@ -13,7 +14,10 @@ export class GroqProvider implements ILLMProvider {
   constructor(config: ProviderConfig) {
     this.config = config;
     if (this.config.apiKey) {
-      this.client = new Groq({ apiKey: this.config.apiKey });
+      this.client = new Groq({ 
+        apiKey: this.config.apiKey,
+        maxRetries: 0
+      });
     }
   }
 
@@ -59,7 +63,7 @@ export class GroqProvider implements ILLMProvider {
       }, { signal: request.abortSignal });
 
       const latencyMs = Date.now() - startTime;
-      const content = chatCompletion.choices[0]?.message?.content || '';
+      const content = chatCompletion.choices?.[0]?.message?.content || '';
       const usage = chatCompletion.usage;
 
       return {
@@ -74,7 +78,25 @@ export class GroqProvider implements ILLMProvider {
         } : undefined
       };
 
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.status === 429) {
+        // Groq uses a custom headers object in its error wrapper
+        const headers = error?.headers;
+        const retryAfterStr = headers?.get ? headers.get('retry-after') : (headers?.['retry-after']);
+        
+        let retryAfterMs = 60000; // Default 60s
+        if (retryAfterStr) {
+          const parsed = parseFloat(retryAfterStr);
+          if (!isNaN(parsed)) {
+            // retry-after can be seconds or absolute epoch
+            retryAfterMs = parsed < 1e9 ? parsed * 1000 : Math.max(0, parsed - Date.now());
+          }
+        }
+        
+        console.error(`[GroqProvider] Rate limit hit for model ${model}. Cooldown: ${retryAfterMs}ms`);
+        throw new QuotaCooldownError(this.name, model, retryAfterMs);
+      }
+
       console.error(`[GroqProvider] Error during generation (model: ${model}):`, error);
       throw error;
     }

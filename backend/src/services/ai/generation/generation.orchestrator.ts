@@ -1,11 +1,11 @@
 import crypto from "crypto";
 import type { IAssignment } from "../../../models/index.js";
 import { logger } from "../../../utils/logger.js";
-import { GeneratedPaperSchema, type GeneratedPaperOutput } from "../../../utils/validation.js";
-import { zodToJsonSchema } from "zod-to-json-schema";
+import { type GeneratedPaperOutput, getDynamicPaperSchemaJSON, getDynamicChunkSchemaJSON } from "../../../utils/validation.js";
 import { LLMOrchestrator } from "../llm.orchestrator.js";
 import type { LLMRequest, LLMResponse } from "../types.js";
 import { ModelCapability } from "../types.js";
+import { estimateTokens } from "../utils/token-counter.js";
 import {
   GenerationCancelledError,
   LockLostError,
@@ -26,8 +26,11 @@ import {
   type GenerationRun,
 } from "./generation-run.js";
 import { aggregateChunks, aggregateSingleChunk, type ChunkResult } from "./aggregator.js";
-import { isCollegeLevel } from "../prompts/prompt.utils.js";
+import { validatePaperIntegrity, validateChunkIntegrity } from "./integrity-validator.js";
+import { extractGradeNumber } from "../prompts/prompt.utils.js";
 
+// Phase 5: Module-level singleton — computed once, reused forever.
+// Eliminates Zod-to-JSON-Schema compilation overhead from every request.
 /**
  * Progress callback type for WebSocket updates.
  */
@@ -201,16 +204,32 @@ export class GenerationOrchestrator {
 
     const startTime = Date.now();
     const systemPrompt = ctx.strategy.buildSystemPrompt(assignment);
-    const expectedSchema = zodToJsonSchema(GeneratedPaperSchema, "GeneratedPaper");
+    const expectedSchema = getDynamicPaperSchemaJSON(assignment.questionTypes);
+
+    // Phase 1: Prompt profiling
+    const profile = ctx.strategy.getPromptProfile(assignment);
+    const schemaTokens = estimateTokens(JSON.stringify(expectedSchema));
+    logger.info("[PROFILER] Prompt Token Breakdown", {
+      ...profile,
+      schemaInjection: schemaTokens,
+      totalSystemPrompt: estimateTokens(systemPrompt),
+      totalWithSchema: estimateTokens(systemPrompt) + schemaTokens,
+    });
+
+    // Phase 4: Use realistic completion estimate
+    const estimatedCompletion = ctx.strategy.estimateCompletionTokens(assignment);
+    const maxOutputTokens = ctx.strategy.getMaxOutputTokens();
 
     const request: LLMRequest = {
       systemPrompt,
       userPrompt: "Generate the assessment JSON now.",
       expectedSchema,
       temperature: ctx.strategy.getTemperature(),
-      minimumTier: ctx.strategy.getMinimumTier(),
+      preferredTier: ctx.strategy.getPreferredTier(),
+      fallbackTier: ctx.strategy.getFallbackTier(),
       preferredModelId: ctx.strategy.getPreferredModel() || undefined,
-      maxOutputTokens: ctx.strategy.getMaxOutputTokens(),
+      maxOutputTokens,
+      estimatedCompletionTokens: estimatedCompletion,
     };
 
     // Fresh AbortController per attempt — prevents cascading aborts across fallback models
@@ -248,6 +267,9 @@ export class GenerationOrchestrator {
     };
 
     const { paper: validatedPaper, qualityReport } = aggregateSingleChunk(chunkResult, paper);
+
+    // ── Validate Generation Integrity ──
+    validatePaperIntegrity(assignment, validatedPaper);
 
     // Build metadata
     const metadata = this.buildMetadata(ctx, [chunkResult], qualityReport);
@@ -303,6 +325,45 @@ export class GenerationOrchestrator {
       }
     }
 
+    // ── Batch Recovery Pass ──
+    progressCallback?.("Running batch recovery for missing questions...", totalChunks, totalChunks);
+    
+    for (let i = 0; i < ctx.completedChunks.length; i++) {
+      const chunkResult = ctx.completedChunks[i];
+      const chunkPlan = ctx.chunkPlan.chunks.find((c) => c.chunkId === chunkResult.chunkId);
+      
+      if (!chunkPlan) continue;
+      
+      const generatedCount = chunkResult.sections.reduce((acc: number, s: any) => acc + (s.questions?.length || 0), 0);
+      const missingCount = chunkPlan.questionCount - generatedCount;
+      
+      if (missingCount > 0) {
+        logger.info(`[OutputRecoveryManager] Chunk ${chunkPlan.chunkId} fell short by ${missingCount} questions. Triggering recovery.`);
+        
+        // Construct a modified chunk plan just for the missing questions
+        const recoveryChunk = { ...chunkPlan, questionCount: missingCount };
+        
+        try {
+          const recoveryResult = await this.generateOneChunk(ctx, assignment, recoveryChunk);
+          const recoverySections = recoveryResult.sections || [];
+          
+          if (chunkResult.sections.length > 0 && recoverySections.length > 0) {
+            chunkResult.sections[0].questions.push(...(recoverySections[0].questions as any[]));
+          } else if (chunkResult.sections.length === 0 && recoverySections.length > 0) {
+            chunkResult.sections = recoverySections;
+          }
+          
+          logger.info(`[OutputRecoveryManager] Recovered questions for ${chunkPlan.chunkId}.`);
+        } catch (error) {
+          logger.error(`[OutputRecoveryManager] Recovery failed for ${chunkPlan.chunkId}:`, { error: (error as Error).message });
+        }
+      }
+
+      // ── Final Chunk Integrity Check ──
+      // Enforce strict matching; any mismatch fails the benchmark
+      validateChunkIntegrity(chunkPlan, chunkResult);
+    }
+
     // ── Aggregate ──
     progressCallback?.("Assembling final paper...", totalChunks, totalChunks);
 
@@ -312,6 +373,9 @@ export class GenerationOrchestrator {
       totalMarks: assignment.totalMarks,
       duration: assignment.duration,
     });
+
+    // ── Validate Generation Integrity ──
+    validatePaperIntegrity(assignment, paper);
 
     // Build metadata
     const metadata = this.buildMetadata(ctx, ctx.completedChunks, qualityReport);
@@ -352,17 +416,42 @@ export class GenerationOrchestrator {
         };
 
         const systemPrompt = ctx.strategy.buildSystemPrompt(assignment, chunkContext);
-        const expectedSchema = zodToJsonSchema(GeneratedPaperSchema, "GeneratedPaper");
+        
+        const expectedSchema = getDynamicChunkSchemaJSON([chunk.questionType]);
+
+        const estimatedCompletion = ctx.strategy.estimateCompletionTokens(assignment, chunkContext);
+        // SAFETY BUFFER: Give 50% extra completion room without overallocating the physical token runway (which trips TPM limits)
+        const maxOutputTokens = Math.ceil(estimatedCompletion * 1.5);
 
         const request: LLMRequest = {
           systemPrompt,
-          userPrompt: `Generate EXACTLY ${chunk.questionCount} questions for the "${chunk.sectionLabel}" section as a JSON paper. Only include this section.`,
+          userPrompt: `Generate EXACTLY ${chunk.questionCount} questions for the "${chunk.sectionLabel}" section as a JSON paper. All questions in this section MUST have the "questionType" field set strictly to "${chunk.questionType}". Only include this section.`,
           expectedSchema,
           temperature: ctx.strategy.getTemperature(),
-          minimumTier: ctx.strategy.getMinimumTier(),
+          preferredTier: ctx.strategy.getPreferredTier(),
+          fallbackTier: ctx.strategy.getFallbackTier(),
+          requiredQuestionCapability: chunk.questionType,
+          requiredWorkload: 'question-generation',
+          allowCapabilityDegradation: true,
           preferredModelId: ctx.strategy.getPreferredModel() || undefined,
-          maxOutputTokens: ctx.strategy.getMaxOutputTokens(),
+          maxOutputTokens,
+          estimatedCompletionTokens: estimatedCompletion,
+          requestId: ctx.runId,
+          chunkId: chunk.chunkId,
         };
+
+        const promptTokensEstimate = estimateTokens(request.systemPrompt) + estimateTokens(request.userPrompt);
+        const schemaTokensEstimate = expectedSchema ? estimateTokens(JSON.stringify(expectedSchema)) : 0;
+        
+        logger.info("[CHUNK_TELEMETRY] Chunk Context Analyzed", {
+          chunkId: chunk.chunkId,
+          questionType: chunk.questionType,
+          questionCount: chunk.questionCount,
+          promptTokensBeforeSend: promptTokensEstimate,
+          schemaTokens: schemaTokensEstimate,
+          estimatedCompletionTokens: estimatedCompletion,
+          maxTokensRequested: maxOutputTokens
+        });
 
         // Fresh AbortController per retry attempt — isolates timeout from fallback chain
         const abortController = new AbortController();
@@ -376,7 +465,7 @@ export class GenerationOrchestrator {
 
         let result;
         try {
-          result = await this.llm.generateJSON<GeneratedPaperOutput>(request);
+          result = await this.llm.generateJSON<any>(request);
         } finally {
           clearTimeout(timeoutId);
           ctx.abortSignal?.removeEventListener('abort', onParentAbort);
@@ -384,7 +473,37 @@ export class GenerationOrchestrator {
         const latencyMs = Date.now() - startTime;
 
         // Extract sections from LLM response
-        const sections = result.data.sections || [];
+        let sections = result.data.sections;
+        
+        // Fallback extraction logic: if the LLM returned an array directly or omitted the root wrapper
+        if (!sections && Array.isArray(result.data)) {
+          if (result.data.length > 0 && result.data[0].questions) {
+            sections = result.data; // It's an array of sections
+          } else {
+            // It's an array of questions directly
+            sections = [{
+              sectionLabel: chunk.sectionLabel,
+              sectionTitle: `Part ${chunk.sectionLabel}`,
+              instruction: "Answer the following questions:",
+              questions: result.data
+            }];
+          }
+        } else if (!sections && result.data?.questions) {
+          // It returned a single section object directly
+          sections = [result.data];
+        }
+        
+        // Return the extracted sections. Batch recovery will handle shortfalls.
+        const generatedCount = sections.reduce((acc: number, s: any) => acc + (s.questions?.length || 0), 0);
+        
+        if (generatedCount === 0) {
+          throw new Error("Zero questions extracted from response.");
+        }
+        
+        if (generatedCount > chunk.questionCount) {
+          throw new Error(`Overgenerated: Expected ${chunk.questionCount}, got ${generatedCount}.`);
+        }
+
 
         return {
           chunkId: chunk.chunkId,
@@ -595,12 +714,9 @@ export class GenerationOrchestrator {
   // ── Post-Processing ──
 
   /**
-   * Dynamic section labeling for non-college papers.
-   * Preserved from original ai.service.ts logic.
+   * Dynamic section labeling.
    */
   private postProcessSectionLabels(paper: GeneratedPaperOutput, assignment: IAssignment): GeneratedPaperOutput {
-    if (isCollegeLevel(assignment)) return paper;
-
     const sections = paper.sections;
     if (!sections || sections.length === 0) return paper;
 
@@ -617,6 +733,7 @@ export class GenerationOrchestrator {
     for (const section of sections) {
       for (const q of section.questions) {
         if (typeMapping[q.questionType]) {
+          // @ts-ignore - TS complains about assigning a string to the discriminated union literal, but we know it's valid
           q.questionType = typeMapping[q.questionType];
         }
       }

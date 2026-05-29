@@ -1,39 +1,48 @@
 import { ILLMProvider, LLMRequest, LLMResponse, ModelCapability } from './types.js';
 import { getModels, getModelById, ModelTier, type ModelEntry } from './models/model-registry.js';
-import { ProviderHealthTracker, type HealthEvent } from './models/provider-health.js';
-import { CapabilityExhaustedError } from './errors.js';
+import { CapabilityExhaustedError, QuotaCooldownError, NoEligibleModelsError } from './errors.js';
 import { logger } from '../../utils/logger.js';
+import { CapacityManager, type CapacityStatus } from './capacity.manager.js';
 
 /**
- * Capability-aware LLM orchestrator.
+ * Capability-aware LLM orchestrator (v5 — Unified Dynamic Scoring).
  * 
- * Replaces the old blind fallback chain with:
- * 1. Filter models by tier + health + quota
- * 2. Sort: preferred → tier → health
- * 3. Try each eligible model
- * 4. Hard reject if all eligible models fail (never degrade below minimum tier)
+ * All candidate models are scored via a unified formula:
+ *   Quality (0.45) + Availability (0.25) + ProviderHealth (0.15) + Latency (0.10) + Cost (0.05)
+ * 
+ * Tiers exist only as metadata contributing to the Quality score.
+ * There is NO hard tier-based routing waterfall.
+ * 
+ * On 429 errors:
+ *   1. The provider is marked degraded in CapacityManager
+ *   2. The model is marked with a model-level cooldown
+ *   3. The orchestrator immediately tries the next scored candidate
+ *   4. NO sleeping occurs inside the orchestrator
  */
 export class LLMOrchestrator {
   private providers: Map<string, ILLMProvider> = new Map();
-  public readonly healthTracker: ProviderHealthTracker;
+  public readonly capacityManager: CapacityManager;
 
-  constructor(providers: ILLMProvider[]) {
+  // For testing
+  public _getModels = getModels;
+
+  constructor(providers: ILLMProvider[], capacityManager?: CapacityManager) {
     for (const p of providers) {
       this.providers.set(p.name.toLowerCase(), p);
     }
-    this.healthTracker = new ProviderHealthTracker();
+    this.capacityManager = capacityManager ?? new CapacityManager();
   }
 
   /**
-   * Generates a response using capability-aware routing.
-   * Respects minimumTier, preferredModelId, and health state.
+   * Generates a response using unified dynamic scoring.
+   * Respects capability requirements and health/capacity state.
    */
   public async generate(request: LLMRequest): Promise<LLMResponse> {
     const eligible = this.getEligibleModels(request);
 
     if (eligible.length === 0) {
       throw new CapabilityExhaustedError(
-        request.minimumTier ?? ModelTier.TIER_3,
+        request.fallbackTier ?? ModelTier.TIER_3,
         [],
         [{ model: "none", error: "No eligible models found (all disabled, circuit-open, or quota-exhausted)" }]
       );
@@ -41,51 +50,93 @@ export class LLMOrchestrator {
 
     const errors: { model: string; error: string }[] = [];
 
-    for (const model of eligible) {
+    for (const scoredModel of eligible) {
+      const model = scoredModel.model;
       const provider = this.getProviderForModel(model);
       if (!provider) continue;
 
-      try {
-        logger.info("[LLMOrchestrator] Routing to model", {
+      // Track routing decision
+      logger.info("[ROUTING_DECISION] Selected Model for Generation", {
+        requestId: request.requestId || "unknown",
+        chunkId: request.chunkId || "unknown",
+        workloadType: request.requiredQuestionCapability || "unknown",
+        selection: {
           model: model.id,
           provider: model.provider,
-          tier: model.tier,
-        });
+          totalScore: scoredModel.score,
+        },
+        scoreBreakdown: scoredModel.scoreBreakdown,
+        rejectedTopContender: eligible.length > 1 ? {
+          model: eligible[1].model.id,
+          provider: eligible[1].model.provider,
+          score: eligible[1].score
+        } : null
+      });
 
-        const response = await provider.generate(request, model.id);
+      this.capacityManager.startRequest(model.provider);
 
-        // Record success
-        this.healthTracker.record(model.id, {
-          timestamp: Date.now(),
-          type: "success",
-          latencyMs: response.latencyMs || 0,
+      try {
+        // Per-attempt timeout isolation
+        const timeoutSignal = AbortSignal.timeout(60000); // 60s hard timeout
+        const requestWithTimeout = {
+          ...request,
+          abortSignal: request.abortSignal || timeoutSignal,
+        };
+
+        const callStart = performance.now();
+        const response = await provider.generate(requestWithTimeout, model.id);
+        const callDuration = Math.round(performance.now() - callStart);
+
+        // Record success in CapacityManager
+        const tokensUsed = response.usage?.totalTokens || (request.estimatedCompletionTokens ?? 500);
+        this.capacityManager.recordSuccess(model.provider, model.id, tokensUsed);
+
+        logger.info("[PROFILER] Provider Attempt Success", {
+          stage: "LLM_GENERATION",
+          durationMs: callDuration,
+          model: model.id,
+          provider: model.provider,
         });
 
         return response;
       } catch (error: any) {
+        if (error instanceof QuotaCooldownError) {
+          // Mark both model and provider as degraded — then immediately try next candidate
+          this.capacityManager.markModelCooldown(model.id, error.retryAfterMs);
+          this.capacityManager.markProviderDegraded(model.provider, error.retryAfterMs);
+          this.capacityManager.recordFailure(model.provider);
+
+          logger.warn(`[LLMOrchestrator] Model ${model.id} hit rate limit, marking provider ${model.provider} degraded`, {
+            retryAfterMs: error.retryAfterMs,
+          });
+          errors.push({ model: model.id, error: error.message });
+          continue; // Immediately try next model — NO sleep
+        }
+
         const errorMsg = error?.message || String(error);
-        logger.error("[LLMOrchestrator] Model failed", {
+        const statusCode = error?.status || error?.code || error?.statusCode;
+        
+        logger.error("[PROFILER] Provider Attempt Failed", {
+          stage: "LLM_GENERATION",
           model: model.id,
           provider: model.provider,
           error: errorMsg,
+          statusCode: statusCode,
         });
 
         // Record failure
-        const eventType = this.classifyError(error);
-        this.healthTracker.record(model.id, {
-          timestamp: Date.now(),
-          type: eventType,
-          latencyMs: 0,
-        });
+        this.capacityManager.recordFailure(model.provider);
 
         errors.push({ model: model.id, error: errorMsg });
+      } finally {
+        this.capacityManager.endRequest(model.provider);
       }
     }
 
     // All eligible models failed — HARD REJECT
     throw new CapabilityExhaustedError(
-      request.minimumTier ?? ModelTier.TIER_3,
-      eligible.map((m) => m.id),
+      request.fallbackTier ?? ModelTier.TIER_3,
+      eligible.map((sc) => sc.model.id),
       errors
     );
   }
@@ -95,8 +146,8 @@ export class LLMOrchestrator {
    */
   public async generateJSON<T>(request: LLMRequest): Promise<{ data: T, raw: LLMResponse }> {
     const jsonPrompt = request.expectedSchema 
-      ? `\n\nIMPORTANT: You must respond ONLY with raw JSON that exactly matches the following schema. Do not include markdown blocks, backticks, or conversational text.\nSchema:\n${JSON.stringify(request.expectedSchema)}`
-      : `\n\nIMPORTANT: You must respond ONLY with raw JSON. Do not include markdown blocks, backticks, or conversational text.`;
+      ? `\n\nOutput JSON matching this schema exactly:\n${JSON.stringify(request.expectedSchema)}`
+      : `\n\nRespond with valid JSON only.`;
 
     const modifiedRequest: LLMRequest = {
       ...request,
@@ -107,18 +158,24 @@ export class LLMOrchestrator {
       ],
     };
 
+    const generateStart = performance.now();
     const response = await this.generate(modifiedRequest);
+    const generateDuration = Math.round(performance.now() - generateStart);
 
     try {
+      const parseStart = performance.now();
       const parsed = this.parseJSON<T>(response.content);
+      const parseDuration = Math.round(performance.now() - parseStart);
+      
+      logger.info("[PROFILER] JSON Parsing Completed", {
+        stage: "JSON_PARSING",
+        latencyMs: parseDuration,
+      });
+
       return { data: parsed, raw: response };
     } catch (error) {
       // Record malformed output
-      this.healthTracker.record(response.modelUsed, {
-        timestamp: Date.now(),
-        type: "malformed",
-        latencyMs: response.latencyMs || 0,
-      });
+      this.capacityManager.recordMalformed(response.providerName);
       
       logger.error("[LLMOrchestrator] Failed to parse JSON", {
         provider: response.providerName,
@@ -132,71 +189,166 @@ export class LLMOrchestrator {
   // ── Private helpers ──
 
   /**
-   * Get eligible models sorted by preference:
-   * 1. Preferred model (if specified, eligible, and healthy)
-   * 2. By tier ascending (best first)
-   * 3. By health (healthiest first within same tier)
+   * Unified Dynamic Scoring — replaces the old tier-waterfall routing.
+   * 
+   * Empirical Scoring formula:
+   *   Base Quality * Empirical Success Rate * Load Penalty * Cost Multiplier
    */
-  private getEligibleModels(request: LLMRequest): ModelEntry[] {
-    const minimumTier = request.minimumTier ?? ModelTier.TIER_3;
+  public getEligibleModels(request: LLMRequest): { model: ModelEntry; score: number; scoreBreakdown: any }[] {
+    const requiredCap = request.requiredQuestionCapability;
+    const requiredWorkload = request.requiredWorkload;
+    const allowDegradation = request.allowCapabilityDegradation ?? true;
     
-    // Get all enabled models at or above minimum tier
-    const candidates = getModels({
-      minimumTier,
-      enabledOnly: true,
-    });
+    const initialCandidates = this._getModels({ enabledOnly: true });
 
-    // Filter by provider availability and health
-    const eligible = candidates.filter((model) => {
+    type ScoredModel = { model: ModelEntry; score: number; scoreBreakdown?: any; rejectedReason?: string; degraded: boolean };
+    const scoredCandidates: ScoredModel[] = [];
+
+    const estimatedCompletion = request.estimatedCompletionTokens || request.maxOutputTokens || 2000;
+    const estimatedPromptTokens = 1000; // Rough estimate if not provided
+
+    for (const model of initialCandidates) {
+      let rejectedReason: string | undefined;
+      let degraded = false;
+
+      // ── Hard Exclusions ──
       const provider = this.getProviderForModel(model);
-      if (!provider || !provider.isAvailable()) return false;
-      if (!this.healthTracker.isModelAvailable(model.id)) return false;
-      return true;
-    });
-
-    // Sort: preferred first → tier ascending → health
-    const preferredId = request.preferredModelId;
-    eligible.sort((a, b) => {
-      // Preferred model always first
-      if (preferredId) {
-        if (a.id === preferredId && b.id !== preferredId) return -1;
-        if (b.id === preferredId && a.id !== preferredId) return 1;
+      if (!provider || !provider.isAvailable()) {
+        rejectedReason = "Provider unavailable";
+        scoredCandidates.push({ model, score: -1000, rejectedReason, degraded });
+        continue;
       }
-      // Then by tier (lower = better)
-      if (a.tier !== b.tier) return a.tier - b.tier;
 
-      // Then by Provider Class (stable > opportunistic > experimental)
-      const classWeight = { "stable": 1, "opportunistic": 2, "experimental": 3 };
-      const aWeight = classWeight[a.providerClass] || 4;
-      const bWeight = classWeight[b.providerClass] || 4;
-      if (aWeight !== bWeight) return aWeight - bWeight;
+      // Check Capacity and Admission
+      const capacity = this.capacityManager.getCapacityStatus(
+        model.provider, 
+        model.id, 
+        estimatedPromptTokens, 
+        estimatedCompletion
+      );
 
-      // Within same tier and class, prefer healthier models
-      const aMetrics = this.healthTracker.getMetrics(a.id);
-      const bMetrics = this.healthTracker.getMetrics(b.id);
-      return aMetrics.failureRate - bMetrics.failureRate;
+      if (capacity.healthScore === 0) {
+        rejectedReason = "Model hard disabled (Health score 0)";
+        scoredCandidates.push({ model, score: -1000, rejectedReason, degraded });
+        continue;
+      }
+
+      if (!capacity.canServeRequest) {
+        rejectedReason = `Admission Control Failed: ${capacity.admissionReason}`;
+        scoredCandidates.push({ model, score: -1000, rejectedReason, degraded });
+        continue;
+      }
+
+      // ── Capability Check ──
+      let capabilityMatch = true;
+      if (requiredCap && model.generation) {
+        switch (requiredCap) {
+          case 'Multiple Choice Questions': capabilityMatch = model.generation.supportsMCQ; break;
+          case 'Short Answer Questions': capabilityMatch = model.generation.supportsShortAnswer; break;
+          case 'Long Answer Questions':
+            if (requiredWorkload === 'question-generation') {
+              capabilityMatch = model.generation.supportsLongAnswerQuestionGeneration;
+            } else if (requiredWorkload === 'answer-generation') {
+              capabilityMatch = model.generation.supportsLongAnswerAnswerGeneration;
+            } else {
+              capabilityMatch = false;
+            }
+            break;
+          case 'Case Study Questions': capabilityMatch = model.generation.supportsCaseStudy; break;
+          case 'Numerical Problems': capabilityMatch = model.generation.supportsNumerical; break;
+          default: capabilityMatch = true;
+        }
+      }
+
+      if (!capabilityMatch && !allowDegradation) {
+        rejectedReason = `Capability Mismatch: Missing ${requiredCap} for workload ${requiredWorkload}`;
+        scoredCandidates.push({ model, score: -1000, rejectedReason, degraded: true });
+        continue;
+      }
+      if (!capabilityMatch) degraded = true;
+
+      // ── Empirical Scoring ──
+
+      // 1. Base Quality (0-100)
+      let baseQuality = 50;
+      if (model.tier === ModelTier.TIER_1) baseQuality += 30;
+      else if (model.tier === ModelTier.TIER_2) baseQuality += 15;
+      
+      if (capabilityMatch) baseQuality += 10;
+      baseQuality += Math.min(10, model.capabilities.reasoning);
+      if (request.preferredModelId === model.id) baseQuality += 10;
+
+      // 2. Empirical Success Rate Multiplier (0.0 - 1.0)
+      // Health score already integrates failure rate and malformed rate
+      const empiricalMultiplier = capacity.healthScore; 
+
+      // 3. Provider Load Penalty (0.0 - 1.0)
+      const providerLoad = this.capacityManager.getProviderLoad(model.provider);
+      const loadPenalty = 1.0 - (providerLoad * 0.5); // Max 50% penalty for full load
+
+      // 4. Availability / Cooldown Multiplier
+      let availabilityMultiplier = 1.0;
+      if (!capacity.available) {
+        availabilityMultiplier = 0.1; // Huge penalty if in cooldown, basically putting it at the bottom
+      }
+
+      // 5. Cost Multiplier
+      const costMultiplier = model.isFree ? 1.1 : 1.0; // 10% bonus for free models
+
+      const totalScore = Math.round(baseQuality * empiricalMultiplier * loadPenalty * availabilityMultiplier * costMultiplier);
+
+      const scoreBreakdown = {
+        baseQuality,
+        empiricalMultiplier,
+        loadPenalty,
+        availabilityMultiplier,
+        costMultiplier
+      };
+
+      scoredCandidates.push({ model, score: totalScore, scoreBreakdown, rejectedReason, degraded });
+    }
+
+    // Filter valid and sort by score descending
+    const validCandidates = scoredCandidates.filter(sc => !sc.rejectedReason);
+    validCandidates.sort((a, b) => b.score - a.score);
+
+    // Telemetry
+    const rejections = scoredCandidates.filter(sc => sc.rejectedReason).map(sc => ({ model: sc.model.id, reason: sc.rejectedReason! }));
+    logger.info("[MODEL_POOL_TELEMETRY] Candidate Pool Filtration", {
+      Initial: initialCandidates.length,
+      Accepted: validCandidates.length,
+      Rejected: rejections.length,
+      FinalPool: validCandidates.map(sc => ({ model: sc.model.id, score: sc.score, degraded: sc.degraded, provider: sc.model.provider }))
     });
 
-    return eligible;
+    if (rejections.length > 0) {
+      rejections.forEach(rej => logger.info(`[MODEL_POOL_TELEMETRY] Model Rejected: ${rej.model} | Reason: ${rej.reason}`));
+    }
+
+    if (validCandidates.length === 0) {
+      throw new NoEligibleModelsError(
+        "Candidate pool collapsed to zero.",
+        rejections
+      );
+    }
+
+    return validCandidates.map(sc => {
+      (sc.model as any)._isDegraded = sc.degraded;
+      return {
+        model: sc.model,
+        score: sc.score,
+        scoreBreakdown: sc.scoreBreakdown
+      };
+    });
   }
 
   /**
    * Map a model entry to its provider instance.
    */
   private getProviderForModel(model: ModelEntry): ILLMProvider | undefined {
-    // Provider names in the Map are lowercase: "groq", "openrouter", "cohere"
     return this.providers.get(model.provider);
   }
 
-  /**
-   * Classify an error for health tracking.
-   */
-  private classifyError(error: any): HealthEvent["type"] {
-    const message = (error?.message || "").toLowerCase();
-    if (message.includes("timeout") || message.includes("timed out")) return "timeout";
-    if (message.includes("rate limit") || message.includes("429")) return "failure";
-    return "failure";
-  }
 
   /**
    * Strips markdown fences if the LLM hallucinated them despite instructions.

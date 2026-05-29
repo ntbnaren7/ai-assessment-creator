@@ -31,6 +31,19 @@ export enum ProviderClass {
   EXPERIMENTAL = "experimental",
 }
 
+export interface GenerationCapability {
+  supportsMCQ: boolean;
+  supportsShortAnswer: boolean;
+  supportsLongAnswerQuestionGeneration: boolean;
+  supportsLongAnswerAnswerGeneration: boolean;
+  supportsCaseStudy: boolean;
+  supportsNumerical: boolean;
+  supportsComplexReasoning: boolean;
+  supportsAnswerKeyGeneration: boolean;
+  supportsLargeStructuredOutput: boolean;
+  maxRecommendedQuestions: number;
+}
+
 export interface ModelEntry {
   id: string;
   provider: "groq" | "openrouter" | "cohere";
@@ -38,8 +51,13 @@ export interface ModelEntry {
   tier: ModelTier;
   maxOutputTokens: number;
   capabilities: ModelCapabilityScore;
+  generation: GenerationCapability;
   isFree: boolean;
   disabled: boolean;
+  /** Maximum tokens per minute (free tier). Used for admission control. */
+  maxTokensPerMinute: number;
+  /** Maximum context window (prompt + completion). */
+  contextWindow: number;
 }
 
 /**
@@ -59,8 +77,11 @@ const MODEL_REGISTRY: ModelEntry[] = [
     tier: ModelTier.TIER_1,
     maxOutputTokens: 4096,
     capabilities: { reasoning: 8, structuredJson: 9, mathematicalReasoning: 7 },
+    generation: { supportsMCQ: true, supportsShortAnswer: true, supportsLongAnswerQuestionGeneration: true, supportsLongAnswerAnswerGeneration: true, supportsCaseStudy: true, supportsNumerical: true, supportsComplexReasoning: true, supportsAnswerKeyGeneration: true, supportsLargeStructuredOutput: true, maxRecommendedQuestions: 20 },
     isFree: true,
     disabled: false,
+    maxTokensPerMinute: 100_000,
+    contextWindow: 128_000,
   },
   {
     id: "deepseek/deepseek-v4-flash:free",
@@ -69,8 +90,11 @@ const MODEL_REGISTRY: ModelEntry[] = [
     tier: ModelTier.TIER_1,
     maxOutputTokens: 8192,
     capabilities: { reasoning: 8, structuredJson: 8, mathematicalReasoning: 8 },
+    generation: { supportsMCQ: true, supportsShortAnswer: true, supportsLongAnswerQuestionGeneration: true, supportsLongAnswerAnswerGeneration: true, supportsCaseStudy: true, supportsNumerical: true, supportsComplexReasoning: true, supportsAnswerKeyGeneration: true, supportsLargeStructuredOutput: true, maxRecommendedQuestions: 20 },
     isFree: true,
     disabled: false,
+    maxTokensPerMinute: 100_000,
+    contextWindow: 64_000,
   },
   {
     id: "meta-llama/llama-3.3-70b-instruct:free",
@@ -79,33 +103,28 @@ const MODEL_REGISTRY: ModelEntry[] = [
     tier: ModelTier.TIER_1,
     maxOutputTokens: 8192,
     capabilities: { reasoning: 7, structuredJson: 8, mathematicalReasoning: 7 },
+    generation: { supportsMCQ: true, supportsShortAnswer: true, supportsLongAnswerQuestionGeneration: true, supportsLongAnswerAnswerGeneration: true, supportsCaseStudy: true, supportsNumerical: true, supportsComplexReasoning: true, supportsAnswerKeyGeneration: true, supportsLargeStructuredOutput: true, maxRecommendedQuestions: 20 },
     isFree: true,
     disabled: false,
+    maxTokensPerMinute: 100_000,
+    contextWindow: 128_000,
   },
 
-  // ── Tier 2: Opportunistic Free Scaling ──
-  {
-    id: "google/gemma-2-9b-it:free",
-    provider: "openrouter",
-    providerClass: ProviderClass.OPPORTUNISTIC,
-    tier: ModelTier.TIER_2,
-    maxOutputTokens: 8192,
-    capabilities: { reasoning: 5, structuredJson: 7, mathematicalReasoning: 5 },
-    isFree: true,
-    disabled: false,
-  },
-
-  // ── Tier 3: Fast Lightweight Tasks ──
+  // ── Tier 1 (Fast & Primary): Groq ──
   {
     id: "llama-3.3-70b-versatile",
     provider: "groq",
-    providerClass: ProviderClass.OPPORTUNISTIC,
-    tier: ModelTier.TIER_3,
+    providerClass: ProviderClass.STABLE,
+    tier: ModelTier.TIER_1,
     maxOutputTokens: 8192,
     capabilities: { reasoning: 7, structuredJson: 8, mathematicalReasoning: 7 },
+    generation: { supportsMCQ: true, supportsShortAnswer: true, supportsLongAnswerQuestionGeneration: true, supportsLongAnswerAnswerGeneration: true, supportsCaseStudy: true, supportsNumerical: true, supportsComplexReasoning: true, supportsAnswerKeyGeneration: true, supportsLargeStructuredOutput: true, maxRecommendedQuestions: 20 },
     isFree: true,
-    disabled: false, // Subject to 12k TPM limit
+    disabled: false,
+    maxTokensPerMinute: 12_000,
+    contextWindow: 128_000,
   },
+  // ── Tier 3: Fast Lightweight ──
   {
     id: "llama-3.1-8b-instant",
     provider: "groq",
@@ -113,8 +132,11 @@ const MODEL_REGISTRY: ModelEntry[] = [
     tier: ModelTier.TIER_3,
     maxOutputTokens: 8192,
     capabilities: { reasoning: 5, structuredJson: 6, mathematicalReasoning: 5 },
+    generation: { supportsMCQ: true, supportsShortAnswer: true, supportsLongAnswerQuestionGeneration: true, supportsLongAnswerAnswerGeneration: false, supportsCaseStudy: false, supportsNumerical: false, supportsComplexReasoning: false, supportsAnswerKeyGeneration: false, supportsLargeStructuredOutput: false, maxRecommendedQuestions: 10 },
     isFree: true,
-    disabled: false, // Subject to 6k TPM limit
+    disabled: false,
+    maxTokensPerMinute: 6_000,
+    contextWindow: 8_000,
   },
 ];
 

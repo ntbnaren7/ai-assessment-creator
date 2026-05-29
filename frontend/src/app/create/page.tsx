@@ -8,24 +8,13 @@ import { AppShell } from "@/components/layout/AppShell";
 import { ProgressStep } from "@/components/create/ProgressStep";
 
 import { SchoolAssessmentForm } from "@/components/create/SchoolAssessmentForm";
-import { CollegeAssessmentForm } from "@/components/create/CollegeAssessmentForm";
 
 function CreatePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const assessmentType = searchParams.get("type");
+  const assessmentType = "school"; // Only school is supported now
 
-  useEffect(() => {
-    if (!assessmentType) {
-      router.replace("/?create=true");
-    }
-  }, [assessmentType, router]);
-
-  const handleCancel = () => router.push(`/?create=true&backUrl=${encodeURIComponent("/create?type=" + assessmentType)}`);
-
-  if (!assessmentType) {
-    return null; // Will redirect
-  }
+  const handleCancel = () => router.push(`/?create=true`);
 
   return (
     <AppShell
@@ -41,7 +30,7 @@ function CreatePageContent() {
         </button>
         <h2>
           <span className="status-dot active hide-on-desktop-dot" />
-          <span className="hide-on-mobile">Create {assessmentType.charAt(0).toUpperCase() + assessmentType.slice(1)} Assignment</span>
+          <span className="hide-on-mobile">Create School Assignment</span>
           <span className="show-on-mobile">Create Assignment</span>
         </h2>
         <p className="hide-on-mobile">
@@ -54,8 +43,7 @@ function CreatePageContent() {
         <ProgressStep progress={50} />
 
         {/* Form */}
-        {assessmentType === "school" && <SchoolAssessmentForm onCancel={handleCancel} />}
-        {assessmentType === "college" && <CollegeAssessmentForm onCancel={handleCancel} />}
+        <SchoolAssessmentForm onCancel={handleCancel} />
       </div>
     </AppShell>
   );

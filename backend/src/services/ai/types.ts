@@ -19,10 +19,17 @@ export interface LLMRequest {
   capabilitiesRequired?: ModelCapability[];
   temperature?: number;
   // ── Capability-aware routing (v4) ──
-  minimumTier?: ModelTier;        // Hard floor — never route below this tier
+  preferredTier?: ModelTier;      // Ideal tier for the request
+  fallbackTier?: ModelTier;       // Lowest acceptable emergency fallback tier
+  requiredQuestionCapability?: string; // e.g., 'Multiple Choice Questions'
+  requiredWorkload?: 'question-generation' | 'answer-generation';
+  allowCapabilityDegradation?: boolean;
   preferredModelId?: string;      // Try this model first if eligible
   maxOutputTokens?: number;       // Safety cap per request
+  estimatedCompletionTokens?: number; // Realistic completion estimate for admission control
   abortSignal?: AbortSignal;      // Pass-through for graceful cancellation
+  requestId?: string;             // For telemetry tracing
+  chunkId?: string;               // For telemetry tracing
 }
 
 export interface LLMResponse {

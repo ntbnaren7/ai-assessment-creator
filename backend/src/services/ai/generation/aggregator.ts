@@ -1,7 +1,6 @@
 import { logger } from "../../../utils/logger.js";
-import { GeneratedPaperSchema, type GeneratedPaperOutput, type GeneratedQuestionSchema } from "../../../utils/validation.js";
+import { type GeneratedPaperOutput, SchoolGeneratedPaperSchema } from "../../../utils/validation.js";
 import { evaluateQuality, type QualityReport } from "./quality-evaluator.js";
-import type { z } from "zod";
 
 /**
  * Aggregates chunk results into a single validated paper output.
@@ -11,7 +10,7 @@ import type { z } from "zod";
 
 // ── Types ──
 
-type GeneratedQuestion = z.infer<typeof GeneratedQuestionSchema>;
+type GeneratedQuestion = any;
 
 export interface ChunkResult {
   chunkId: string;
@@ -75,6 +74,7 @@ export function aggregateChunks(
 
   // ── 5. Assemble paper ──
   const paper: GeneratedPaperOutput = {
+    schemaVersion: "v1",
     title: paperMetadata.title,
     subject: paperMetadata.subject,
     totalMarks: paperMetadata.totalMarks,
@@ -84,10 +84,10 @@ export function aggregateChunks(
   };
 
   // ── 6. Validate with Zod ──
-  const validation = GeneratedPaperSchema.safeParse(paper);
+  const validation = SchoolGeneratedPaperSchema.safeParse(paper);
   if (!validation.success) {
     const issues = validation.error.issues
-      .map((i) => `${i.path.join(".")}: ${i.message}`)
+      .map((i: any) => `${i.path.join(".")}: ${i.message}`)
       .join("; ");
     logger.error("Aggregated paper failed Zod validation", { issues });
     // Still return it — quality evaluator will flag issues

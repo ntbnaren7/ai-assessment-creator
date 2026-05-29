@@ -8,31 +8,13 @@ import { AppShell } from "@/components/layout/AppShell";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { AssignmentList } from "@/components/dashboard/AssignmentList";
 import { useAssignmentStore } from "@/store/useAssignmentStore";
-import { SpotlightSelectionCard, AssessmentType } from "@/components/create/SpotlightSelectionCard";
 
 function DashboardContent() {
   const { assignments, isLoadingList, fetchAssignments } = useAssignmentStore();
   const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const showCreate = searchParams.get("create") === "true";
-
   useEffect(() => {
     fetchAssignments();
   }, [fetchAssignments]);
-
-  const handleSelectType = (type: AssessmentType) => {
-    router.push(`/create?type=${type}`);
-  };
-
-  const handleCancelCreate = () => {
-    const backUrl = searchParams.get("backUrl");
-    if (backUrl) {
-      router.push(backUrl);
-    } else {
-      router.push("/");
-    }
-  };
 
   return (
     <AppShell breadcrumb="Assignment" breadcrumbIcon="/assets/icons/icon-grid.svg">
@@ -48,10 +30,6 @@ function DashboardContent() {
           assignments={assignments}
           onRefresh={fetchAssignments}
         />
-      )}
-
-      {showCreate && (
-        <SpotlightSelectionCard onSelect={handleSelectType} onCancel={handleCancelCreate} />
       )}
     </AppShell>
   );

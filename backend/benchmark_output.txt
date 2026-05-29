@@ -1,0 +1,3152 @@
+Initializing Providers for Benchmark...
+Initializing Providers for Benchmark...
+FATAL ERROR IN BENCHMARK: Cannot read properties of undefined (reading 'apiKey')
+TypeError: Cannot read properties of undefined (reading 'apiKey')
+    at new GroqProvider (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/services/ai/providers/groq.provider.ts:15:21)
+    at runStartupBenchmark (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/benchmark-runner.ts:18:24)
+    at bootstrap (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/index.ts:24:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+Initializing Providers for Benchmark...
+FATAL ERROR IN BENCHMARK: Cannot read properties of undefined (reading 'groq')
+TypeError: Cannot read properties of undefined (reading 'groq')
+    at runStartupBenchmark (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/benchmark-runner.ts:20:44)
+    at bootstrap (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/index.ts:24:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 2+) failed. Attempted: deepseek/deepseek-v4-flash:free, meta-llama/llama-3.3-70b-instruct:free, google/gemma-2-9b-it:free
+
+--- Benchmarking 20 MCQs ---
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 2+) failed. Attempted: deepseek/deepseek-v4-flash:free, meta-llama/llama-3.3-70b-instruct:free, google/gemma-2-9b-it:free
+Details: [
+  {
+    "model": "deepseek/deepseek-v4-flash:free",
+    "error": "429 Provider returned error"
+  },
+  {
+    "model": "meta-llama/llama-3.3-70b-instruct:free",
+    "error": "429 Provider returned error"
+  },
+  {
+    "model": "google/gemma-2-9b-it:free",
+    "error": "404 No endpoints found for google/gemma-2-9b-it:free."
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+✅ Success for 10 MCQs
+⏱️ Total Orchestrator Time: 48.609 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1040
+📝 Generated Question Count: 10
+
+--- Benchmarking 20 MCQs ---
+✅ Success for 20 MCQs
+⏱️ Total Orchestrator Time: 62.544 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 2102
+📝 Generated Question Count: 20
+
+--- Benchmarking 30 MCQs ---
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+✅ Success for 10 MCQs
+⏱️ Total Orchestrator Time: 43.345 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1435
+📝 Generated Question Count: 10
+
+--- Benchmarking 20 MCQs ---
+✅ Success for 20 MCQs
+⏱️ Total Orchestrator Time: 52.166 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1726
+📝 Generated Question Count: 20
+
+--- Benchmarking 30 MCQs ---
+✅ Success for 30 MCQs
+⏱️ Total Orchestrator Time: 7.101 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 3036
+📝 Generated Question Count: 30
+
+--- Benchmarking 40 MCQs ---
+✅ Success for 40 MCQs
+⏱️ Total Orchestrator Time: 2.607 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1190
+📝 Generated Question Count: 10
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+✅ Success for 10 MCQs
+⏱️ Total Orchestrator Time: 3.36 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1525
+📝 Generated Question Count: 10
+
+--- Benchmarking 20 MCQs ---
+✅ Success for 20 MCQs
+⏱️ Total Orchestrator Time: 4.585 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 2222
+📝 Generated Question Count: 20
+
+--- Benchmarking 30 MCQs ---
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+✅ Success for 10 MCQs
+⏱️ Total Orchestrator Time: 2.165 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1015
+📝 Generated Question Count: 10
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 11985, Requested 9394. Please try again in 46.894999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 11959, Requested 3424. Please try again in 16.915s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 11940, Requested 9394. Please try again in 46.67s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+✅ Success for 10 MCQs
+⏱️ Total Orchestrator Time: 2.808 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1231
+📝 Generated Question Count: 10
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 10067, Requested 3424. Please try again in 7.455s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 10040, Requested 3424. Please try again in 7.32s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 10020, Requested 2217. Please try again in 1.185s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+✅ Success for 10 MCQs
+⏱️ Total Orchestrator Time: 3.328 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1488
+📝 Generated Question Count: 10
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 8468, Requested 5024. Please try again in 7.46s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+✅ Success for 10 MCQs
+⏱️ Total Orchestrator Time: 2.82 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 1181
+📝 Generated Question Count: 10
+
+--- Benchmarking 20 MCQs ---
+✅ Success for 20 MCQs
+⏱️ Total Orchestrator Time: 4.898 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 2179
+📝 Generated Question Count: 20
+
+--- Benchmarking 30 MCQs ---
+✅ Success for 30 MCQs
+⏱️ Total Orchestrator Time: 6.008 seconds
+🤖 Model Used: llama-3.3-70b-versatile (Groq)
+📊 Prompt Tokens: 1202
+📊 Completion Tokens: 3075
+📝 Generated Question Count: 30
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 95594, Requested 5024. Please try again in 8m53.952s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97479, Requested 9394. Please try again in 1h38m58.272s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9394, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97428, Requested 9302. Please try again in 1h36m54.72s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9302, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9302, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9302, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97393, Requested 9302. Please try again in 1h36m24.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9302, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9302, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9302, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97367, Requested 9036. Please try again in 1h32m12.192s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9036, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9036, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9036, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97354, Requested 9011. Please try again in 1h31m39.36s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9011, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9011, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9011, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile, llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97321, Requested 9011. Please try again in 1h31m10.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  },
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9011, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9011, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.1-8b-instant
+Details: [
+  {
+    "model": "llama-3.1-8b-instant",
+    "error": "413 {\"error\":{\"message\":\"Request too large for model `llama-3.1-8b-instant` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9011, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97275, Requested 9011. Please try again in 1h30m31.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97259, Requested 9011. Please try again in 1h30m17.28s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97246, Requested 9011. Please try again in 1h30m6.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97201, Requested 9011. Please try again in 1h29m27.168s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99392, Requested 9701. Please try again in 2h10m56.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99375, Requested 9737. Please try again in 2h11m12.768s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99360, Requested 9737. Please try again in 2h10m59.808s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99346, Requested 9737. Please try again in 2h10m47.712s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99132, Requested 9737. Please try again in 2h7m42.816s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99116, Requested 9737. Please try again in 2h7m28.992s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98347, Requested 9737. Please try again in 1h56m24.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98329, Requested 9737. Please try again in 1h56m9.023999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98296, Requested 9737. Please try again in 1h55m40.512s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+FATAL ERROR IN BENCHMARK: Cannot read properties of undefined (reading '_def')
+TypeError: Cannot read properties of undefined (reading '_def')
+    at zodToJsonSchema (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/node_modules/zod-to-json-schema/dist/cjs/zodToJsonSchema.js:23:53)
+    at runStartupBenchmark (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/benchmark-runner.ts:44:28)
+    at bootstrap (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/index.ts:24:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+FATAL ERROR IN BENCHMARK: Cannot read properties of undefined (reading '_def')
+TypeError: Cannot read properties of undefined (reading '_def')
+    at zodToJsonSchema (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/node_modules/zod-to-json-schema/dist/cjs/zodToJsonSchema.js:23:53)
+    at runStartupBenchmark (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/benchmark-runner.ts:44:28)
+    at bootstrap (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/index.ts:24:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+FATAL ERROR IN BENCHMARK: Cannot read properties of undefined (reading '_def')
+TypeError: Cannot read properties of undefined (reading '_def')
+    at zodToJsonSchema (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/node_modules/zod-to-json-schema/dist/cjs/zodToJsonSchema.js:23:53)
+    at runStartupBenchmark (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/benchmark-runner.ts:44:28)
+    at bootstrap (/Users/ntbnaren7/Dev/ai-assessment-creator/backend/src/index.ts:24:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98074, Requested 9084. Please try again in 1h43m4.512s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98044, Requested 9084. Please try again in 1h42m38.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98037, Requested 9084. Please try again in 1h42m32.544s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97976, Requested 9084. Please try again in 1h41m39.839999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97458, Requested 9084. Please try again in 1h34m12.288s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97413, Requested 9084. Please try again in 1h33m33.408s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97326, Requested 9084. Please try again in 1h32m18.24s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97285, Requested 9084. Please try again in 1h31m42.816s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97259, Requested 9084. Please try again in 1h31m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97125, Requested 9084. Please try again in 1h29m24.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96456, Requested 9084. Please try again in 1h19m46.559999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96432, Requested 9084. Please try again in 1h19m25.824s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96418, Requested 9084. Please try again in 1h19m13.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96406, Requested 9084. Please try again in 1h19m3.36s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96394, Requested 9084. Please try again in 1h18m52.992s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96380, Requested 9084. Please try again in 1h18m40.896s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96366, Requested 9084. Please try again in 1h18m28.8s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96359, Requested 9084. Please try again in 1h18m22.751999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96314, Requested 9084. Please try again in 1h17m43.872s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96227, Requested 9084. Please try again in 1h16m28.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96220, Requested 9084. Please try again in 1h16m22.656s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98683, Requested 9084. Please try again in 1h51m50.688s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98654, Requested 9084. Please try again in 1h51m25.632s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kspje33pf82r4b0x37gfm2mj` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98611, Requested 9084. Please try again in 1h50m48.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6627000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6627000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6627000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6586000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6586000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6586000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6548000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6512000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6493000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6475000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6452000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6372000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5999000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5992000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5979000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5924000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: 
+Details: [
+  {
+    "model": "none",
+    "error": "No eligible models found (all disabled, circuit-open, or quota-exhausted)"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5902000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5902000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5902000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5902000ms"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5890000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5890000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5890000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5890000ms"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5850000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5850000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5850000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 5850000ms"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4888000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4888000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4888000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4888000ms"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4865000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4865000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4865000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4865000ms"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4858000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4858000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4858000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4858000ms"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4716000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4716000ms"
+  }
+]
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4716000ms"
+  }
+]
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 4716000ms"
+  }
+]
+
+======================================
+BENCHMARK COMPLETE
+======================================
+Initializing Providers for Benchmark...
+======================================
+STARTING EMPIRICAL BENCHMARK
+======================================
+
+--- Benchmarking 10 MCQs ---
+❌ Failed for 10 MCQs: All eligible models (Tier 3+) failed. Attempted: llama-3.3-70b-versatile
+Details: [
+  {
+    "model": "llama-3.3-70b-versatile",
+    "error": "Rate limit exceeded for llama-3.3-70b-versatile on Groq. Cooldown: 6876000ms"
+  }
+]
+
+--- Benchmarking 20 MCQs ---
+❌ Failed for 20 MCQs: Candidate pool collapsed to zero.
+
+--- Benchmarking 30 MCQs ---
+❌ Failed for 30 MCQs: Candidate pool collapsed to zero.
+
+--- Benchmarking 40 MCQs ---
+❌ Failed for 40 MCQs: Candidate pool collapsed to zero.
+
+======================================
+BENCHMARK COMPLETE
+======================================

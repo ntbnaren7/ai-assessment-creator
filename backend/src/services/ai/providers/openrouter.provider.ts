@@ -16,6 +16,7 @@ export class OpenRouterProvider implements ILLMProvider {
       this.client = new OpenAI({
         baseURL: 'https://openrouter.ai/api/v1',
         apiKey: this.config.apiKey,
+        maxRetries: 0,
         defaultHeaders: {
           'HTTP-Referer': 'https://aiassessmentcreator.local', 
           'X-Title': 'AI Assessment Creator', 
@@ -64,7 +65,7 @@ export class OpenRouterProvider implements ILLMProvider {
       }, { signal: request.abortSignal });
 
       const latencyMs = Date.now() - startTime;
-      const content = chatCompletion.choices[0]?.message?.content || '';
+      const content = chatCompletion.choices?.[0]?.message?.content || '';
       const usage = chatCompletion.usage;
 
       return {

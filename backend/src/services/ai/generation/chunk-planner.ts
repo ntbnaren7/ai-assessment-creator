@@ -56,25 +56,50 @@ export function buildChunkPlan(assignment: IAssignment): ChunkPlan {
 
 // ── Plan Builders ──
 
+const MAX_QUESTIONS_PER_CHUNK = 10;
+
+function splitIntoSubChunks(
+  baseDefinition: Omit<ChunkDefinition, "chunkId" | "questionCount">,
+  totalQuestions: number,
+  baseChunkId: string
+): ChunkDefinition[] {
+  const subChunks: ChunkDefinition[] = [];
+  let remaining = totalQuestions;
+  let partIdx = 1;
+
+  while (remaining > 0) {
+    const count = Math.min(remaining, MAX_QUESTIONS_PER_CHUNK);
+    subChunks.push({
+      ...baseDefinition,
+      chunkId: `${baseChunkId}-part${partIdx}`,
+      questionCount: count,
+    });
+    remaining -= count;
+    partIdx++;
+  }
+
+  return subChunks;
+}
+
 function buildSingleChunkPlan(assignment: IAssignment): ChunkPlan {
   const qType = assignment.questionTypes?.[0] || "MCQ";
   const marks = assignment.totalMarks / assignment.numberOfQuestions;
 
+  const baseDef = {
+    subject: assignment.subject,
+    sectionLabel: "Full Paper",
+    questionType: qType,
+    marksPerQuestion: Math.round(marks),
+    negativeMarking: 0,
+    attemptRule: "Attempt all questions",
+  };
+
+  const chunks = splitIntoSubChunks(baseDef, assignment.numberOfQuestions, "single");
+
   return {
-    chunks: [
-      {
-        chunkId: "single-0",
-        subject: assignment.subject,
-        sectionLabel: "Full Paper",
-        questionCount: assignment.numberOfQuestions,
-        questionType: qType,
-        marksPerQuestion: Math.round(marks),
-        negativeMarking: 0,
-        attemptRule: "Attempt all questions",
-      },
-    ],
+    chunks,
     executionMode: "sequential",
-    delayBetweenChunksMs: 0,
+    delayBetweenChunksMs: 500,
     totalExpectedQuestions: assignment.numberOfQuestions,
   };
 }
@@ -84,16 +109,20 @@ function buildMultiTypePlan(
   details: NonNullable<IAssignment["questionTypeDetails"]>,
 ): ChunkPlan {
   const sectionLabels = "ABCDEFGHIJ".split("");
-  const chunks: ChunkDefinition[] = details.map((d, i) => ({
-    chunkId: `type-${i}`,
-    subject: assignment.subject,
-    sectionLabel: sectionLabels[i] || `Section ${i + 1}`,
-    questionCount: d.numberOfQuestions,
-    questionType: d.type,
-    marksPerQuestion: d.marks,
-    negativeMarking: 0,
-    attemptRule: "Attempt all questions",
-  }));
+  const chunks: ChunkDefinition[] = [];
+
+  details.forEach((d, i) => {
+    const baseDef = {
+      subject: assignment.subject,
+      sectionLabel: sectionLabels[i] || `Section ${i + 1}`,
+      questionType: d.type,
+      marksPerQuestion: d.marks,
+      negativeMarking: 0,
+      attemptRule: "Attempt all questions",
+    };
+
+    chunks.push(...splitIntoSubChunks(baseDef, d.numberOfQuestions, `type-${i}`));
+  });
 
   const totalExpectedQuestions = details.reduce(
     (sum, d) => sum + d.numberOfQuestions,

@@ -94,3 +94,28 @@ export class QuotaExhaustedError extends Error {
     this.name = "QuotaExhaustedError";
   }
 }
+
+/** A specific model/provider is temporarily rate limited and needs to cool down. */
+export class QuotaCooldownError extends Error {
+  constructor(
+    public readonly providerName: string,
+    public readonly modelId: string,
+    public readonly retryAfterMs: number
+  ) {
+    super(
+      `Rate limit exceeded for ${modelId} on ${providerName}. Cooldown: ${retryAfterMs}ms`
+    );
+    this.name = "QuotaCooldownError";
+  }
+}
+
+/** Candidate pool collapsed to zero due to filters (capability, cooldown, health, TPM). */
+export class NoEligibleModelsError extends Error {
+  constructor(
+    message: string,
+    public readonly rejectionLog: { model: string; reason: string }[]
+  ) {
+    super(message);
+    this.name = "NoEligibleModelsError";
+  }
+}
